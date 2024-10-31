@@ -13,7 +13,9 @@ const router = createBrowserRouter([
     path: '/clock',
     element: <Clock />,
   }
-])
+], {
+  basename: '/little-tools'
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
