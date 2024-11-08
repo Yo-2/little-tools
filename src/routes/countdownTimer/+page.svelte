@@ -13,7 +13,7 @@
 	let minutes = $state(defaultData.minutes);
 	let seconds = $state(defaultData.seconds);
 
-	let timeupText = data.timeupText || 'Time up!';
+	let timeupText = data.timeupText || "Time's up!";
 
 	let timeup = $state(false);
 	let isPaused = false;
@@ -80,13 +80,15 @@
 </script>
 
 <button class="countdown-timer-container" style={bgStyle} onclick={playOrPause} ondblclick={reset}>
-	<p class="countdown-timer" style={clockStyle}>
-		{#if timeup}
+	{#if timeup}
+		<p class="countdown-timer timeup-text" style={clockStyle}>
 			{timeupText}
-		{:else}
+		</p>
+	{:else}
+		<p class="countdown-timer time" style={clockStyle}>
 			{formatTime()}
-		{/if}
-	</p>
+		</p>
+	{/if}
 </button>
 
 <style>
