@@ -20,9 +20,9 @@
 		clearInterval(timerId);
 	});
 
-	const bgStyle = 'background-color: ' + (data.bgColor || data.bgColorHex || 'black');
+	const bgStyle = 'background-color: ' + (data.bgColor || data.bgColorHex || 'rgba(0,0,0,0)');
 	const clockStyle =
-		'color: ' + (data.textColor || 'white') + ';' + 'font-size: ' + (data.fontSize || '2rem');
+		'color: ' + (data.textColor || '#000000') + ';' + 'font-size: ' + (data.fontSize || '2rem');
 </script>
 
 <div class="clock-container" style={bgStyle}>
