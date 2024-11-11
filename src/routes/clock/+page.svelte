@@ -22,7 +22,17 @@
 
 	const bgStyle = 'background-color: ' + (data.bgColor || data.bgColorHex || 'rgba(0,0,0,0)');
 	const clockStyle =
-		'color: ' + (data.textColor || '#000000') + ';' + 'font-size: ' + (data.fontSize || '2rem');
+		'color: ' +
+		(data.textColor || '#000000') +
+		';' +
+		'font-size: ' +
+		(data.fontSize || '2rem') +
+		';' +
+		'font-weight: ' +
+		(data.fontWeight || 'normal') +
+		';' +
+		'font-family: ' +
+		data.fontFamily;
 </script>
 
 <div class="clock-container" style={bgStyle}>

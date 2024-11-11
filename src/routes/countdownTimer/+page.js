@@ -7,6 +7,8 @@ export function load({ url }) {
 			: null,
 		textColor: url.searchParams.get('textColor'),
 		fontSize: url.searchParams.get('fontSize'),
+		fontFamily: url.searchParams.get('fontFamily'),
+		fontWeight: url.searchParams.get('fontWeight'),
 		hours: url.searchParams.get('hours'),
 		minutes: url.searchParams.get('minutes'),
 		seconds: url.searchParams.get('seconds'),
