@@ -86,7 +86,12 @@
 		(data.fontWeight || 'normal') +
 		';' +
 		'font-family: ' +
-		data.fontFamily;
+		data.fontFamily +
+		';' +
+		'width: ' +
+		'calc(' +
+		(data.fontSize || '2rem') +
+		' * 3.2);';
 </script>
 
 <button class="countdown-timer-container" style={bgStyle} onclick={playOrPause} ondblclick={reset}>
@@ -103,13 +108,13 @@
 
 <style>
 	.countdown-timer-container {
-		text-align: center;
+		justify-items: center;
 		align-content: center;
 		width: 100vw;
 		height: 100vh;
 	}
 	.countdown-timer {
 		margin: 0;
-		font-size: 2rem;
+		word-break: keep-all;
 	}
 </style>

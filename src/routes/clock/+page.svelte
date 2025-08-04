@@ -32,7 +32,12 @@
 		(data.fontWeight || 'normal') +
 		';' +
 		'font-family: ' +
-		data.fontFamily;
+		data.fontFamily +
+		';' +
+		'width: ' +
+		'calc(' +
+		(data.fontSize || '2rem') +
+		' * 3);';
 </script>
 
 <div class="clock-container" style={bgStyle}>
@@ -41,7 +46,7 @@
 
 <style>
 	.clock-container {
-		text-align: center;
+		justify-items: center;
 		align-content: center;
 		width: 100vw;
 		height: 100vh;
