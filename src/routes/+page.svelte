@@ -78,10 +78,6 @@
 					<label>
 						Font Weight
 						<select bind:value={$configStore.fontWeight}>
-							<option value="normal">Normal (400)</option>
-							<option value="bold">Bold (700)</option>
-							<option value="lighter">Lighter</option>
-							<option value="bolder">Bolder</option>
 							<option value="100">100</option>
 							<option value="200">200</option>
 							<option value="300">300</option>
@@ -100,7 +96,9 @@
 							<input
 								type="text"
 								bind:value={$configStore.textColor}
-								style="color: {$configStore.textColor}; background-color: {$configStore.bgColorHex};"
+								style="background-color: {$configStore.textColor}; color: {getContrastingTextColor(
+									$configStore.textColor
+								)};"
 							/>
 						</div>
 					</label>

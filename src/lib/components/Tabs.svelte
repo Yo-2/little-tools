@@ -27,19 +27,10 @@
 		border-bottom: 1px solid #ccc;
 		overflow-x: auto;
 		white-space: nowrap;
+		scrollbar-width: none; /* For Firefox */
 	}
 	.tab-buttons::-webkit-scrollbar {
-		height: 5px;
-	}
-	.tab-buttons::-webkit-scrollbar-track {
-		background: #f1f1f1;
-	}
-	.tab-buttons::-webkit-scrollbar-thumb {
-		background: #888;
-		border-radius: 5px;
-	}
-	.tab-buttons::-webkit-scrollbar-thumb:hover {
-		background: #555;
+		display: none; /* For Chrome, Safari, and Opera */
 	}
 	.tab-buttons button {
 		padding: 10px 15px;
