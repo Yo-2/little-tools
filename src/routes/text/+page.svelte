@@ -5,4 +5,13 @@
 	const textProps = Object.fromEntries(Object.entries(data).filter(([, value]) => value !== null));
 </script>
 
-<Text {...textProps} />
+<div class="container">
+	<Text {...textProps} />
+</div>
+
+<style>
+	.container {
+		width: 100vw;
+		height: 100vh;
+	}
+</style>

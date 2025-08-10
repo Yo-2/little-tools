@@ -5,4 +5,13 @@
 	const clockProps = Object.fromEntries(Object.entries(data).filter(([, value]) => value !== null));
 </script>
 
-<Clock {...clockProps} />
+<div class="container">
+	<Clock {...clockProps} />
+</div>
+
+<style>
+	.container {
+		width: 100vw;
+		height: 100vh;
+	}
+</style>

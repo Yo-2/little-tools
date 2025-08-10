@@ -38,8 +38,22 @@
 					<h3>General</h3>
 					<label>
 						Font Family
-						<input type="text" bind:value={$configStore.fontFamily} />
+						<input type="text" list="font-families" bind:value={$configStore.fontFamily} />
 					</label>
+					<datalist id="font-families">
+						<option value="serif"></option>
+						<option value="sans-serif"></option>
+						<option value="monospace"></option>
+						<option value="cursive"></option>
+						<option value="fantasy"></option>
+						<option value="Arial"></option>
+						<option value="Verdana"></option>
+						<option value="Tahoma"></option>
+						<option value="Trebuchet MS"></option>
+						<option value="Times New Roman"></option>
+						<option value="Georgia"></option>
+						<option value="Courier New"></option>
+					</datalist>
 					<label>
 						Font Size
 						<input type="text" bind:value={$configStore.fontSize} />
@@ -158,7 +172,9 @@
 			<div class="preview-item">
 				<h3>Spinning Wheel</h3>
 				<div class="preview-content">
-					<SpinningWheel items={$configStore.spinningWheelItems.split('\n')} />
+					<SpinningWheel
+						items={$configStore.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
+					/>
 				</div>
 				<button onclick={() => openInNewTab('/spinningWheel', $configStore)}
 					>Open Spinning Wheel</button
