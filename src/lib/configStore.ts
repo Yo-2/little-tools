@@ -50,7 +50,10 @@ const defaultConfig: Config = {
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {
 	const isBrowser = typeof window !== 'undefined' && browser;
 	const storedValue = isBrowser ? localStorage.getItem(key) : null;
-	const initialValue = storedValue ? JSON.parse(storedValue) : startValue;
+
+	// Merge stored value with defaults to prevent errors on new properties
+	const stored = storedValue ? JSON.parse(storedValue) : {};
+	const initialValue = { ...startValue, ...stored };
 
 	const store = writable<T>(initialValue);
 
