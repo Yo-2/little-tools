@@ -7,27 +7,24 @@
 	import WeatherWidget from '$lib/components/WeatherWidget.svelte';
 	import Tabs from '$lib/components/Tabs.svelte';
 	import Tab from '$lib/components/Tab.svelte';
-	import { configStore, type Config, type ComponentConfig } from '$lib/configStore';
+	import FontSelector from '$lib/components/FontSelector.svelte';
+	import { configStore, type Config } from '$lib/configStore';
 	import { base } from '$app/paths';
 
 	function getComponentProps(name: keyof Config['components']) {
 		const componentConf = $configStore.components[name];
 		const generalConf = $configStore.general;
 
-		// Start with general properties
 		const props: Record<string, any> = { ...generalConf };
 
-		// Merge component-specific properties, filtering out undefined values
 		for (const key in componentConf) {
 			const value = componentConf[key as keyof typeof componentConf];
-			if (value !== undefined && value !== null && value !== '') {
+			if (value !== undefined && value !== null && value !== '' && !(Array.isArray(value) && value.length === 0)) {
 				props[key] = value;
 			}
 		}
 
-		// Add specific non-style props
 		Object.assign(props, $configStore.components[name]);
-
 		return props;
 	}
 
@@ -35,15 +32,13 @@
 		const url = new URL(base + path, window.location.origin);
 		const params = new URLSearchParams();
 
-		// Flatten the config to URL params
 		for (const [key, value] of Object.entries(config.general)) {
 			params.set(key, String(value));
 		}
 		for (const compKey of Object.keys(config.components)) {
 			const compConfig = config.components[compKey as keyof typeof config.components];
 			for (const [key, value] of Object.entries(compConfig)) {
-				if (value !== null && value !== undefined && value !== '') {
-					// Prefix component-specific props to avoid collisions, e.g., text_text
+				if (value !== null && value !== undefined && value !== '' && !(Array.isArray(value) && value.length === 0)) {
 					params.set(`${compKey}_${key}`, String(value));
 				}
 			}
@@ -58,27 +53,6 @@
 	}
 
 	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
-
-	// A list of available fonts for the new UI.
-	// In a real app, this might come from a config file or API.
-	const availableFonts = [
-		// Generic
-		'sans-serif',
-		'serif',
-		'monospace',
-		'cursive',
-		'fantasy',
-		// Common web-safe fonts
-		'Arial',
-		'Verdana',
-		'Tahoma',
-		'Trebuchet MS',
-		'Times New Roman',
-		'Georgia',
-		'Courier New',
-		// Custom fonts (assuming they are added in app.css)
-		'Roboto'
-	];
 </script>
 
 <div class="config-page">
@@ -91,18 +65,7 @@
 					<h3>General</h3>
 					<div class="form-group">
 						<label>Font Family</label>
-						<div class="font-family-selector">
-							{#each availableFonts as font}
-								<label class="font-option">
-									<input
-										type="checkbox"
-										value={font}
-										bind:group={$configStore.general.fontFamily}
-									/>
-									<span style:font-family={font}>{font}</span>
-								</label>
-							{/each}
-						</div>
+						<FontSelector bind:selectedFonts={$configStore.general.fontFamily} />
 					</div>
 					<label>
 						Font Size
@@ -130,19 +93,16 @@
 				<section>
 					<h3>Clock Overrides</h3>
 					<p class="description">Leave blank to use General settings.</p>
-					<label>
-						Font Family
-						<input type="text" list="font-families" bind:value={$configStore.components.clock.fontFamily} />
-					</label>
-					<label>
-						Font Size
-						<input type="text" bind:value={$configStore.components.clock.fontSize} />
-					</label>
+					<div class="form-group">
+						<label>Font Family</label>
+						<FontSelector bind:selectedFonts={$configStore.components.clock.fontFamily} />
+					</div>
 				</section>
 			</Tab>
 			<Tab index={2}>
 				<section>
 					<h3>Countdown Timer</h3>
+					<p class="description">Specific settings for the timer.</p>
 					<label>
 						Hours
 						<input type="number" bind:value={$configStore.components.countdownTimer.hours} min="0" />
@@ -164,10 +124,15 @@
 			<Tab index={3}>
 				<section>
 					<h3>Text Display</h3>
+					<p class="description">Specific settings for the text display.</p>
 					<label>
 						Text
 						<input type="text" bind:value={$configStore.components.text.text} />
 					</label>
+					<div class="form-group">
+						<label>Font Family Override</label>
+						<FontSelector bind:selectedFonts={$configStore.components.text.fontFamily} />
+					</div>
 				</section>
 			</Tab>
 			<Tab index={4}>
@@ -233,8 +198,7 @@
 				<div class="preview-content">
 					<CountdownTimer {...getComponentProps('countdownTimer')} />
 				</div>
-				<button onclick={() => openInNewTab('/countdownTimer')}>Open Countdown</button
-				>
+				<button onclick={() => openInNewTab('/countdownTimer')}>Open Countdown</button>
 			</div>
 			<div class="preview-item">
 				<h3>Text Display</h3>
@@ -247,6 +211,7 @@
 				<h3>Spinning Wheel</h3>
 				<div class="preview-content">
 					<SpinningWheel
+						{...getComponentProps('spinningWheel')}
 						items={$configStore.components.spinningWheel.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
 					/>
 				</div>
@@ -259,7 +224,6 @@
 						{...getComponentProps('ladderGame')}
 						players={$configStore.components.ladderGame.ladderPlayers.split('\n')}
 						results={$configStore.components.ladderGame.ladderResults.split('\n')}
-						animationSpeed={$configStore.components.ladderGame.ladderAnimationSpeed}
 					/>
 				</div>
 				<button onclick={() => openInNewTab('/ladderGame')}>Open Ladder Game</button>
@@ -329,24 +293,6 @@
 	.form-group > label {
 		margin-bottom: 0.5rem;
 		font-weight: bold;
-	}
-	.font-family-selector {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		max-height: 200px;
-		overflow-y: auto;
-		border: 1px solid #ccc;
-		padding: 0.5rem;
-		border-radius: 4px;
-	}
-	.font-option {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.font-option input {
-		width: auto;
 	}
 
 	.description {
