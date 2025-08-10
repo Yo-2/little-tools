@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
-	import { configStore } from '$lib/configStore';
-
 	interface WeatherData {
 		name: string;
 		main: {
@@ -15,7 +12,15 @@
 	}
 
 	// --- Props ---
-	let { location = 'London' } = $props();
+	let {
+		location = 'London',
+		apiKey = '',
+		bgColorHex = 'rgba(0,0,0,0)',
+		textColor = '#000000',
+		fontSize = '1rem',
+		fontWeight = 'normal',
+		fontFamily = ['sans-serif']
+	} = $props();
 
 	// --- State ---
 	let weatherData = $state<WeatherData | null>(null);
@@ -29,8 +34,6 @@
 
 	// --- Functions ---
 	async function fetchWeather() {
-		const apiKey = get(configStore).weatherApiKey;
-
 		if (!apiKey || !location) {
 			error = 'API Key and Location are required.';
 			loading = false;
@@ -62,9 +65,17 @@
 			loading = false;
 		}
 	}
+
+	let style = $derived(`
+		--bg-color: ${bgColorHex || 'rgba(0,0,0,0)'};
+		--text-color: ${textColor || '#000000'};
+		--font-size: ${fontSize || '1rem'};
+		--font-weight: ${fontWeight || 'normal'};
+		--font-family: ${(fontFamily && fontFamily.length > 0 ? fontFamily : ['sans-serif']).join(', ')};
+	`);
 </script>
 
-<div class="weather-widget">
+<div class="weather-widget" {style}>
 	{#if loading}
 		<p>Loading...</p>
 	{:else if error}
@@ -88,7 +99,11 @@
 
 <style>
 	.weather-widget {
-		font-family: sans-serif;
+		font-family: var(--font-family);
+		color: var(--text-color);
+		background-color: var(--bg-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
 		padding: 1rem;
 		border: 1px solid #ccc;
 		border-radius: 8px;
@@ -100,6 +115,7 @@
 	}
 	.weather-content h3 {
 		margin: 0 0 0.5rem 0;
+		font-size: 1.5em;
 	}
 	.main-info {
 		display: flex;
@@ -107,12 +123,13 @@
 		justify-content: center;
 	}
 	.temp {
-		font-size: 2.5rem;
+		font-size: 2.5em;
 		font-weight: bold;
 		margin: 0;
 	}
 	.description {
 		text-transform: capitalize;
 		margin: 0.5rem 0 0 0;
+		font-size: 1.2em;
 	}
 </style>

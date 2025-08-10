@@ -7,25 +7,78 @@
 	import WeatherWidget from '$lib/components/WeatherWidget.svelte';
 	import Tabs from '$lib/components/Tabs.svelte';
 	import Tab from '$lib/components/Tab.svelte';
-	import { configStore, type Config } from '$lib/configStore';
+	import { configStore, type Config, type ComponentConfig } from '$lib/configStore';
 	import { base } from '$app/paths';
 
-	function generateUrl(path: string, params: Partial<Config>) {
-		const url = new URL(base + path, window.location.origin);
-		for (const key in params) {
-			const value = params[key as keyof Config];
-			if (value !== null && value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
+	function getComponentProps(name: keyof Config['components']) {
+		const componentConf = $configStore.components[name];
+		const generalConf = $configStore.general;
+
+		// Start with general properties
+		const props: Record<string, any> = { ...generalConf };
+
+		// Merge component-specific properties, filtering out undefined values
+		for (const key in componentConf) {
+			const value = componentConf[key as keyof typeof componentConf];
+			if (value !== undefined && value !== null && value !== '') {
+				props[key] = value;
 			}
 		}
+
+		// Add specific non-style props
+		Object.assign(props, $configStore.components[name]);
+
+		return props;
+	}
+
+	function generateUrl(path: string, config: Config) {
+		const url = new URL(base + path, window.location.origin);
+		const params = new URLSearchParams();
+
+		// Flatten the config to URL params
+		for (const [key, value] of Object.entries(config.general)) {
+			params.set(key, String(value));
+		}
+		for (const compKey of Object.keys(config.components)) {
+			const compConfig = config.components[compKey as keyof typeof config.components];
+			for (const [key, value] of Object.entries(compConfig)) {
+				if (value !== null && value !== undefined && value !== '') {
+					// Prefix component-specific props to avoid collisions, e.g., text_text
+					params.set(`${compKey}_${key}`, String(value));
+				}
+			}
+		}
+
+		url.search = params.toString();
 		return url.toString();
 	}
 
-	function openInNewTab(path: string, params: Partial<Config>) {
-		window.open(generateUrl(path, params), '_blank');
+	function openInNewTab(path: string) {
+		window.open(generateUrl(path, $configStore), '_blank');
 	}
 
-	const tabTitles = ['General', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
+	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
+
+	// A list of available fonts for the new UI.
+	// In a real app, this might come from a config file or API.
+	const availableFonts = [
+		// Generic
+		'sans-serif',
+		'serif',
+		'monospace',
+		'cursive',
+		'fantasy',
+		// Common web-safe fonts
+		'Arial',
+		'Verdana',
+		'Tahoma',
+		'Trebuchet MS',
+		'Times New Roman',
+		'Georgia',
+		'Courier New',
+		// Custom fonts (assuming they are added in app.css)
+		'Roboto'
+	];
 </script>
 
 <div class="config-page">
@@ -36,31 +89,28 @@
 			<Tab index={0}>
 				<section>
 					<h3>General</h3>
-					<label>
-						Font Family
-						<input type="text" list="font-families" bind:value={$configStore.fontFamily} />
-					</label>
-					<datalist id="font-families">
-						<option value="serif"></option>
-						<option value="sans-serif"></option>
-						<option value="monospace"></option>
-						<option value="cursive"></option>
-						<option value="fantasy"></option>
-						<option value="Arial"></option>
-						<option value="Verdana"></option>
-						<option value="Tahoma"></option>
-						<option value="Trebuchet MS"></option>
-						<option value="Times New Roman"></option>
-						<option value="Georgia"></option>
-						<option value="Courier New"></option>
-					</datalist>
+					<div class="form-group">
+						<label>Font Family</label>
+						<div class="font-family-selector">
+							{#each availableFonts as font}
+								<label class="font-option">
+									<input
+										type="checkbox"
+										value={font}
+										bind:group={$configStore.general.fontFamily}
+									/>
+									<span style:font-family={font}>{font}</span>
+								</label>
+							{/each}
+						</div>
+					</div>
 					<label>
 						Font Size
-						<input type="text" bind:value={$configStore.fontSize} />
+						<input type="text" bind:value={$configStore.general.fontSize} />
 					</label>
 					<label>
 						Font Weight
-						<select bind:value={$configStore.fontWeight}>
+						<select bind:value={$configStore.general.fontWeight}>
 							<option value="normal">Normal</option>
 							<option value="bold">Bold</option>
 							<option value="lighter">Lighter</option>
@@ -68,76 +118,100 @@
 					</label>
 					<label>
 						Text Color
-						<input type="color" bind:value={$configStore.textColor} />
+						<input type="color" bind:value={$configStore.general.textColor} />
 					</label>
 					<label>
 						Background Color
-						<input type="color" bind:value={$configStore.bgColorHex} />
+						<input type="color" bind:value={$configStore.general.bgColorHex} />
 					</label>
 				</section>
 			</Tab>
 			<Tab index={1}>
 				<section>
-					<h3>Countdown Timer</h3>
+					<h3>Clock Overrides</h3>
+					<p class="description">Leave blank to use General settings.</p>
 					<label>
-						Hours
-						<input type="number" bind:value={$configStore.hours} min="0" />
+						Font Family
+						<input type="text" list="font-families" bind:value={$configStore.components.clock.fontFamily} />
 					</label>
 					<label>
-						Minutes
-						<input type="number" bind:value={$configStore.minutes} min="0" />
-					</label>
-					<label>
-						Seconds
-						<input type="number" bind:value={$configStore.seconds} min="0" />
-					</label>
-					<label>
-						Time's Up Text
-						<input type="text" bind:value={$configStore.timeupText} />
+						Font Size
+						<input type="text" bind:value={$configStore.components.clock.fontSize} />
 					</label>
 				</section>
 			</Tab>
 			<Tab index={2}>
 				<section>
-					<h3>Text Display</h3>
+					<h3>Countdown Timer</h3>
 					<label>
-						Text
-						<input type="text" bind:value={$configStore.text} />
+						Hours
+						<input type="number" bind:value={$configStore.components.countdownTimer.hours} min="0" />
+					</label>
+					<label>
+						Minutes
+						<input type="number" bind:value={$configStore.components.countdownTimer.minutes} min="0" />
+					</label>
+					<label>
+						Seconds
+						<input type="number" bind:value={$configStore.components.countdownTimer.seconds} min="0" />
+					</label>
+					<label>
+						Time's Up Text
+						<input type="text" bind:value={$configStore.components.countdownTimer.timeupText} />
 					</label>
 				</section>
 			</Tab>
 			<Tab index={3}>
 				<section>
-					<h3>Spinning Wheel</h3>
+					<h3>Text Display</h3>
 					<label>
-						Items (one per line)
-						<textarea bind:value={$configStore.spinningWheelItems}></textarea>
+						Text
+						<input type="text" bind:value={$configStore.components.text.text} />
 					</label>
 				</section>
 			</Tab>
 			<Tab index={4}>
 				<section>
-					<h3>Ladder Game</h3>
+					<h3>Spinning Wheel</h3>
 					<label>
-						Players (one per line)
-						<textarea bind:value={$configStore.ladderPlayers}></textarea>
-					</label>
-					<label>
-						Prizes (one per line)
-						<textarea bind:value={$configStore.ladderResults}></textarea>
+						Items (one per line)
+						<textarea bind:value={$configStore.components.spinningWheel.spinningWheelItems}></textarea>
 					</label>
 				</section>
 			</Tab>
 			<Tab index={5}>
 				<section>
+					<h3>Ladder Game</h3>
+					<label>
+						Players (one per line)
+						<textarea bind:value={$configStore.components.ladderGame.ladderPlayers}></textarea>
+					</label>
+					<label>
+						Prizes (one per line)
+						<textarea bind:value={$configStore.components.ladderGame.ladderResults}></textarea>
+					</label>
+					<label>
+						Animation Speed ({$configStore.components.ladderGame.ladderAnimationSpeed}s)
+						<input
+							type="range"
+							bind:value={$configStore.components.ladderGame.ladderAnimationSpeed}
+							min="0.5"
+							max="10"
+							step="0.1"
+						/>
+					</label>
+				</section>
+			</Tab>
+			<Tab index={6}>
+				<section>
 					<h3>Weather Widget</h3>
 					<label>
 						Location
-						<input type="text" bind:value={$configStore.weatherLocation} />
+						<input type="text" bind:value={$configStore.components.weather.weatherLocation} />
 					</label>
 					<label>
 						OpenWeatherMap API Key
-						<input type="password" bind:value={$configStore.weatherApiKey} />
+						<input type="password" bind:value={$configStore.components.weather.weatherApiKey} />
 					</label>
 				</section>
 			</Tab>
@@ -150,55 +224,56 @@
 			<div class="preview-item">
 				<h3>Clock</h3>
 				<div class="preview-content">
-					<Clock {...$configStore} />
+					<Clock {...getComponentProps('clock')} />
 				</div>
-				<button onclick={() => openInNewTab('/clock', $configStore)}>Open Clock</button>
+				<button onclick={() => openInNewTab('/clock')}>Open Clock</button>
 			</div>
 			<div class="preview-item">
 				<h3>Countdown Timer</h3>
 				<div class="preview-content">
-					<CountdownTimer {...$configStore} />
+					<CountdownTimer {...getComponentProps('countdownTimer')} />
 				</div>
-				<button onclick={() => openInNewTab('/countdownTimer', $configStore)}>Open Countdown</button
+				<button onclick={() => openInNewTab('/countdownTimer')}>Open Countdown</button
 				>
 			</div>
 			<div class="preview-item">
 				<h3>Text Display</h3>
 				<div class="preview-content">
-					<Text {...$configStore} />
+					<Text {...getComponentProps('text')} />
 				</div>
-				<button onclick={() => openInNewTab('/text', $configStore)}>Open Text Display</button>
+				<button onclick={() => openInNewTab('/text')}>Open Text Display</button>
 			</div>
 			<div class="preview-item">
 				<h3>Spinning Wheel</h3>
 				<div class="preview-content">
 					<SpinningWheel
-						items={$configStore.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
+						items={$configStore.components.spinningWheel.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
 					/>
 				</div>
-				<button onclick={() => openInNewTab('/spinningWheel', $configStore)}
-					>Open Spinning Wheel</button
-				>
+				<button onclick={() => openInNewTab('/spinningWheel')}>Open Spinning Wheel</button>
 			</div>
 			<div class="preview-item">
 				<h3>Ladder Game</h3>
 				<div class="preview-content">
 					<LadderGame
-						players={$configStore.ladderPlayers.split('\n')}
-						results={$configStore.ladderResults.split('\n')}
+						{...getComponentProps('ladderGame')}
+						players={$configStore.components.ladderGame.ladderPlayers.split('\n')}
+						results={$configStore.components.ladderGame.ladderResults.split('\n')}
+						animationSpeed={$configStore.components.ladderGame.ladderAnimationSpeed}
 					/>
 				</div>
-				<button onclick={() => openInNewTab('/ladderGame', $configStore)}>Open Ladder Game</button>
+				<button onclick={() => openInNewTab('/ladderGame')}>Open Ladder Game</button>
 			</div>
 			<div class="preview-item">
 				<h3>Weather Widget</h3>
 				<div class="preview-content">
-					<WeatherWidget location={$configStore.weatherLocation} />
+					<WeatherWidget
+						{...getComponentProps('weather')}
+						location={$configStore.components.weather.weatherLocation}
+						apiKey={$configStore.components.weather.weatherApiKey}
+					/>
 				</div>
-				<button
-					onclick={() =>
-						openInNewTab('/weather', { weatherLocation: $configStore.weatherLocation })}
-				>
+				<button onclick={() => openInNewTab('/weather')}>
 					Open Weather Widget
 				</button>
 			</div>
@@ -246,6 +321,39 @@
 		border: 1px solid #ccc;
 		border-radius: 4px;
 		box-sizing: border-box;
+	}
+
+	.form-group {
+		margin-bottom: 0.75rem;
+	}
+	.form-group > label {
+		margin-bottom: 0.5rem;
+		font-weight: bold;
+	}
+	.font-family-selector {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		max-height: 200px;
+		overflow-y: auto;
+		border: 1px solid #ccc;
+		padding: 0.5rem;
+		border-radius: 4px;
+	}
+	.font-option {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.font-option input {
+		width: auto;
+	}
+
+	.description {
+		font-size: 0.8rem;
+		color: #666;
+		margin-top: -0.5rem;
+		margin-bottom: 1rem;
 	}
 
 	.preview-area {

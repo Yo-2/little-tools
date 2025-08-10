@@ -5,7 +5,7 @@
 		textColor = '#000000',
 		fontSize = '2rem',
 		fontWeight = 'normal',
-		fontFamily = 'sans-serif'
+		fontFamily = ['sans-serif']
 	} = $props();
 
 	let style = $derived(`
@@ -13,7 +13,7 @@
 		--text-color: ${textColor || '#000000'};
 		--font-size: ${fontSize || '2rem'};
 		--font-weight: ${fontWeight || 'normal'};
-		--font-family: ${fontFamily || 'sans-serif'};
+		--font-family: ${(fontFamily && fontFamily.length > 0 ? fontFamily : ['sans-serif']).join(', ')};
 	`);
 </script>
 

@@ -1,14 +1,23 @@
 <script lang="ts">
 	import CountdownTimer from '$lib/components/CountdownTimer.svelte';
-	let { data } = $props();
+	import { configStore } from '$lib/configStore';
+	import { onMount } from 'svelte';
 
-	const countdownProps = Object.fromEntries(
-		Object.entries(data).filter(([, value]) => value !== null)
-	);
+	let { data } = $props();
+	let props = {};
+
+	onMount(() => {
+		const general = { ...$configStore.general, ...data.configFromUrl.general };
+		const component = {
+			...$configStore.components.countdownTimer,
+			...data.configFromUrl.components.countdownTimer
+		};
+		props = { ...general, ...component };
+	});
 </script>
 
 <div class="container">
-	<CountdownTimer {...countdownProps} />
+	<CountdownTimer {...props} />
 </div>
 
 <style>

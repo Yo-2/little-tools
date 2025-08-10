@@ -1,8 +1,18 @@
 <script lang="ts">
 	import Clock from '$lib/components/Clock.svelte';
-	let { data } = $props();
+	import { configStore } from '$lib/configStore';
+	import { onMount } from 'svelte';
 
-	const clockProps = Object.fromEntries(Object.entries(data).filter(([, value]) => value !== null));
+	let { data } = $props();
+	let clockProps = {};
+
+	// We get the config from the URL via the root layout's load function.
+	// We also need the full config from the store to ensure defaults are applied.
+	onMount(() => {
+		const general = { ...$configStore.general, ...data.configFromUrl.general };
+		const component = { ...$configStore.components.clock, ...data.configFromUrl.components.clock };
+		clockProps = { ...general, ...component };
+	});
 </script>
 
 <div class="container">

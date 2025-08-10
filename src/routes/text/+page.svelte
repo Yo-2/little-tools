@@ -1,12 +1,23 @@
 <script lang="ts">
 	import Text from '$lib/components/Text.svelte';
-	let { data } = $props();
+	import { configStore } from '$lib/configStore';
+	import { onMount } from 'svelte';
 
-	const textProps = Object.fromEntries(Object.entries(data).filter(([, value]) => value !== null));
+	let { data } = $props();
+	let props = {};
+
+	onMount(() => {
+		const general = { ...$configStore.general, ...data.configFromUrl.general };
+		const component = {
+			...$configStore.components.text,
+			...data.configFromUrl.components.text
+		};
+		props = { ...general, ...component };
+	});
 </script>
 
 <div class="container">
-	<Text {...textProps} />
+	<Text {...props} />
 </div>
 
 <style>

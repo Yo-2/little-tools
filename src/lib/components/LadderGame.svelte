@@ -2,7 +2,8 @@
 	// --- Props ---
 	let {
 		players = ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
-		results = ['Prize A', 'Prize B', 'Prize C', 'Prize D']
+		results = ['Prize A', 'Prize B', 'Prize C', 'Prize D'],
+		animationSpeed = 2
 	} = $props();
 
 	// --- State ---
@@ -107,7 +108,7 @@
 		// Wait for animation to finish
 		setTimeout(() => {
 			isAnimating = false;
-		}, 2000);
+		}, animationSpeed * 1000);
 	}
 
 	function startSinglePath(playerIndex: number) {
@@ -124,27 +125,16 @@
 
 		setTimeout(() => {
 			isAnimating = false;
-		}, 2000);
+		}, animationSpeed * 1000);
 	}
 </script>
 
 <div class="game-container">
-	<div class="inputs">
+	<div class="endpoints">
 		{#each players as player, i}
-			<div
-				class="player-input"
-				data-player={player}
-				onclick={() => startSinglePath(i)}
-				onkeydown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						startSinglePath(i);
-					}
-				}}
-				role="button"
-				tabindex="0"
-			>
-				<input type="text" bind:value={players[i]} placeholder="Player Name" />
-			</div>
+			<button class="player-button" onclick={() => startSinglePath(i)} disabled={isAnimating}>
+				{player}
+			</button>
 		{/each}
 	</div>
 	<svg class="ladder-svg" width={players.length * LADDER_WIDTH} height={LADDER_HEIGHT + 50}>
@@ -184,15 +174,14 @@
 					stroke-width="3"
 					fill="none"
 					class="trace-path"
+					style="animation-duration: {animationSpeed}s"
 				/>
 			{/each}
 		{/if}
 	</svg>
-	<div class="results-container">
+	<div class="endpoints">
 		{#each results as result, i}
-			<div class="result-input" data-result={result}>
-				<input type="text" bind:value={results[i]} placeholder="Prize/Result" />
-			</div>
+			<div class="result-display">{result}</div>
 		{/each}
 	</div>
 
@@ -220,25 +209,38 @@
 		align-items: center;
 		font-family: sans-serif;
 	}
-	.inputs,
-	.results-container {
+	.endpoints {
 		display: flex;
 		gap: 10px;
 		margin-bottom: 10px;
+		width: 100%;
+		justify-content: space-evenly;
 	}
-	.results-container {
+	.endpoints:last-of-type {
 		margin-top: 10px;
 	}
-	.player-input,
-	.result-input {
+	.player-button,
+	.result-display {
 		width: 90px;
-		text-align: center;
-	}
-	input {
-		width: 100%;
+		padding: 8px;
 		text-align: center;
 		border: 1px solid #ccc;
-		padding: 5px;
+		border-radius: 4px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.player-button {
+		cursor: pointer;
+		background-color: #f0f0f0;
+	}
+	.player-button:hover {
+		background-color: #e0e0e0;
+	}
+	.player-button:disabled {
+		cursor: not-allowed;
+		background-color: #f8f8f8;
+		color: #999;
 	}
 	.ladder-svg {
 		border: 1px solid #eee;
@@ -256,7 +258,7 @@
 	.trace-path {
 		stroke-dasharray: 5000;
 		stroke-dashoffset: 5000;
-		animation: dash 2s linear forwards;
+		animation: dash linear forwards;
 	}
 	@keyframes dash {
 		to {

@@ -1,8 +1,15 @@
 <script lang="ts">
+	import { calculateWinningIndex } from './spinningWheelLogic';
+
 	// Props for the wheel segments and colors
 	let {
 		items = ['Prize 1', 'Prize 2', 'Prize 3', 'Prize 4', 'Prize 5', 'Prize 6'],
-		colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
+		colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A'],
+		bgColorHex = 'rgba(0,0,0,0)',
+		textColor = '#000000',
+		fontSize = '1rem',
+		fontWeight = 'normal',
+		fontFamily = ['sans-serif']
 	} = $props();
 
 	let spinning = $state(false);
@@ -34,14 +41,21 @@
 		setTimeout(() => {
 			spinning = false;
 			const finalAngle = newRotation % 360;
-			const winningIndex =
-				Math.floor((360 - finalAngle + anglePerSegment / 2) / anglePerSegment) % numSegments;
+			const winningIndex = calculateWinningIndex(finalAngle, numSegments);
 			result = items[winningIndex];
 		}, 4000); // Corresponds to the CSS transition duration
 	}
+
+	let style = $derived(`
+		--bg-color: ${bgColorHex || 'rgba(0,0,0,0)'};
+		--text-color: ${textColor || '#000000'};
+		--font-size: ${fontSize || '1rem'};
+		--font-weight: ${fontWeight || 'normal'};
+		--font-family: ${(fontFamily && fontFamily.length > 0 ? fontFamily : ['sans-serif']).join(', ')};
+	`);
 </script>
 
-<div class="wheel-container">
+<div class="wheel-container" {style}>
 	<div class="wheel" style:transform="rotate({rotation}deg)">
 		<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
 			{#each items as item, i}
@@ -79,6 +93,8 @@
 		gap: 2rem;
 		padding: 2rem;
 		position: relative;
+		font-family: var(--font-family);
+		background-color: var(--bg-color);
 	}
 	.wheel {
 		width: 300px;
@@ -117,7 +133,9 @@
 		background-color: #bdc3c7;
 	}
 	.result {
-		font-size: 1.5rem;
+		font-size: calc(var(--font-size) * 1.5);
+		font-weight: var(--font-weight);
+		color: var(--text-color);
 		margin-top: 1rem;
 	}
 </style>
