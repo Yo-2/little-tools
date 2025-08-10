@@ -6,7 +6,6 @@ export interface Config {
 	fontSize: string;
 	fontWeight: string;
 	textColor: string;
-	bgColor: string; // Not used directly, but kept for consistency
 	bgColorHex: string;
 
 	// Countdown Timer specific
@@ -24,6 +23,10 @@ export interface Config {
 	// Weather Widget specific
 	weatherLocation: string;
 	weatherApiKey: string;
+
+	// Ladder Game specific
+	ladderPlayers: string;
+	ladderResults: string;
 }
 
 const defaultConfig: Config = {
@@ -31,7 +34,6 @@ const defaultConfig: Config = {
 	fontSize: '2rem',
 	fontWeight: 'normal',
 	textColor: '#000000',
-	bgColor: 'rgba(255, 255, 255, 1)',
 	bgColorHex: '#ffffff',
 
 	hours: 0,
@@ -41,10 +43,13 @@ const defaultConfig: Config = {
 
 	text: 'Sample Text',
 
-	spinningWheelItems: 'Prize 1, Prize 2, Prize 3, Prize 4, Prize 5, Prize 6',
+	spinningWheelItems: 'Prize 1\nPrize 2\nPrize 3\nPrize 4\nPrize 5\nPrize 6',
 
 	weatherLocation: 'London',
-	weatherApiKey: ''
+	weatherApiKey: '',
+
+	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
+	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D'
 };
 
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {

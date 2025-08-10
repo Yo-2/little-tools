@@ -1,8 +1,7 @@
 <script lang="ts">
 	let {
 		text = '',
-		bgColor = 'rgba(0,0,0,0)',
-		bgColorHex = null,
+		bgColorHex = 'rgba(0,0,0,0)',
 		textColor = '#000000',
 		fontSize = '2rem',
 		fontWeight = 'normal',
@@ -10,7 +9,7 @@
 	} = $props();
 
 	let style = $derived(`
-		--bg-color: ${bgColor || bgColorHex || 'rgba(0,0,0,0)'};
+		--bg-color: ${bgColorHex || 'rgba(0,0,0,0)'};
 		--text-color: ${textColor || '#000000'};
 		--font-size: ${fontSize || '2rem'};
 		--font-weight: ${fontWeight || 'normal'};

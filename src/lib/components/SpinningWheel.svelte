@@ -25,14 +25,15 @@
 		result = null;
 
 		const spinAngle = Math.floor(Math.random() * 360);
-		const fullSpins = 5; // Spin at least 5 times
-		const targetRotation = fullSpins * 360 + spinAngle;
+		const fullSpins = 10; // Spin at least 10 times
+		const spinAmount = fullSpins * 360 + spinAngle;
 
-		rotation = targetRotation;
+		const newRotation = rotation + spinAmount;
+		rotation = newRotation;
 
 		setTimeout(() => {
 			spinning = false;
-			const finalAngle = targetRotation % 360;
+			const finalAngle = newRotation % 360;
 			const winningIndex =
 				Math.floor((360 - finalAngle + anglePerSegment / 2) / anglePerSegment) % numSegments;
 			result = items[winningIndex];

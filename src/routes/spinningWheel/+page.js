@@ -4,7 +4,7 @@ export function load({ url }) {
 	return {
 		// Provide default items if the parameter is not present
 		items: itemsParam
-			? itemsParam.split(',')
+			? itemsParam.split('\n')
 			: ['Prize 1', 'Prize 2', 'Prize 3', 'Prize 4', 'Prize 5', 'Prize 6']
 	};
 }
