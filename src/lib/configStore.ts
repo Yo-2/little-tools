@@ -49,7 +49,7 @@ export interface Config {
 
 // --- Default Configuration ---
 
-const defaultConfig: Config = {
+export const defaultConfig: Config = {
 	general: {
 		fontFamily: ['sans-serif'],
 		fontSize: '2rem',
