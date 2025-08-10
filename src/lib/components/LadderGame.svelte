@@ -14,7 +14,6 @@
 	// --- Constants ---
 	const LADDER_HEIGHT = 400;
 	const LADDER_WIDTH = 100;
-	const RUNG_HEIGHT = 20;
 
 	// --- Lifecycle ---
 	$effect(() => {
@@ -23,27 +22,31 @@
 
 	// --- Functions ---
 	function generateLadders() {
-		rungs = [];
-		const numLadders = players.length - 1;
-		const numRungsPerLadder = Math.floor(LADDER_HEIGHT / (RUNG_HEIGHT * 2));
+		const newRungs: [number, number][] = [];
+		const numVerticals = players.length;
+		const numHorizontals = 10; // Let's use a fixed number of horizontal levels
 
-		for (let i = 0; i < numLadders; i++) {
-			const availableYs = Array.from(
-				{ length: numRungsPerLadder },
-				(_, k) => (k + 1) * RUNG_HEIGHT * 1.5
-			);
+		for (let i = 0; i < numHorizontals; i++) {
+			const y = (LADDER_HEIGHT / (numHorizontals + 1)) * (i + 1);
 
-			// Shuffle and pick rungs
-			for (let j = availableYs.length - 1; j > 0; j--) {
+			// Create a list of possible rung locations for this y-level
+			const possibleRungs = Array.from({ length: numVerticals - 1 }, (_, k) => k);
+			// Shuffle them to randomize placement
+			for (let j = possibleRungs.length - 1; j > 0; j--) {
 				const k = Math.floor(Math.random() * (j + 1));
-				[availableYs[j], availableYs[k]] = [availableYs[k], availableYs[j]];
+				[possibleRungs[j], possibleRungs[k]] = [possibleRungs[k], possibleRungs[j]];
 			}
 
-			const numToPick = Math.floor(Math.random() * 2) + 2; // 2 to 3 rungs per ladder
-			for (let j = 0; j < numToPick; j++) {
-				if (availableYs[j]) rungs.push([i, availableYs[j]]);
+			// Place rungs, ensuring no adjacent rungs
+			const placedOnThisLevel = new Set<number>();
+			for (const ladderIndex of possibleRungs) {
+				if (!placedOnThisLevel.has(ladderIndex - 1)) {
+					newRungs.push([ladderIndex, y]);
+					placedOnThisLevel.add(ladderIndex);
+				}
 			}
 		}
+		rungs = newRungs;
 	}
 
 	function tracePath(startLadder: number) {

@@ -132,8 +132,7 @@
 				<div class="preview-content">
 					<CountdownTimer {...$configStore} />
 				</div>
-				<button onclick={() => openInNewTab('/countdownTimer', $configStore)}
-					>Open Countdown</button
+				<button onclick={() => openInNewTab('/countdownTimer', $configStore)}>Open Countdown</button
 				>
 			</div>
 			<div class="preview-item">
