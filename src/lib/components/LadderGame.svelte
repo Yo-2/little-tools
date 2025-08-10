@@ -7,7 +7,7 @@
 
 	// --- State ---
 	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
-	let paths = $state<string[]>([]);
+	let paths = $state<(string | undefined)[]>([]);
 	let isAnimating = $state(false);
 	let showPaths = $state(false);
 	let winners = $state<Record<string, string>>({});
@@ -19,6 +19,17 @@
 	// --- Lifecycle ---
 	$effect(() => {
 		generateLadders();
+	});
+
+	// Keep players and results arrays in sync
+	$effect(() => {
+		if (players.length !== results.length) {
+			const newResults = new Array(players.length);
+			for (let i = 0; i < players.length; i++) {
+				newResults[i] = results[i] || `Prize ${i + 1}`;
+			}
+			results = newResults;
+		}
 	});
 
 	// --- Functions ---
@@ -85,7 +96,7 @@
 		isAnimating = true;
 		showPaths = true;
 		winners = {};
-		const newPaths = [];
+		const newPaths: (string | undefined)[] = [];
 		for (let i = 0; i < players.length; i++) {
 			const { path, endLadder } = tracePath(i);
 			newPaths[i] = path;
@@ -98,12 +109,40 @@
 			isAnimating = false;
 		}, 2000);
 	}
+
+	function startSinglePath(playerIndex: number) {
+		if (isAnimating) return;
+		isAnimating = true;
+		showPaths = true;
+		winners = {};
+
+		const { path, endLadder } = tracePath(playerIndex);
+		const newPaths = [];
+		newPaths[playerIndex] = path;
+		paths = newPaths; // Trigger reactivity
+		winners[players[playerIndex]] = results[endLadder];
+
+		setTimeout(() => {
+			isAnimating = false;
+		}, 2000);
+	}
 </script>
 
 <div class="game-container">
 	<div class="inputs">
 		{#each players as player, i}
-			<div class="player-input" data-player={player}>
+			<div
+				class="player-input"
+				data-player={player}
+				onclick={() => startSinglePath(i)}
+				onkeydown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						startSinglePath(i);
+					}
+				}}
+				role="button"
+				tabindex="0"
+			>
 				<input type="text" bind:value={players[i]} placeholder="Player Name" />
 			</div>
 		{/each}
@@ -136,7 +175,12 @@
 			{#each paths as path, i}
 				<path
 					d={path}
-					stroke={['red', 'blue', 'green', 'orange'][i % 4]}
+					stroke={[
+						'rgba(255, 0, 0, 0.7)',
+						'rgba(0, 0, 255, 0.7)',
+						'rgba(0, 128, 0, 0.7)',
+						'rgba(255, 165, 0, 0.7)'
+					][i % 4]}
 					stroke-width="3"
 					fill="none"
 					class="trace-path"
@@ -210,8 +254,8 @@
 		cursor: pointer;
 	}
 	.trace-path {
-		stroke-dasharray: 1000;
-		stroke-dashoffset: 1000;
+		stroke-dasharray: 5000;
+		stroke-dashoffset: 5000;
 		animation: dash 2s linear forwards;
 	}
 	@keyframes dash {

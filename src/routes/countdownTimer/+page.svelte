@@ -7,4 +7,13 @@
 	);
 </script>
 
-<CountdownTimer {...countdownProps} />
+<div class="container">
+	<CountdownTimer {...countdownProps} />
+</div>
+
+<style>
+	.container {
+		width: 100vw;
+		height: 100vh;
+	}
+</style>
