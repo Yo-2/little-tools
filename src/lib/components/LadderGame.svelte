@@ -27,12 +27,15 @@
 	const LADDER_WIDTH = 100;
 
 	// --- Lifecycle ---
+	// Sync props to state
 	$effect(() => {
-		// Sync props to state if they change
 		if (playersProp) players = playersProp;
+	});
+	$effect(() => {
 		if (resultsProp) results = resultsProp;
 	});
 
+	// Regenerate ladder when players change
 	$effect(() => {
 		generateLadders();
 	});
