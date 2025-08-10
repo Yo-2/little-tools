@@ -3,10 +3,7 @@
 
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	// --- Props ---
-	const {
-		players: playersProp,
-		results: resultsProp
-	} = $props();
+	const { players: playersProp, results: resultsProp } = $props();
 
 	// --- State ---
 	let players = $state(playersProp || ['Player 1', 'Player 2', 'Player 3', 'Player 4']);
@@ -193,6 +190,7 @@
 		setTimeout(() => {
 			isAnimating = false;
 			paths = allCalculatedPaths;
+			showPaths = false;
 		}, $configStore.ladderAnimationSpeed * 1000);
 	}
 
@@ -223,12 +221,6 @@
 				class="player-input"
 				role="button"
 				tabindex="0"
-				onclick={() => startSinglePath(i)}
-				onkeydown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						startSinglePath(i);
-					}
-				}}
 				onmouseenter={() => (hoveredPathIndex = i)}
 				onmouseleave={() => (hoveredPathIndex = null)}
 			>
@@ -238,7 +230,10 @@
 					readonly={!playerEditing[i]}
 					ondblclick={() => (playerEditing[i] = true)}
 					onblur={() => (playerEditing[i] = false)}
-					onclick={(e) => e.stopPropagation()}
+					onclick={(e) => {
+						e.stopPropagation();
+						startSinglePath(i);
+					}}
 				/>
 			</div>
 		{/each}
@@ -327,7 +322,7 @@
 		/>
 	</div>
 
-	{#if !isAnimating && Object.keys(winners).length > 0}
+	{#if !isAnimating && showPaths && Object.keys(winners).length > 0}
 		<div class="winners">
 			<h3>Results</h3>
 			<ul>
