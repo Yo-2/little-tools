@@ -7,6 +7,7 @@
 	import WeatherWidget from '$lib/components/WeatherWidget.svelte';
 	import Tabs from '$lib/components/Tabs.svelte';
 	import Tab from '$lib/components/Tab.svelte';
+	import MultiSelect from '$lib/components/MultiSelect.svelte';
 	import { configStore, type Config } from '$lib/configStore';
 	import { base } from '$app/paths';
 
@@ -25,7 +26,37 @@
 		window.open(generateUrl(path, params), '_blank');
 	}
 
+	function getContrastingTextColor(hexcolor: string) {
+		if (!hexcolor) return '#000000';
+		hexcolor = hexcolor.replace('#', '');
+		if (hexcolor.length === 3) {
+			hexcolor = hexcolor
+				.split('')
+				.map((char) => char + char)
+				.join('');
+		}
+		const r = parseInt(hexcolor.substr(0, 2), 16);
+		const g = parseInt(hexcolor.substr(2, 2), 16);
+		const b = parseInt(hexcolor.substr(4, 2), 16);
+		const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+		return yiq >= 128 ? '#000000' : '#ffffff';
+	}
+
 	const tabTitles = ['General', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
+	const fontFamilies = [
+		'serif',
+		'sans-serif',
+		'monospace',
+		'cursive',
+		'fantasy',
+		'Arial',
+		'Verdana',
+		'Tahoma',
+		'Trebuchet MS',
+		'Times New Roman',
+		'Georgia',
+		'Courier New'
+	];
 </script>
 
 <div class="config-page">
@@ -38,22 +69,8 @@
 					<h3>General</h3>
 					<label>
 						Font Family
-						<input type="text" list="font-families" bind:value={$configStore.fontFamily} />
+						<MultiSelect bind:value={$configStore.fontFamily} options={fontFamilies} />
 					</label>
-					<datalist id="font-families">
-						<option value="serif"></option>
-						<option value="sans-serif"></option>
-						<option value="monospace"></option>
-						<option value="cursive"></option>
-						<option value="fantasy"></option>
-						<option value="Arial"></option>
-						<option value="Verdana"></option>
-						<option value="Tahoma"></option>
-						<option value="Trebuchet MS"></option>
-						<option value="Times New Roman"></option>
-						<option value="Georgia"></option>
-						<option value="Courier New"></option>
-					</datalist>
 					<label>
 						Font Size
 						<input type="text" bind:value={$configStore.fontSize} />
@@ -61,18 +78,44 @@
 					<label>
 						Font Weight
 						<select bind:value={$configStore.fontWeight}>
-							<option value="normal">Normal</option>
-							<option value="bold">Bold</option>
+							<option value="normal">Normal (400)</option>
+							<option value="bold">Bold (700)</option>
 							<option value="lighter">Lighter</option>
+							<option value="bolder">Bolder</option>
+							<option value="100">100</option>
+							<option value="200">200</option>
+							<option value="300">300</option>
+							<option value="400">400</option>
+							<option value="500">500</option>
+							<option value="600">600</option>
+							<option value="700">700</option>
+							<option value="800">800</option>
+							<option value="900">900</option>
 						</select>
 					</label>
 					<label>
 						Text Color
-						<input type="color" bind:value={$configStore.textColor} />
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.textColor} />
+							<input
+								type="text"
+								bind:value={$configStore.textColor}
+								style="color: {$configStore.textColor}; background-color: {$configStore.bgColorHex};"
+							/>
+						</div>
 					</label>
 					<label>
 						Background Color
-						<input type="color" bind:value={$configStore.bgColorHex} />
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.bgColorHex} />
+							<input
+								type="text"
+								bind:value={$configStore.bgColorHex}
+								style="background-color: {$configStore.bgColorHex}; color: {getContrastingTextColor(
+									$configStore.bgColorHex
+								)};"
+							/>
+						</div>
 					</label>
 				</section>
 			</Tab>
@@ -298,5 +341,19 @@
 	}
 	.preview-item button:hover {
 		background-color: #005bb5;
+	}
+	.color-input-group {
+		display: flex;
+		align-items: center;
+	}
+	.color-input-group input[type='color'] {
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: none;
+	}
+	.color-input-group input[type='text'] {
+		flex: 1;
+		margin-left: 0.5rem;
 	}
 </style>
