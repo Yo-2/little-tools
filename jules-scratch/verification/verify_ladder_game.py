@@ -1,42 +1,40 @@
-import time
 from playwright.sync_api import sync_playwright, Page, expect
 
 def verify_ladder_game_features(page: Page):
     """
     This script verifies the new features implemented in the Ladder Game.
+    1. Checks if player/prize names render correctly (the previous bug).
+    2. Clicks "Start All" to render paths.
+    3. Hovers over a prize to check the highlight effect.
+    4. Takes a screenshot of the final state.
     """
-    # 1. Navigate to the Ladder Game page.
+    # Navigate to the page
     page.goto("http://localhost:5173/ladderGame")
 
-    # Wait for the ladder to be generated.
-    expect(page.get_by_role("button", name="New Ladder")).to_be_visible()
+    # **Verification 1: Check if inputs have values**
+    # This was the main symptom of the reactivity bug.
+    expect(page.locator('input[value="Player 1"]')).to_be_visible()
+    expect(page.locator('input[value="Prize A"]')).to_be_visible()
+    print("Initial state (player and prize names) rendered correctly.")
 
-    # 2. Change animation speed to 0.5s for quick testing.
-    speed_input = page.locator("#animation-speed")
-    expect(speed_input).to_be_visible()
-    speed_input.fill("0.5")
-
-    # 3. Click "Start All" to reveal paths.
+    # **Verification 2: Set speed and start animation**
+    page.locator("#animation-speed").fill("0.5")
     page.get_by_role("button", name="Start All").click()
 
-    # 4. Wait for the paths to appear and animation to start.
-    try:
-        expect(page.locator('path').first).to_be_visible(timeout=5000)
-    except Exception as e:
-        print("Path locator not found. Dumping page content.")
-        print(page.content())
-        raise e
+    # Wait for paths to be visible
+    expect(page.locator('path').first).to_be_visible()
+    print("Paths rendered correctly after starting animation.")
 
-    # 5. Wait for the animation to complete.
-    page.wait_for_timeout(700) # 0.5s animation + buffer
+    # Wait for animation to finish
+    page.wait_for_timeout(700)
 
-    # 6. Hover over the second prize to trigger the hover effect.
-    prize_inputs = page.locator(".result-input")
-    prize_inputs.nth(1).hover()
+    # **Verification 3: Prize hover effect**
+    # Hover over the second prize
+    page.locator(".result-input").nth(1).hover()
+    page.wait_for_timeout(200) # Give it a moment to render the hover effect
+    print("Prize hover effect triggered.")
 
-    page.wait_for_timeout(200) # wait for hover effect to render
-
-    # 7. Take a screenshot to verify the changes.
+    # Final screenshot
     screenshot_path = "jules-scratch/verification/verification.png"
     page.screenshot(path=screenshot_path)
     print(f"Screenshot saved to {screenshot_path}")
