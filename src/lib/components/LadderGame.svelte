@@ -7,7 +7,10 @@
 	} = $props();
 
 	// --- State ---
-	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
+	type Rung =
+		| { type: 'h'; lane: number; y: number }
+		| { type: 'd'; lane: number; y1: number; y2: number };
+	let rungs = $state<Rung[]>([]);
 	let paths = $state<(string | undefined)[]>([]);
 	let isAnimating = $state(false);
 	let showPaths = $state(false);
@@ -16,6 +19,7 @@
 	let allCalculatedPaths = $state<(string | undefined)[]>([]);
 	let playerEditing = $state(new Array(players.length).fill(false));
 	let resultEditing = $state(new Array(results.length).fill(false));
+	let resultToPlayerIndex = $state<Record<string, number>>({});
 
 	// --- Constants ---
 	const LADDER_HEIGHT = 400;
@@ -45,23 +49,50 @@
 	// --- Functions ---
 	function generateLadders() {
 		showPaths = false;
-		const newRungs: [number, number][] = [];
-		const numVerticals = players.length;
-		const numHorizontals = 10;
+		winners = {};
+		paths = [];
+		allCalculatedPaths = [];
 
-		for (let i = 0; i < numHorizontals; i++) {
-			const y = (LADDER_HEIGHT / (numHorizontals + 1)) * (i + 1);
+		const newRungs: Rung[] = [];
+		const numLanes = players.length - 1;
+		const numYSteps = 10;
+		const yPositions = Array.from(
+			{ length: numYSteps },
+			(_, i) => (LADDER_HEIGHT / (numYSteps + 1)) * (i + 1)
+		);
 
-			// Iterate through possible start points and randomly place non-adjacent rungs
-			for (let j = 0; j < numVerticals - 1; j++) {
-				// 50% chance of placing a rung, but ensure it's not right next to another
-				if (Math.random() > 0.5) {
-					newRungs.push([j, y]);
-					// Skip the next position to avoid adjacent rungs
-					j++;
+		// Generate horizontal rungs
+		for (let lane = 0; lane < numLanes; lane++) {
+			const rungsToPlace = 2;
+			let placedCount = 0;
+			const availableY = [...yPositions];
+
+			while (placedCount < rungsToPlace && availableY.length > 0) {
+				const yIndex = Math.floor(Math.random() * availableY.length);
+				const y = availableY.splice(yIndex, 1)[0];
+
+				const collision = newRungs.some(
+					(r) => r.type === 'h' && r.y === y && Math.abs(r.lane - lane) < 2
+				);
+				if (!collision) {
+					newRungs.push({ type: 'h', lane, y });
+					placedCount++;
 				}
 			}
 		}
+
+		// Generate diagonal rungs
+		const diagRungsToPlace = numLanes; // One per lane on average
+		for (let i = 0; i < diagRungsToPlace; i++) {
+			const lane = Math.floor(Math.random() * numLanes);
+			const y1 = yPositions[Math.floor(Math.random() * yPositions.length)];
+			const y2 = yPositions[Math.floor(Math.random() * yPositions.length)];
+
+			if (y1 !== y2) {
+				newRungs.push({ type: 'd', lane, y1: Math.min(y1, y2), y2: Math.max(y1, y2) });
+			}
+		}
+
 		rungs = newRungs;
 	}
 
@@ -72,28 +103,47 @@
 		let currentLadder = startLadder;
 
 		while (y < LADDER_HEIGHT) {
-			const nextRung = rungs
-				.filter(([ladderIdx]) => ladderIdx === currentLadder || ladderIdx === currentLadder - 1)
-				.map((rung) => ({ ladder: rung[0], y: rung[1] }))
-				.filter((rung) => rung.y > y)
-				.sort((a, b) => a.y - b.y)[0];
+			const horizontalRungs = rungs.filter(
+				(r): r is Extract<Rung, { type: 'h' }> =>
+					r.type === 'h' && (r.lane === currentLadder || r.lane === currentLadder - 1) && r.y > y
+			);
+			const nextHorizontalRung = horizontalRungs.sort((a, b) => a.y - b.y)[0];
+
+			const diagonalRungs = rungs.filter(
+				(r): r is Extract<Rung, { type: 'd' }> =>
+					r.type === 'd' && r.lane === currentLadder && r.y1 > y
+			);
+			const nextDiagonalRung = diagonalRungs.sort((a, b) => a.y1 - b.y1)[0];
+
+			let nextRung: Rung | undefined = undefined;
+			if (nextHorizontalRung && nextDiagonalRung) {
+				nextRung =
+					nextHorizontalRung.y < nextDiagonalRung.y1 ? nextHorizontalRung : nextDiagonalRung;
+			} else {
+				nextRung = nextHorizontalRung || nextDiagonalRung;
+			}
 
 			if (nextRung) {
-				// Move to the rung
-				path += ` L ${x} ${nextRung.y}`;
-				y = nextRung.y;
-
-				// Cross the rung
-				if (nextRung.ladder === currentLadder) {
-					x += LADDER_WIDTH;
-					currentLadder++;
+				if (nextRung.type === 'h') {
+					path += ` L ${x} ${nextRung.y}`;
+					y = nextRung.y;
+					if (nextRung.lane === currentLadder) {
+						x += LADDER_WIDTH;
+						currentLadder++;
+					} else {
+						x -= LADDER_WIDTH;
+						currentLadder--;
+					}
+					path += ` L ${x} ${y}`;
 				} else {
-					x -= LADDER_WIDTH;
-					currentLadder--;
+					// Diagonal
+					path += ` L ${x} ${nextRung.y1}`;
+					x += LADDER_WIDTH;
+					y = nextRung.y2;
+					currentLadder++;
+					path += ` L ${x} ${y}`;
 				}
-				path += ` L ${x} ${y}`;
 			} else {
-				// Go straight to the bottom
 				y = LADDER_HEIGHT;
 				path += ` L ${x} ${y}`;
 			}
@@ -103,11 +153,15 @@
 
 	function calculateAllPaths() {
 		winners = {};
+		const newResultMap: Record<string, number> = {};
 		allCalculatedPaths = players.map((_, i) => {
 			const { path, endLadder } = tracePath(i);
-			winners[players[i]] = results[endLadder];
+			const winnerResult = results[endLadder];
+			winners[players[i]] = winnerResult;
+			newResultMap[winnerResult] = i;
 			return path;
 		});
+		resultToPlayerIndex = newResultMap;
 	}
 
 	function startAnimation() {
@@ -162,10 +216,12 @@
 				class="player-input"
 				role="button"
 				tabindex="0"
-				onclick={() => startSinglePath(i)}
+				onclick={() => {
+					if (Object.keys(winners).length === 0) startSinglePath(i);
+				}}
 				onkeydown={(e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
-						startSinglePath(i);
+						if (Object.keys(winners).length === 0) startSinglePath(i);
 					}
 				}}
 				onmouseenter={() => (hoveredPathIndex = i)}
@@ -195,15 +251,27 @@
 			/>
 		{/each}
 		<!-- Rungs -->
-		{#each rungs as [ladderIndex, y]}
-			<line
-				x1={ladderIndex * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y1={y}
-				x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y2={y}
-				stroke="brown"
-				stroke-width="2"
-			/>
+		{#each rungs as rung}
+			{#if rung.type === 'h'}
+				<line
+					x1={rung.lane * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y1={rung.y}
+					x2={(rung.lane + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y2={rung.y}
+					stroke="brown"
+					stroke-width="2"
+				/>
+			{:else if rung.type === 'd'}
+				<line
+					x1={rung.lane * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y1={rung.y1}
+					x2={(rung.lane + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y2={rung.y2}
+					stroke="purple"
+					stroke-width="2"
+					stroke-dasharray="4"
+				/>
+			{/if}
 		{/each}
 		<!-- Paths -->
 		{#if showPaths}
@@ -228,7 +296,17 @@
 	</svg>
 	<div class="results-container">
 		{#each results as result, i}
-			<div class="result-input">
+			<div
+				class="result-input"
+				role="group"
+				onmouseenter={() => {
+					const playerIndex = resultToPlayerIndex[result];
+					if (playerIndex !== undefined) {
+						hoveredPathIndex = playerIndex;
+					}
+				}}
+				onmouseleave={() => (hoveredPathIndex = null)}
+			>
 				<input
 					type="text"
 					bind:value={results[i]}
