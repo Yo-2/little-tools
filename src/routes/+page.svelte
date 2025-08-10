@@ -1,15 +1,20 @@
 <script lang="ts">
+	import { base } from '$app/paths';
+
 	const tools = [
-		{ name: 'Clock', path: '/clock' },
-		{ name: 'Countdown Timer', path: '/countdownTimer' },
-		{ name: 'Text Display', path: '/text' }
+		{ name: 'Clock', path: `${base}/clock` },
+		{ name: 'Countdown Timer', path: `${base}/countdownTimer` },
+		{ name: 'Text Display', path: `${base}/text` },
+		{ name: 'Spinning Wheel', path: `${base}/spinningWheel` },
+		{ name: 'Ladder Game', path: `${base}/ladderGame` },
+		{ name: 'Weather', path: `${base}/weather` }
 	];
 </script>
 
 <div class="container">
 	<header>
 		<h1>Toolkit</h1>
-		<a href="/config" class="config-link">Settings</a>
+		<a href="{base}/config" class="config-link">Settings</a>
 	</header>
 	<main>
 		<ul class="tool-list">

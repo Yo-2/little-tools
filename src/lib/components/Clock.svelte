@@ -27,28 +27,17 @@
 		clearInterval(timerId);
 	});
 
-	const bgStyle = 'background-color: ' + (bgColor || bgColorHex || 'rgba(0,0,0,0)');
-	const clockStyle =
-		'color: ' +
-		(textColor || '#000000') +
-		';' +
-		'font-size: ' +
-		(fontSize || '2rem') +
-		';' +
-		'font-weight: ' +
-		(fontWeight || 'normal') +
-		';' +
-		'font-family: ' +
-		fontFamily +
-		';' +
-		'width: ' +
-		'calc(' +
-		(fontSize || '2rem') +
-		' * 3);';
+	let style = $derived(`
+		--bg-color: ${bgColor || bgColorHex || 'rgba(0,0,0,0)'};
+		--text-color: ${textColor || '#000000'};
+		--font-size: ${fontSize || '2rem'};
+		--font-weight: ${fontWeight || 'normal'};
+		--font-family: ${fontFamily || 'sans-serif'};
+	`);
 </script>
 
-<div class="clock-container" style={bgStyle}>
-	<p class="clock" style={clockStyle}>{formatTime(time)}</p>
+<div class="clock-container" {style}>
+	<p class="clock" role="timer" aria-live="polite">{formatTime(time)}</p>
 </div>
 
 <style>
@@ -58,9 +47,14 @@
 		align-content: center;
 		width: 100%;
 		height: 100%;
+		background-color: var(--bg-color);
 	}
 	.clock {
 		margin: 0;
-		font-size: 2rem;
+		color: var(--text-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
+		font-family: var(--font-family);
+		width: calc(var(--font-size) * 3);
 	}
 </style>

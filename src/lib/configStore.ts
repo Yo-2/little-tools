@@ -17,6 +17,13 @@ export interface Config {
 
 	// Text specific
 	text: string;
+
+	// Spinning Wheel specific
+	spinningWheelItems: string;
+
+	// Weather Widget specific
+	weatherLocation: string;
+	weatherApiKey: string;
 }
 
 const defaultConfig: Config = {
@@ -32,7 +39,12 @@ const defaultConfig: Config = {
 	seconds: 0,
 	timeupText: "Time's up!",
 
-	text: 'Sample Text'
+	text: 'Sample Text',
+
+	spinningWheelItems: 'Prize 1, Prize 2, Prize 3, Prize 4, Prize 5, Prize 6',
+
+	weatherLocation: 'London',
+	weatherApiKey: ''
 };
 
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {
