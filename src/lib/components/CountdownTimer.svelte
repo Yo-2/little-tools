@@ -14,15 +14,21 @@
 		fontFamily = 'sans-serif'
 	} = $props();
 
-	const defaultData = {
+	let defaultData = $derived({
 		hours: Number(initialHours) || 0,
 		minutes: Number(initialMinutes) || 0,
 		seconds: Number(initialSeconds) || 0
-	};
+	});
 
-	let hours = $state(defaultData.hours);
-	let minutes = $state(defaultData.minutes);
-	let seconds = $state(defaultData.seconds);
+	let hours = $state(0);
+	let minutes = $state(0);
+	let seconds = $state(0);
+
+	$effect(() => {
+		hours = defaultData.hours;
+		minutes = defaultData.minutes;
+		seconds = defaultData.seconds;
+	});
 
 	let timeup = $state(false);
 	let isPaused = false;
@@ -75,6 +81,12 @@
 		isPaused = !isPaused;
 	}
 
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key.toLowerCase() === 'r') {
+			reset();
+		}
+	}
+
 	const timerId = setInterval(() => {
 		countdown();
 	}, 1000);
@@ -83,33 +95,33 @@
 		clearInterval(timerId);
 	});
 
-	const bgStyle = 'background-color: ' + (bgColor || bgColorHex || 'rgba(0,0,0,0)');
-	const clockStyle =
-		'color: ' +
-		(textColor || '#000000') +
-		';' +
-		'font-size: ' +
-		(fontSize || '2rem') +
-		';' +
-		'font-weight: ' +
-		(fontWeight || 'normal') +
-		';' +
-		'font-family: ' +
-		fontFamily +
-		';' +
-		'width: ' +
-		'calc(' +
-		(fontSize || '2rem') +
-		' * 3.2);';
+	let style = $derived(`
+		--bg-color: ${bgColor || bgColorHex || 'rgba(0,0,0,0)'};
+		--text-color: ${textColor || '#000000'};
+		--font-size: ${fontSize || '2rem'};
+		--font-weight: ${fontWeight || 'normal'};
+		--font-family: ${fontFamily || 'sans-serif'};
+	`);
+
+	let ariaLabel = $derived(
+		`${isPaused ? 'Play' : 'Pause'} timer. Double-click or press R to reset.`
+	);
 </script>
 
-<button class="countdown-timer-container" style={bgStyle} onclick={playOrPause} ondblclick={reset}>
+<button
+	class="countdown-timer-container"
+	{style}
+	onclick={playOrPause}
+	ondblclick={reset}
+	onkeydown={handleKeyDown}
+	aria-label={ariaLabel}
+>
 	{#if timeup}
-		<p class="countdown-timer timeup-text" style={clockStyle}>
+		<p class="countdown-timer timeup-text">
 			{timeupText}
 		</p>
 	{:else}
-		<p class="countdown-timer time" style={clockStyle}>
+		<p class="countdown-timer time">
 			{formatTime()}
 		</p>
 	{/if}
@@ -122,9 +134,17 @@
 		align-content: center;
 		width: 100%;
 		height: 100%;
+		background-color: var(--bg-color);
+		border: none;
+		cursor: pointer;
 	}
 	.countdown-timer {
 		margin: 0;
 		word-break: keep-all;
+		color: var(--text-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
+		font-family: var(--font-family);
+		width: calc(var(--font-size) * 3.2);
 	}
 </style>
