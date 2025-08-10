@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	// --- Props ---
 	let {
 		players = ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
@@ -11,6 +12,8 @@
 	let isAnimating = $state(false);
 	let showPaths = $state(false);
 	let winners = $state<Record<string, string>>({});
+	let hoveredPathIndex = $state<number | null>(null);
+	let allCalculatedPaths = $state<(string | undefined)[]>([]);
 	let playerEditing = $state(new Array(players.length).fill(false));
 	let resultEditing = $state(new Array(results.length).fill(false));
 
@@ -25,9 +28,7 @@
 
 	// Keep players and results arrays in sync, and reset editing state
 	$effect(() => {
-		// When players array changes, reset editing state and sync results array
 		playerEditing = new Array(players.length).fill(false);
-
 		if (players.length !== results.length) {
 			const newResults = new Array(players.length);
 			for (let i = 0; i < players.length; i++) {
@@ -38,7 +39,6 @@
 	});
 
 	$effect(() => {
-		// When results array changes, reset editing state
 		resultEditing = new Array(results.length).fill(false);
 	});
 
@@ -101,20 +101,22 @@
 		return { path, endLadder: currentLadder };
 	}
 
+	function calculateAllPaths() {
+		winners = {};
+		allCalculatedPaths = players.map((_, i) => {
+			const { path, endLadder } = tracePath(i);
+			winners[players[i]] = results[endLadder];
+			return path;
+		});
+	}
+
 	function startAnimation() {
 		if (isAnimating) return;
 		isAnimating = true;
 		showPaths = true;
-		winners = {};
-		const newPaths: (string | undefined)[] = [];
-		for (let i = 0; i < players.length; i++) {
-			const { path, endLadder } = tracePath(i);
-			newPaths[i] = path;
-			winners[players[i]] = results[endLadder];
-		}
-		paths = newPaths;
+		calculateAllPaths();
+		paths = allCalculatedPaths;
 
-		// Wait for animation to finish
 		setTimeout(() => {
 			isAnimating = false;
 		}, 2000);
@@ -124,17 +126,32 @@
 		if (isAnimating) return;
 		isAnimating = true;
 		showPaths = true;
-		winners = {};
-
-		const { path, endLadder } = tracePath(playerIndex);
-		const newPaths = [];
-		newPaths[playerIndex] = path;
-		paths = newPaths; // Trigger reactivity
-		winners[players[playerIndex]] = results[endLadder];
+		calculateAllPaths();
+		const newPaths: (string | undefined)[] = [];
+		newPaths[playerIndex] = allCalculatedPaths[playerIndex];
+		paths = newPaths;
 
 		setTimeout(() => {
 			isAnimating = false;
+			paths = allCalculatedPaths;
 		}, 2000);
+	}
+
+	async function startAnimationSequentially() {
+		if (isAnimating) return;
+		isAnimating = true;
+		showPaths = true;
+		calculateAllPaths();
+
+		for (let i = 0; i < players.length; i++) {
+			const newPaths: (string | undefined)[] = [];
+			newPaths[i] = allCalculatedPaths[i];
+			paths = newPaths;
+			await new Promise((resolve) => setTimeout(resolve, 2100));
+		}
+
+		paths = allCalculatedPaths;
+		isAnimating = false;
 	}
 </script>
 
@@ -143,20 +160,20 @@
 		{#each players as player, i}
 			<div
 				class="player-input"
-				data-player={player}
+				role="button"
+				tabindex="0"
 				onclick={() => startSinglePath(i)}
 				onkeydown={(e) => {
 					if (e.key === 'Enter' || e.key === ' ') {
 						startSinglePath(i);
 					}
 				}}
-				role="button"
-				tabindex="0"
+				onmouseenter={() => (hoveredPathIndex = i)}
+				onmouseleave={() => (hoveredPathIndex = null)}
 			>
 				<input
 					type="text"
 					bind:value={players[i]}
-					placeholder="Player Name"
 					readonly={!playerEditing[i]}
 					ondblclick={() => (playerEditing[i] = true)}
 					onblur={() => (playerEditing[i] = false)}
@@ -190,7 +207,8 @@
 		{/each}
 		<!-- Paths -->
 		{#if showPaths}
-			{#each paths as path, i}
+			{@const finalPaths = isAnimating ? paths : allCalculatedPaths}
+			{#each finalPaths as path, i}
 				<path
 					d={path}
 					stroke={[
@@ -199,20 +217,21 @@
 						'rgba(0, 128, 0, 0.7)',
 						'rgba(255, 165, 0, 0.7)'
 					][i % 4]}
-					stroke-width="3"
+					stroke-width={hoveredPathIndex === i ? 5 : 3}
 					fill="none"
-					class="trace-path"
+					class:trace-path={isAnimating}
+					style:opacity={hoveredPathIndex !== null && hoveredPathIndex !== i ? 0.3 : 1}
+					style:transition="all 0.2s"
 				/>
 			{/each}
 		{/if}
 	</svg>
 	<div class="results-container">
 		{#each results as result, i}
-			<div class="result-input" data-result={result}>
+			<div class="result-input">
 				<input
 					type="text"
 					bind:value={results[i]}
-					placeholder="Prize/Result"
 					readonly={!resultEditing[i]}
 					ondblclick={() => (resultEditing[i] = true)}
 					onblur={() => (resultEditing[i] = false)}
@@ -223,7 +242,8 @@
 
 	<div class="controls">
 		<button onclick={generateLadders} disabled={isAnimating}>New Ladder</button>
-		<button onclick={startAnimation} disabled={isAnimating}>Start</button>
+		<button onclick={startAnimation} disabled={isAnimating}>Start All</button>
+		<button onclick={startAnimationSequentially} disabled={isAnimating}>Start Sequentially</button>
 	</div>
 
 	{#if !isAnimating && Object.keys(winners).length > 0}
@@ -259,11 +279,15 @@
 		width: 90px;
 		text-align: center;
 	}
+	.player-input {
+		cursor: pointer;
+	}
 	input {
 		width: 100%;
 		text-align: center;
 		border: 1px solid #ccc;
 		padding: 5px;
+		border-radius: 4px;
 	}
 	.ladder-svg {
 		border: 1px solid #eee;
