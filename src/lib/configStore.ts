@@ -27,6 +27,7 @@ export interface Config {
 	// Ladder Game specific
 	ladderPlayers: string;
 	ladderResults: string;
+	ladderAnimationSpeed: number;
 }
 
 const defaultConfig: Config = {
@@ -49,7 +50,8 @@ const defaultConfig: Config = {
 	weatherApiKey: '',
 
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
-	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D'
+	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D',
+	ladderAnimationSpeed: 2
 };
 
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {
