@@ -34,8 +34,7 @@
 		setTimeout(() => {
 			spinning = false;
 			const finalAngle = newRotation % 360;
-			const winningIndex =
-				Math.floor((360 - finalAngle + anglePerSegment / 2) / anglePerSegment) % numSegments;
+			const winningIndex = Math.floor((360 - finalAngle) / anglePerSegment) % numSegments;
 			result = items[winningIndex];
 		}, 4000); // Corresponds to the CSS transition duration
 	}

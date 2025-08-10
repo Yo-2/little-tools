@@ -54,6 +54,7 @@
 		font-size: var(--font-size);
 		font-weight: var(--font-weight);
 		font-family: var(--font-family);
-		width: calc(var(--font-size) * 3);
+		width: 100%;
+		text-align: center;
 	}
 </style>

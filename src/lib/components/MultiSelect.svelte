@@ -41,12 +41,13 @@
 		type="text"
 		bind:value={inputValue}
 		onkeydown={handleKeydown}
+		onblur={addItem}
 		{placeholder}
 		list="font-family-options"
 	/>
 	<datalist id="font-family-options">
 		{#each options as option}
-			<option {value}>{option}</option>
+			<option value={option}></option>
 		{/each}
 	</datalist>
 </div>
