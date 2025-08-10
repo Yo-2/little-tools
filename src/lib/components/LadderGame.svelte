@@ -11,6 +11,8 @@
 	let isAnimating = $state(false);
 	let showPaths = $state(false);
 	let winners = $state<Record<string, string>>({});
+	let playerEditing = $state(new Array(players.length).fill(false));
+	let resultEditing = $state(new Array(results.length).fill(false));
 
 	// --- Constants ---
 	const LADDER_HEIGHT = 400;
@@ -21,8 +23,11 @@
 		generateLadders();
 	});
 
-	// Keep players and results arrays in sync
+	// Keep players and results arrays in sync, and reset editing state
 	$effect(() => {
+		// When players array changes, reset editing state and sync results array
+		playerEditing = new Array(players.length).fill(false);
+
 		if (players.length !== results.length) {
 			const newResults = new Array(players.length);
 			for (let i = 0; i < players.length; i++) {
@@ -30,6 +35,11 @@
 			}
 			results = newResults;
 		}
+	});
+
+	$effect(() => {
+		// When results array changes, reset editing state
+		resultEditing = new Array(results.length).fill(false);
 	});
 
 	// --- Functions ---
@@ -143,7 +153,15 @@
 				role="button"
 				tabindex="0"
 			>
-				<input type="text" bind:value={players[i]} placeholder="Player Name" />
+				<input
+					type="text"
+					bind:value={players[i]}
+					placeholder="Player Name"
+					readonly={!playerEditing[i]}
+					ondblclick={() => (playerEditing[i] = true)}
+					onblur={() => (playerEditing[i] = false)}
+					onclick={(e) => e.stopPropagation()}
+				/>
 			</div>
 		{/each}
 	</div>
@@ -191,7 +209,14 @@
 	<div class="results-container">
 		{#each results as result, i}
 			<div class="result-input" data-result={result}>
-				<input type="text" bind:value={results[i]} placeholder="Prize/Result" />
+				<input
+					type="text"
+					bind:value={results[i]}
+					placeholder="Prize/Result"
+					readonly={!resultEditing[i]}
+					ondblclick={() => (resultEditing[i] = true)}
+					onblur={() => (resultEditing[i] = false)}
+				/>
 			</div>
 		{/each}
 	</div>
