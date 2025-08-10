@@ -9,6 +9,7 @@
 	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
 	let paths = $state<string[]>([]);
 	let isAnimating = $state(false);
+	let showPaths = $state(false);
 	let winners = $state<Record<string, string>>({});
 
 	// --- Constants ---
@@ -22,27 +23,21 @@
 
 	// --- Functions ---
 	function generateLadders() {
+		showPaths = false;
 		const newRungs: [number, number][] = [];
 		const numVerticals = players.length;
-		const numHorizontals = 10; // Let's use a fixed number of horizontal levels
+		const numHorizontals = 10;
 
 		for (let i = 0; i < numHorizontals; i++) {
 			const y = (LADDER_HEIGHT / (numHorizontals + 1)) * (i + 1);
 
-			// Create a list of possible rung locations for this y-level
-			const possibleRungs = Array.from({ length: numVerticals - 1 }, (_, k) => k);
-			// Shuffle them to randomize placement
-			for (let j = possibleRungs.length - 1; j > 0; j--) {
-				const k = Math.floor(Math.random() * (j + 1));
-				[possibleRungs[j], possibleRungs[k]] = [possibleRungs[k], possibleRungs[j]];
-			}
-
-			// Place rungs, ensuring no adjacent rungs
-			const placedOnThisLevel = new Set<number>();
-			for (const ladderIndex of possibleRungs) {
-				if (!placedOnThisLevel.has(ladderIndex - 1)) {
-					newRungs.push([ladderIndex, y]);
-					placedOnThisLevel.add(ladderIndex);
+			// Iterate through possible start points and randomly place non-adjacent rungs
+			for (let j = 0; j < numVerticals - 1; j++) {
+				// 50% chance of placing a rung, but ensure it's not right next to another
+				if (Math.random() > 0.5) {
+					newRungs.push([j, y]);
+					// Skip the next position to avoid adjacent rungs
+					j++;
 				}
 			}
 		}
@@ -88,6 +83,7 @@
 	function startAnimation() {
 		if (isAnimating) return;
 		isAnimating = true;
+		showPaths = true;
 		winners = {};
 		const newPaths = [];
 		for (let i = 0; i < players.length; i++) {
@@ -136,7 +132,7 @@
 			/>
 		{/each}
 		<!-- Paths -->
-		{#if isAnimating}
+		{#if showPaths}
 			{#each paths as path, i}
 				<path
 					d={path}
