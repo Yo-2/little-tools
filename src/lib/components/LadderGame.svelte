@@ -1,27 +1,38 @@
 <script lang="ts">
+	import { configStore } from '$lib/configStore';
+
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	// --- Props ---
-	let {
-		players = ['Player 1', 'Player 2', 'Player 3', 'Player 4'],
-		results = ['Prize A', 'Prize B', 'Prize C', 'Prize D']
+	const {
+		players: playersProp,
+		results: resultsProp
 	} = $props();
 
 	// --- State ---
+	let players = $state(playersProp || ['Player 1', 'Player 2', 'Player 3', 'Player 4']);
+	let results = $state(resultsProp || ['Prize A', 'Prize B', 'Prize C', 'Prize D']);
 	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
 	let paths = $state<(string | undefined)[]>([]);
 	let isAnimating = $state(false);
 	let showPaths = $state(false);
 	let winners = $state<Record<string, string>>({});
 	let hoveredPathIndex = $state<number | null>(null);
+	let resultToPlayerMap = $state<Record<number, number>>({}); // resultIndex -> playerIndex
 	let allCalculatedPaths = $state<(string | undefined)[]>([]);
-	let playerEditing = $state(new Array(players.length).fill(false));
-	let resultEditing = $state(new Array(results.length).fill(false));
+	let playerEditing = $state<boolean[]>([]);
+	let resultEditing = $state<boolean[]>([]);
 
 	// --- Constants ---
 	const LADDER_HEIGHT = 400;
 	const LADDER_WIDTH = 100;
 
 	// --- Lifecycle ---
+	$effect(() => {
+		// Sync props to state if they change
+		if (playersProp) players = playersProp;
+		if (resultsProp) results = resultsProp;
+	});
+
 	$effect(() => {
 		generateLadders();
 	});
@@ -47,21 +58,63 @@
 		showPaths = false;
 		const newRungs: [number, number][] = [];
 		const numVerticals = players.length;
-		const numHorizontals = 10;
+		if (numVerticals <= 1) {
+			rungs = [];
+			return;
+		}
+		const numLanes = numVerticals - 1;
+		const minRungsPerLane = 2;
+		const numHorizontalLevels = Math.max(12, numLanes * 3); // More levels for more complex ladders
 
-		for (let i = 0; i < numHorizontals; i++) {
-			const y = (LADDER_HEIGHT / (numHorizontals + 1)) * (i + 1);
+		const yLevels = Array.from(
+			{ length: numHorizontalLevels },
+			(_, i) => (LADDER_HEIGHT / (numHorizontalLevels + 1)) * (i + 1)
+		);
 
-			// Iterate through possible start points and randomly place non-adjacent rungs
-			for (let j = 0; j < numVerticals - 1; j++) {
-				// 50% chance of placing a rung, but ensure it's not right next to another
-				if (Math.random() > 0.5) {
-					newRungs.push([j, y]);
-					// Skip the next position to avoid adjacent rungs
-					j++;
+		// A map to keep track of occupied coordinates for fast lookups: y => Set of lanes
+		const occupiedRungs = new Map<number, Set<number>>();
+
+		const addRung = (lane: number, y: number) => {
+			newRungs.push([lane, y]);
+			if (!occupiedRungs.has(y)) {
+				occupiedRungs.set(y, new Set());
+			}
+			occupiedRungs.get(y)!.add(lane);
+		};
+
+		// 1. Ensure minimum rungs per lane
+		for (let j = 0; j < numLanes; j++) {
+			const yLevelsCopy = [...yLevels];
+			yLevelsCopy.sort(() => Math.random() - 0.5); // Shuffle for randomness
+
+			let addedCount = 0;
+			for (const y of yLevelsCopy) {
+				if (addedCount >= minRungsPerLane) break;
+
+				// Check if the previous lane has a rung at the same y-level
+				if (!occupiedRungs.get(y)?.has(j - 1)) {
+					addRung(j, y);
+					addedCount++;
 				}
 			}
 		}
+
+		// 2. Add more random rungs for additional complexity
+		const additionalRungs = numLanes * 2;
+		for (let i = 0; i < additionalRungs; i++) {
+			const j = Math.floor(Math.random() * numLanes);
+			const y = yLevels[Math.floor(Math.random() * numHorizontalLevels)];
+
+			// Check for collisions in the same lane or adjacent lanes
+			const laneOccupied = occupiedRungs.get(y)?.has(j);
+			const prevLaneOccupied = occupiedRungs.get(y)?.has(j - 1);
+			const nextLaneOccupied = occupiedRungs.get(y)?.has(j + 1);
+
+			if (!laneOccupied && !prevLaneOccupied && !nextLaneOccupied) {
+				addRung(j, y);
+			}
+		}
+
 		rungs = newRungs;
 	}
 
@@ -103,11 +156,14 @@
 
 	function calculateAllPaths() {
 		winners = {};
+		const newResultToPlayerMap: Record<number, number> = {};
 		allCalculatedPaths = players.map((_, i) => {
 			const { path, endLadder } = tracePath(i);
 			winners[players[i]] = results[endLadder];
+			newResultToPlayerMap[endLadder] = i;
 			return path;
 		});
+		resultToPlayerMap = newResultToPlayerMap;
 	}
 
 	function startAnimation() {
@@ -119,7 +175,7 @@
 
 		setTimeout(() => {
 			isAnimating = false;
-		}, 2000);
+		}, $configStore.ladderAnimationSpeed * 1000);
 	}
 
 	function startSinglePath(playerIndex: number) {
@@ -134,7 +190,7 @@
 		setTimeout(() => {
 			isAnimating = false;
 			paths = allCalculatedPaths;
-		}, 2000);
+		}, $configStore.ladderAnimationSpeed * 1000);
 	}
 
 	async function startAnimationSequentially() {
@@ -147,7 +203,9 @@
 			const newPaths: (string | undefined)[] = [];
 			newPaths[i] = allCalculatedPaths[i];
 			paths = newPaths;
-			await new Promise((resolve) => setTimeout(resolve, 2100));
+			await new Promise((resolve) =>
+				setTimeout(resolve, $configStore.ladderAnimationSpeed * 1000 + 100)
+			);
 		}
 
 		paths = allCalculatedPaths;
@@ -222,19 +280,27 @@
 					class:trace-path={isAnimating}
 					style:opacity={hoveredPathIndex !== null && hoveredPathIndex !== i ? 0.3 : 1}
 					style:transition="all 0.2s"
+					style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
 				/>
 			{/each}
 		{/if}
 	</svg>
 	<div class="results-container">
 		{#each results as result, i}
-			<div class="result-input">
+			<div
+				class="result-input"
+				role="button"
+				tabindex="0"
+				onmouseenter={() => (hoveredPathIndex = resultToPlayerMap[i])}
+				onmouseleave={() => (hoveredPathIndex = null)}
+			>
 				<input
 					type="text"
 					bind:value={results[i]}
 					readonly={!resultEditing[i]}
 					ondblclick={() => (resultEditing[i] = true)}
 					onblur={() => (resultEditing[i] = false)}
+					onclick={(e) => e.stopPropagation()}
 				/>
 			</div>
 		{/each}
@@ -244,6 +310,18 @@
 		<button onclick={generateLadders} disabled={isAnimating}>New Ladder</button>
 		<button onclick={startAnimation} disabled={isAnimating}>Start All</button>
 		<button onclick={startAnimationSequentially} disabled={isAnimating}>Start Sequentially</button>
+	</div>
+
+	<div class="speed-control">
+		<label for="animation-speed">Animation Speed (seconds):</label>
+		<input
+			type="number"
+			id="animation-speed"
+			bind:value={$configStore.ladderAnimationSpeed}
+			min="0.1"
+			step="0.1"
+			class="speed-input"
+		/>
 	</div>
 
 	{#if !isAnimating && Object.keys(winners).length > 0}
@@ -279,7 +357,8 @@
 		width: 90px;
 		text-align: center;
 	}
-	.player-input {
+	.player-input,
+	.result-input {
 		cursor: pointer;
 	}
 	input {
@@ -305,7 +384,7 @@
 	.trace-path {
 		stroke-dasharray: 5000;
 		stroke-dashoffset: 5000;
-		animation: dash 2s linear forwards;
+		animation: dash var(--animation-duration, 2s) linear forwards;
 	}
 	@keyframes dash {
 		to {
