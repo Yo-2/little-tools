@@ -167,21 +167,9 @@
 						End Items (one per line)
 						<textarea bind:value={$configStore.ladderResults}></textarea>
 					</label>
-					<label>
-						Ladder Height
-						<input type="number" bind:value={$configStore.ladderHeight} />
-					</label>
-					<label>
-						Ladder Width
-						<input type="number" bind:value={$configStore.ladderWidth} />
-					</label>
 					<label class="checkbox-label">
 						<input type="checkbox" bind:checked={$configStore.ladderIsManualMode} />
 						Manual Mode
-					</label>
-					<label class="checkbox-label">
-						<input type="checkbox" bind:checked={$configStore.ladderIsObfuscated} />
-						Hide Results
 					</label>
 
 					<h4 class="style-header">Style Options</h4>
