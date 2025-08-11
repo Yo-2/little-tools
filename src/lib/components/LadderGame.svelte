@@ -24,9 +24,12 @@
 	let isSidebarOpen = $state(false);
 	let isResultsCollapsed = $state(true);
 
+	// --- Constants ---
+	const LADDER_HEIGHT = 400;
+	const LADDER_WIDTH = 100;
+
 	// --- Component State ---
 	let isManualMode = $state(false);
-	let isObfuscated = $state(false);
 	let importJson = $state('');
 	let styleOptions = $state({
 		fontFamily: 'sans-serif',
@@ -82,8 +85,7 @@
 			results,
 			rungs,
 			styleOptions,
-			isManualMode,
-			isObfuscated
+			isManualMode
 		};
 		const json = JSON.stringify(state, null, 2);
 		navigator.clipboard.writeText(json);
@@ -102,7 +104,6 @@
 			rungs = state.rungs;
 			styleOptions = state.styleOptions;
 			isManualMode = state.isManualMode ?? false;
-			isObfuscated = state.isObfuscated ?? false;
 
 			// Sync textareas
 			startItemsInput = players.join('\n');
@@ -130,14 +131,11 @@
 		const x = event.clientX - svgRect.left;
 		const y = event.clientY - svgRect.top;
 
-		const laneIndex = Math.floor(x / $configStore.ladderWidth);
+		const laneIndex = Math.floor(x / LADDER_WIDTH);
 		if (laneIndex >= players.length - 1) return; // Clicked outside of lanes
 
 		// Find the closest y-level to the click position
-		const yLevels = Array.from(
-			{ length: 12 },
-			(_, i) => ($configStore.ladderHeight / (12 + 1)) * (i + 1)
-		);
+		const yLevels = Array.from({ length: 12 }, (_, i) => (LADDER_HEIGHT / (12 + 1)) * (i + 1));
 		const closestY = yLevels.reduce((prev, curr) =>
 			Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev
 		);
@@ -181,7 +179,7 @@
 		const numLevels = 12;
 		const yLevels = Array.from(
 			{ length: numLevels },
-			(_, i) => ($configStore.ladderHeight / (numLevels + 1)) * (i + 1)
+			(_, i) => (LADDER_HEIGHT / (numLevels + 1)) * (i + 1)
 		);
 
 		// Keep track of where rungs are placed to avoid horizontal collisions.
@@ -237,12 +235,12 @@
 	}
 
 	function tracePath(startLadder: number) {
-		let x = startLadder * $configStore.ladderWidth + $configStore.ladderWidth / 2;
+		let x = startLadder * LADDER_WIDTH + LADDER_WIDTH / 2;
 		let y = 0;
 		let path = `M ${x} ${y}`;
 		let currentLadder = startLadder;
 
-		while (y < $configStore.ladderHeight) {
+		while (y < LADDER_HEIGHT) {
 			const nextRung = rungs
 				.filter(([ladderIdx]) => ladderIdx === currentLadder || ladderIdx === currentLadder - 1)
 				.map((rung) => ({ ladder: rung[0], y: rung[1] }))
@@ -256,16 +254,16 @@
 
 				// Cross the rung
 				if (nextRung.ladder === currentLadder) {
-					x += $configStore.ladderWidth;
+					x += LADDER_WIDTH;
 					currentLadder++;
 				} else {
-					x -= $configStore.ladderWidth;
+					x -= LADDER_WIDTH;
 					currentLadder--;
 				}
 				path += ` L ${x} ${y}`;
 			} else {
 				// Go straight to the bottom
-				y = $configStore.ladderHeight;
+				y = LADDER_HEIGHT;
 				path += ` L ${x} ${y}`;
 			}
 		}
@@ -341,7 +339,7 @@
 	class="game-container"
 	style="
 		--player-count: {players.length};
-		--svg-width: {players.length * $configStore.ladderWidth}px;
+		--svg-width: {players.length * LADDER_WIDTH}px;
 		background-color: {styleOptions.backgroundColor};
 		font-family: {styleOptions.fontFamily};
 		font-size: {styleOptions.fontSize}px;
@@ -382,7 +380,7 @@
 			aria-label="Ladder editor canvas"
 			class="ladder-svg"
 			class:manual-mode={isManualMode}
-			viewBox={`0 0 ${players.length * $configStore.ladderWidth} ${$configStore.ladderHeight + 50}`}
+			viewBox={`0 0 ${players.length * LADDER_WIDTH} ${LADDER_HEIGHT + 50}`}
 			preserveAspectRatio="xMidYMin meet"
 			onclick={handleSvgClick}
 			onkeydown={handleSvgKeyDown}
@@ -391,10 +389,10 @@
 			{#each players as player, i}
 				<line
 					data-player={player}
-					x1={i * $configStore.ladderWidth + $configStore.ladderWidth / 2}
+					x1={i * LADDER_WIDTH + LADDER_WIDTH / 2}
 					y1="0"
-					x2={i * $configStore.ladderWidth + $configStore.ladderWidth / 2}
-					y2={$configStore.ladderHeight}
+					x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y2={LADDER_HEIGHT}
 					stroke={styleOptions.lineColor}
 					stroke-width={styleOptions.lineThickness}
 				/>
@@ -402,9 +400,9 @@
 			<!-- Rungs -->
 			{#each rungs as [ladderIndex, y]}
 				<line
-					x1={ladderIndex * $configStore.ladderWidth + $configStore.ladderWidth / 2}
+					x1={ladderIndex * LADDER_WIDTH + LADDER_WIDTH / 2}
 					y1={y}
-					x2={(ladderIndex + 1) * $configStore.ladderWidth + $configStore.ladderWidth / 2}
+					x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
 					y2={y}
 					stroke={styleOptions.rungColor}
 					stroke-width={styleOptions.lineThickness}
@@ -466,7 +464,7 @@
 		{#each results as result, i}
 			{@const playerIndex = resultToPlayerMap[i]}
 			{@const player = players[playerIndex]}
-			{@const isRevealed = !isObfuscated || (revealedWinners && revealedWinners[player])}
+			{@const isRevealed = true}
 			<div
 				class="result-input"
 				role="button"
@@ -541,12 +539,6 @@
 			<label>
 				<input type="checkbox" bind:checked={isManualMode} />
 				Manual Mode
-			</label>
-		</div>
-		<div class="manual-mode-toggle">
-			<label>
-				<input type="checkbox" bind:checked={isObfuscated} />
-				Hide Results
 			</label>
 		</div>
 

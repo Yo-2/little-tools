@@ -39,10 +39,7 @@ export interface Config {
 	ladderPlayers: string;
 	ladderResults: string;
 	ladderAnimationSpeed: number;
-	ladderHeight: number;
-	ladderWidth: number;
 	ladderIsManualMode: boolean;
-	ladderIsObfuscated: boolean;
 	ladderStyleOptions: LadderStyleOptions;
 }
 
@@ -68,10 +65,7 @@ const defaultConfig: Config = {
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
 	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D',
 	ladderAnimationSpeed: 2,
-	ladderHeight: 400,
-	ladderWidth: 100,
 	ladderIsManualMode: false,
-	ladderIsObfuscated: false,
 	ladderStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: 14,
