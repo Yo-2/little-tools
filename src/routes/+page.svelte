@@ -160,12 +160,114 @@
 				<section>
 					<h3>Ladder Game</h3>
 					<label>
-						Players (one per line)
+						Start Items (one per line)
 						<textarea bind:value={$configStore.ladderPlayers}></textarea>
 					</label>
 					<label>
-						Prizes (one per line)
+						End Items (one per line)
 						<textarea bind:value={$configStore.ladderResults}></textarea>
+					</label>
+					<label>
+						Ladder Height
+						<input type="number" bind:value={$configStore.ladderHeight} />
+					</label>
+					<label>
+						Ladder Width
+						<input type="number" bind:value={$configStore.ladderWidth} />
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.ladderIsManualMode} />
+						Manual Mode
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.ladderIsObfuscated} />
+						Hide Results
+					</label>
+
+					<h4 class="style-header">Style Options</h4>
+					<label>
+						Font Family
+						<MultiSelect
+							bind:value={$configStore.ladderStyleOptions.fontFamily}
+							options={fontFamilies}
+						/>
+					</label>
+					<label>
+						Font Size (px)
+						<input type="number" bind:value={$configStore.ladderStyleOptions.fontSize} min="8" />
+					</label>
+					<label>
+						Font Weight
+						<select bind:value={$configStore.ladderStyleOptions.fontWeight}>
+							<option value="normal">Normal</option>
+							<option value="bold">Bold</option>
+							<option value="lighter">Lighter</option>
+						</select>
+					</label>
+					<label>
+						Text Color
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.ladderStyleOptions.textColor} />
+							<input
+								type="text"
+								bind:value={$configStore.ladderStyleOptions.textColor}
+								style="background-color: {$configStore.ladderStyleOptions
+									.textColor}; color: {getContrastingTextColor(
+									$configStore.ladderStyleOptions.textColor
+								)};"
+							/>
+						</div>
+					</label>
+					<label>
+						Background Color
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.ladderStyleOptions.backgroundColor} />
+							<input
+								type="text"
+								bind:value={$configStore.ladderStyleOptions.backgroundColor}
+								style="background-color: {$configStore.ladderStyleOptions
+									.backgroundColor}; color: {getContrastingTextColor(
+									$configStore.ladderStyleOptions.backgroundColor
+								)};"
+							/>
+						</div>
+					</label>
+					<label>
+						Line Color
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.ladderStyleOptions.lineColor} />
+							<input
+								type="text"
+								bind:value={$configStore.ladderStyleOptions.lineColor}
+								style="background-color: {$configStore.ladderStyleOptions
+									.lineColor}; color: {getContrastingTextColor(
+									$configStore.ladderStyleOptions.lineColor
+								)};"
+							/>
+						</div>
+					</label>
+					<label>
+						Rung Color
+						<div class="color-input-group">
+							<input type="color" bind:value={$configStore.ladderStyleOptions.rungColor} />
+							<input
+								type="text"
+								bind:value={$configStore.ladderStyleOptions.rungColor}
+								style="background-color: {$configStore.ladderStyleOptions
+									.rungColor}; color: {getContrastingTextColor(
+									$configStore.ladderStyleOptions.rungColor
+								)};"
+							/>
+						</div>
+					</label>
+					<label>
+						Line Thickness (px)
+						<input
+							type="range"
+							bind:value={$configStore.ladderStyleOptions.lineThickness}
+							min="1"
+							max="10"
+						/>
 					</label>
 				</section>
 			</Tab>
@@ -224,10 +326,7 @@
 			<div class="preview-item">
 				<h3>Ladder Game</h3>
 				<div class="preview-content">
-					<LadderGame
-						players={$configStore.ladderPlayers.split('\n')}
-						results={$configStore.ladderResults.split('\n')}
-					/>
+					<LadderGame />
 				</div>
 				<button onclick={() => openInNewTab('/ladderGame', $configStore)}>Open Ladder Game</button>
 			</div>
@@ -353,5 +452,25 @@
 	.color-input-group input[type='text'] {
 		flex: 1;
 		margin-left: 0.5rem;
+	}
+
+	.checkbox-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.checkbox-label input {
+		width: auto;
+	}
+
+	.style-header {
+		margin-top: 1.5rem;
+		margin-bottom: 1rem;
+		font-size: 0.9rem;
+		font-weight: bold;
+		color: #555;
+		border-bottom: 1px solid #eaeaea;
+		padding-bottom: 0.5rem;
 	}
 </style>

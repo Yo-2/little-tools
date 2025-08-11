@@ -1,6 +1,17 @@
 import { writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
+export interface LadderStyleOptions {
+	fontFamily: string;
+	fontSize: number;
+	fontWeight: string;
+	textColor: string;
+	backgroundColor: string;
+	lineColor: string;
+	rungColor: string;
+	lineThickness: number;
+}
+
 export interface Config {
 	fontFamily: string;
 	fontSize: string;
@@ -28,6 +39,11 @@ export interface Config {
 	ladderPlayers: string;
 	ladderResults: string;
 	ladderAnimationSpeed: number;
+	ladderHeight: number;
+	ladderWidth: number;
+	ladderIsManualMode: boolean;
+	ladderIsObfuscated: boolean;
+	ladderStyleOptions: LadderStyleOptions;
 }
 
 const defaultConfig: Config = {
@@ -51,7 +67,21 @@ const defaultConfig: Config = {
 
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
 	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D',
-	ladderAnimationSpeed: 2
+	ladderAnimationSpeed: 2,
+	ladderHeight: 400,
+	ladderWidth: 100,
+	ladderIsManualMode: false,
+	ladderIsObfuscated: false,
+	ladderStyleOptions: {
+		fontFamily: 'sans-serif',
+		fontSize: 14,
+		fontWeight: 'normal',
+		textColor: '#333333',
+		backgroundColor: '#ffffff',
+		lineColor: '#000000',
+		rungColor: '#A52A2A',
+		lineThickness: 2
+	}
 };
 
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {

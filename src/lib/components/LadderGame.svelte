@@ -1,13 +1,7 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	// --- Props ---
-	const { players: playersProp, results: resultsProp } = $props();
-
-	// --- State ---
-	let players = $state(playersProp || ['Player 1', 'Player 2', 'Player 3', 'Player 4']);
-	let results = $state(resultsProp || ['Prize A', 'Prize B', 'Prize C', 'Prize D']);
+	// --- Component State (non-persistent) ---
 	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
 	let paths = $state<(string | undefined)[]>([]);
 	let isAnimating = $state(false);
@@ -16,144 +10,61 @@
 	let hoveredPathIndex = $state<number | null>(null);
 	let resultToPlayerMap = $state<Record<number, number>>({}); // resultIndex -> playerIndex
 	let allCalculatedPaths = $state<(string | undefined)[]>([]);
-	let playerEditing = $state<boolean[]>([]);
-	let resultEditing = $state<boolean[]>([]);
 	let revealedWinners = $state<Record<string, string>>({});
 	let visiblePaths = $state<Record<number, string>>({});
-	let resultsToShow = $derived(Object.keys(winners).length > 0 ? winners : revealedWinners);
+	let isSidebarOpen = $state(false);
+	let isResultsCollapsed = $state(true);
 
-	// --- Constants ---
-	const LADDER_HEIGHT = 400;
-	const LADDER_WIDTH = 100;
+	// --- Derived State from Store ---
+	let players = $derived(
+		$configStore.ladderPlayers
+			.split('\n')
+			.map((s) => s.trim())
+			.filter(Boolean)
+	);
 
-	// --- Component State ---
-	let startItemsInput = $state('');
-	let endItemsInput = $state('');
-	let validationError = $state('');
-	let isManualMode = $state(false);
-	let isObfuscated = $state(false);
-	let importJson = $state('');
-	let styleOptions = $state({
-		fontFamily: 'sans-serif',
-		fontSize: 14,
-		fontWeight: 'normal',
-		textColor: '#333333',
-		backgroundColor: '#ffffff',
-		lineColor: '#000000',
-		rungColor: '#A52A2A', // brown
-		lineThickness: 2
-	});
-
-	// --- Lifecycle ---
-	// One-time initialization from props.
-	$effect.pre(() => {
-		// Pre-fill text areas from props only once
-		if (playersProp) startItemsInput = playersProp.join('\n');
-		if (resultsProp) endItemsInput = resultsProp.join('\n');
-		applyConfigChanges(); // Apply initial config
-	});
-
-	// Regenerate ladder ONLY when the players array reference changes.
-	$effect(() => {
-		const p = players; // establish dependency on players
-		generateLadders();
-	});
-
-	// Sync editing state arrays when players/results change.
-	$effect(() => {
-		playerEditing = new Array(players.length).fill(false);
-	});
-	$effect(() => {
-		resultEditing = new Array(results.length).fill(false);
-	});
-
-	// --- Functions ---
-	function exportState() {
-		const state = {
-			players,
-			results,
-			rungs,
-			styleOptions,
-			isManualMode,
-			isObfuscated
-		};
-		const json = JSON.stringify(state, null, 2);
-		navigator.clipboard.writeText(json);
-		alert('Settings copied to clipboard!');
-	}
-
-	function importState() {
-		try {
-			const state = JSON.parse(importJson);
-			// Basic validation
-			if (!state.players || !state.results || !state.rungs || !state.styleOptions) {
-				throw new Error('Invalid JSON format.');
-			}
-			players = state.players;
-			results = state.results;
-			rungs = state.rungs;
-			styleOptions = state.styleOptions;
-			isManualMode = state.isManualMode ?? false;
-			isObfuscated = state.isObfuscated ?? false;
-
-			// Sync textareas
-			startItemsInput = players.join('\n');
-			endItemsInput = results.join('\n');
-
-			alert('Import successful!');
-		} catch (e) {
-			alert('Import failed: Invalid JSON format or missing fields.');
-			console.error(e);
-		}
-	}
-
-	function applyConfigChanges() {
-		validationError = '';
-		const newPlayers = startItemsInput
+	let results = $derived(() => {
+		let newResults = $configStore.ladderResults
 			.split('\n')
 			.map((s) => s.trim())
 			.filter(Boolean);
-		let newResults = endItemsInput
-			.split('\n')
-			.map((s) => s.trim())
-			.filter(Boolean);
-
-		if (newPlayers.length < newResults.length) {
-			validationError = 'Number of players must be greater than or equal to the number of results.';
-			return;
-		}
-
-		if (newResults.length < newPlayers.length) {
-			const diff = newPlayers.length - newResults.length;
+		if (players.length > newResults.length) {
+			const diff = players.length - newResults.length;
 			for (let i = 0; i < diff; i++) {
 				newResults.push(`Prize ${newResults.length + 1}`);
 			}
 		}
+		return newResults;
+	});
 
-		players = newPlayers;
-		results = newResults;
-	}
+	// --- Lifecycle ---
+	$effect(() => {
+		// Regenerate ladder when players array changes.
+		// By depending on `players`, we also indirectly depend on `$configStore.ladderPlayers`.
+		generateLadders();
+	});
 
+	// --- Functions ---
 	function handleSvgKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
-			// This is a simplified handler to satisfy a11y.
-			// A full implementation would require tracking a virtual cursor.
 			event.preventDefault();
 		}
 	}
 
 	function handleSvgClick(event: MouseEvent) {
-		if (!isManualMode) return;
+		if (!$configStore.ladderIsManualMode) return;
 
 		const svgRect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
 		const x = event.clientX - svgRect.left;
 		const y = event.clientY - svgRect.top;
 
-		const laneIndex = Math.floor(x / LADDER_WIDTH);
-		if (laneIndex >= players.length - 1) return; // Clicked outside of lanes
+		const laneIndex = Math.floor(x / $configStore.ladderWidth);
+		if (laneIndex >= players.length - 1) return;
 
-		// Find the closest y-level to the click position
-		const yLevels = Array.from({ length: 12 }, (_, i) => (LADDER_HEIGHT / (12 + 1)) * (i + 1));
+		const yLevels = Array.from(
+			{ length: 12 },
+			(_, i) => ($configStore.ladderHeight / (12 + 1)) * (i + 1)
+		);
 		const closestY = yLevels.reduce((prev, curr) =>
 			Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev
 		);
@@ -168,21 +79,21 @@
 		);
 
 		if (isOccupied) {
-			// Rung exists, so remove it
 			rungs = rungs.filter((_, index) => index !== rungIndex);
 		} else if (!isPrevLaneOccupied && !isNextLaneOccupied) {
-			// Rung doesn't exist and no adjacent rungs, so add it
 			rungs = [...rungs, [laneIndex, closestY]];
 		}
 	}
 
 	function generateLadders() {
-		if (isManualMode) return;
+		if ($configStore.ladderIsManualMode) return;
 		showPaths = false;
 		winners = {};
 		revealedWinners = {};
 		paths = [];
 		visiblePaths = {};
+		isResultsCollapsed = true; // Collapse results on new ladder
+
 		const newRungs: [number, number][] = [];
 		const numPlayers = players.length;
 		if (numPlayers <= 1) {
@@ -192,32 +103,22 @@
 
 		const numLanes = numPlayers - 1;
 		const minRungsPerLane = 2;
-		// Define 12 discrete vertical levels for rung placement.
 		const numLevels = 12;
 		const yLevels = Array.from(
 			{ length: numLevels },
-			(_, i) => (LADDER_HEIGHT / (numLevels + 1)) * (i + 1)
+			(_, i) => ($configStore.ladderHeight / (numLevels + 1)) * (i + 1)
 		);
 
-		// Keep track of where rungs are placed to avoid horizontal collisions.
-		// Key: y-level, Value: Set of lanes where a rung exists.
 		const occupied = new Map<number, Set<number>>();
-
-		// Iterate through each lane to place the minimum required rungs.
 		for (let laneIndex = 0; laneIndex < numLanes; laneIndex++) {
 			const availableYLevels = [...yLevels];
 			let placedCount = 0;
-
-			// Shuffle levels to randomize rung placement.
 			availableYLevels.sort(() => Math.random() - 0.5);
 
 			for (const y of availableYLevels) {
 				if (placedCount >= minRungsPerLane) break;
-
-				// Check if the adjacent previous lane has a rung at the same y-level.
 				const isPrevLaneOccupied = occupied.get(y)?.has(laneIndex - 1);
 				if (!isPrevLaneOccupied) {
-					// Add the rung
 					if (!occupied.has(y)) {
 						occupied.set(y, new Set());
 					}
@@ -228,13 +129,10 @@
 			}
 		}
 
-		// Optional: Add a few more rungs for extra complexity, respecting the rules.
-		const extraRungs = numLanes; // Add one extra rung per lane on average.
+		const extraRungs = numLanes;
 		for (let i = 0; i < extraRungs; i++) {
 			const laneIndex = Math.floor(Math.random() * numLanes);
 			const y = yLevels[Math.floor(Math.random() * yLevels.length)];
-
-			// Check for collisions: cannot be occupied in the target lane OR adjacent lanes.
 			const isOccupied = occupied.get(y)?.has(laneIndex);
 			const isPrevLaneOccupied = occupied.get(y)?.has(laneIndex - 1);
 			const isNextLaneOccupied = occupied.get(y)?.has(laneIndex + 1);
@@ -247,17 +145,16 @@
 				newRungs.push([laneIndex, y]);
 			}
 		}
-
 		rungs = newRungs;
 	}
 
 	function tracePath(startLadder: number) {
-		let x = startLadder * LADDER_WIDTH + LADDER_WIDTH / 2;
+		let x = startLadder * $configStore.ladderWidth + $configStore.ladderWidth / 2;
 		let y = 0;
 		let path = `M ${x} ${y}`;
 		let currentLadder = startLadder;
 
-		while (y < LADDER_HEIGHT) {
+		while (y < $configStore.ladderHeight) {
 			const nextRung = rungs
 				.filter(([ladderIdx]) => ladderIdx === currentLadder || ladderIdx === currentLadder - 1)
 				.map((rung) => ({ ladder: rung[0], y: rung[1] }))
@@ -265,22 +162,19 @@
 				.sort((a, b) => a.y - b.y)[0];
 
 			if (nextRung) {
-				// Move to the rung
 				path += ` L ${x} ${nextRung.y}`;
 				y = nextRung.y;
 
-				// Cross the rung
 				if (nextRung.ladder === currentLadder) {
-					x += LADDER_WIDTH;
+					x += $configStore.ladderWidth;
 					currentLadder++;
 				} else {
-					x -= LADDER_WIDTH;
+					x -= $configStore.ladderWidth;
 					currentLadder--;
 				}
 				path += ` L ${x} ${y}`;
 			} else {
-				// Go straight to the bottom
-				y = LADDER_HEIGHT;
+				y = $configStore.ladderHeight;
 				path += ` L ${x} ${y}`;
 			}
 		}
@@ -292,8 +186,10 @@
 		const newResultToPlayerMap: Record<number, number> = {};
 		allCalculatedPaths = players.map((_, i) => {
 			const { path, endLadder } = tracePath(i);
-			winners[players[i]] = results[endLadder];
-			newResultToPlayerMap[endLadder] = i;
+			if (players[i] && results[endLadder]) {
+				winners[players[i]] = results[endLadder];
+				newResultToPlayerMap[endLadder] = i;
+			}
 			return path;
 		});
 		resultToPlayerMap = newResultToPlayerMap;
@@ -307,6 +203,7 @@
 		paths = allCalculatedPaths;
 
 		setTimeout(() => {
+			revealedWinners = { ...winners }; // Reveal all winners at the end
 			isAnimating = false;
 		}, $configStore.ladderAnimationSpeed * 1000);
 	}
@@ -317,16 +214,16 @@
 		showPaths = true;
 		calculateAllPaths();
 
-		// Animate just the one path
 		const newPaths: (string | undefined)[] = [];
 		newPaths[playerIndex] = allCalculatedPaths[playerIndex];
 		paths = newPaths;
 
 		setTimeout(() => {
-			// After animation, move the path to the permanent visiblePaths
 			visiblePaths[playerIndex] = allCalculatedPaths[playerIndex] as string;
-			revealedWinners[players[playerIndex]] = winners[players[playerIndex]];
-			paths = []; // Clear the temporary animation path
+			if (players[playerIndex] && winners[players[playerIndex]]) {
+				revealedWinners[players[playerIndex]] = winners[players[playerIndex]];
+			}
+			paths = [];
 			isAnimating = false;
 		}, $configStore.ladderAnimationSpeed * 1000);
 	}
@@ -344,6 +241,9 @@
 			await new Promise((resolve) =>
 				setTimeout(resolve, $configStore.ladderAnimationSpeed * 1000 + 100)
 			);
+			if (players[i] && winners[players[i]]) {
+				revealedWinners[players[i]] = winners[players[i]];
+			}
 		}
 
 		paths = allCalculatedPaths;
@@ -353,28 +253,31 @@
 
 <div
 	class="game-container"
-	style="background-color: {styleOptions.backgroundColor}; font-family: {styleOptions.fontFamily}; font-size: {styleOptions.fontSize}px; font-weight: {styleOptions.fontWeight}; color: {styleOptions.textColor};"
+	style="--animation-duration: {$configStore.ladderAnimationSpeed}s; background-color: {$configStore
+		.ladderStyleOptions.backgroundColor}; font-family: {$configStore.ladderStyleOptions
+		.fontFamily}; font-size: {$configStore.ladderStyleOptions
+		.fontSize}px; font-weight: {$configStore.ladderStyleOptions.fontWeight}; color: {$configStore
+		.ladderStyleOptions.textColor};"
 >
+	<button class="sidebar-toggle" onclick={() => (isSidebarOpen = !isSidebarOpen)}>⚙️</button>
+
 	<div class="inputs">
-		{#each players as player, i}
+		{#each players as _, i}
 			<div
 				class="player-input"
 				role="button"
 				tabindex="0"
 				onmouseenter={() => (hoveredPathIndex = i)}
 				onmouseleave={() => (hoveredPathIndex = null)}
+				onclick={(e) => {
+					e.stopPropagation();
+					startSinglePath(i);
+				}}
+				onkeydown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') startSinglePath(i);
+				}}
 			>
-				<input
-					type="text"
-					bind:value={players[i]}
-					readonly={!playerEditing[i]}
-					ondblclick={() => (playerEditing[i] = true)}
-					onblur={() => (playerEditing[i] = false)}
-					onclick={(e) => {
-						e.stopPropagation();
-						startSinglePath(i);
-					}}
-				/>
+				<input type="text" value={players[i]} readonly />
 			</div>
 		{/each}
 	</div>
@@ -384,38 +287,37 @@
 			tabindex="0"
 			aria-label="Ladder editor canvas"
 			class="ladder-svg"
-			class:manual-mode={isManualMode}
-			viewBox={`0 0 ${players.length * LADDER_WIDTH} ${LADDER_HEIGHT + 50}`}
+			class:manual-mode={$configStore.ladderIsManualMode}
+			viewBox={`0 0 ${players.length * $configStore.ladderWidth} ${$configStore.ladderHeight + 50}`}
 			preserveAspectRatio="xMidYMin meet"
 			onclick={handleSvgClick}
 			onkeydown={handleSvgKeyDown}
 		>
 			<!-- Ladders -->
-			{#each players as player, i}
+			{#each players as _, i}
 				<line
-					data-player={player}
-					x1={i * LADDER_WIDTH + LADDER_WIDTH / 2}
+					data-player={players[i]}
+					x1={i * $configStore.ladderWidth + $configStore.ladderWidth / 2}
 					y1="0"
-					x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
-					y2={LADDER_HEIGHT}
-					stroke={styleOptions.lineColor}
-					stroke-width={styleOptions.lineThickness}
+					x2={i * $configStore.ladderWidth + $configStore.ladderWidth / 2}
+					y2={$configStore.ladderHeight}
+					stroke={$configStore.ladderStyleOptions.lineColor}
+					stroke-width={$configStore.ladderStyleOptions.lineThickness}
 				/>
 			{/each}
 			<!-- Rungs -->
 			{#each rungs as [ladderIndex, y]}
 				<line
-					x1={ladderIndex * LADDER_WIDTH + LADDER_WIDTH / 2}
+					x1={ladderIndex * $configStore.ladderWidth + $configStore.ladderWidth / 2}
 					y1={y}
-					x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
+					x2={(ladderIndex + 1) * $configStore.ladderWidth + $configStore.ladderWidth / 2}
 					y2={y}
-					stroke={styleOptions.rungColor}
-					stroke-width={styleOptions.lineThickness}
+					stroke={$configStore.ladderStyleOptions.rungColor}
+					stroke-width={$configStore.ladderStyleOptions.lineThickness}
 				/>
 			{/each}
 			<!-- Paths -->
 			{#if showPaths}
-				{@const finalPaths = isAnimating ? paths : Object.values(visiblePaths)}
 				{@const pathKeys = isAnimating
 					? paths.map((_, i) => i)
 					: Object.keys(visiblePaths).map(Number)}
@@ -437,7 +339,6 @@
 							class:trace-path={isAnimating && paths[i]}
 							style:opacity={hoveredPathIndex !== null ? 0.3 : 1}
 							style:transition="all 0.2s"
-							style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
 						/>
 					{/if}
 				{/each}
@@ -458,7 +359,6 @@
 							fill="none"
 							class:trace-path={isAnimating && paths[i]}
 							style:transition="all 0.2s"
-							style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
 						/>
 					{/if}
 				{/if}
@@ -466,13 +366,10 @@
 		</svg>
 	</div>
 	<div class="results-container">
-		{#each results as result, i}
+		{#each results as _, i}
 			{@const playerIndex = resultToPlayerMap[i]}
-			{@const player = players[playerIndex]}
 			{@const isRevealed =
-				!isObfuscated ||
-				(Object.keys(winners).length > 0 && !isAnimating) ||
-				(revealedWinners && revealedWinners[player])}
+				!$configStore.ladderIsObfuscated || revealedWinners[players()[playerIndex]]}
 			<div
 				class="result-input"
 				role="button"
@@ -481,13 +378,7 @@
 				onmouseleave={() => (hoveredPathIndex = null)}
 			>
 				{#if isRevealed}
-					<input
-						type="text"
-						bind:value={results[i]}
-						readonly={!resultEditing[i]}
-						ondblclick={() => (resultEditing[i] = !resultEditing[i])}
-						onblur={() => (resultEditing[i] = false)}
-					/>
+					<input type="text" value={results[i]} readonly />
 				{:else}
 					<input type="text" value="???" readonly style="cursor: help;" />
 				{/if}
@@ -496,114 +387,155 @@
 	</div>
 
 	<div class="controls">
-		<button onclick={generateLadders} disabled={isAnimating || isManualMode}>New Ladder</button>
+		<button onclick={generateLadders} disabled={isAnimating || $configStore.ladderIsManualMode}
+			>New Ladder</button
+		>
 		<button onclick={startAnimation} disabled={isAnimating}>Start All</button>
 		<button onclick={startAnimationSequentially} disabled={isAnimating}>Start Sequentially</button>
 	</div>
 
-	<div class="speed-control">
-		<label for="animation-speed">Animation Speed (seconds):</label>
-		<input
-			type="number"
-			id="animation-speed"
-			bind:value={$configStore.ladderAnimationSpeed}
-			min="0.1"
-			step="0.1"
-			class="speed-input"
-		/>
-	</div>
-
-	{#if Object.keys(resultsToShow).length > 0}
+	{#if Object.keys(revealedWinners).length > 0}
 		<div class="winners">
-			<h3>Results</h3>
-			<ul>
-				{#each Object.entries(resultsToShow) as [player, result]}
-					<li>{player} → {result}</li>
-				{/each}
-			</ul>
+			<button
+				class="results-header-button"
+				aria-expanded={!isResultsCollapsed}
+				onclick={() => (isResultsCollapsed = !isResultsCollapsed)}
+			>
+				<h3>Results {isResultsCollapsed ? '▼' : '▲'}</h3>
+			</button>
+			{#if !isResultsCollapsed}
+				<ul>
+					{#each Object.entries(revealedWinners) as [player, winnerResult]}
+						<li>{player} → {winnerResult}</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	{/if}
 
-	<div class="config-panel">
-		<h3>Ladder Game Settings</h3>
-		<div>
-			<label for="start-items">Start Items (one per line)</label>
-			<textarea id="start-items" bind:value={startItemsInput} rows="4"></textarea>
-		</div>
-		<div>
-			<label for="end-items">End Items (one per line)</label>
-			<textarea id="end-items" bind:value={endItemsInput} rows="4"></textarea>
-		</div>
+	<div class="sidebar-container {isSidebarOpen ? 'open' : ''}">
+		<div class="sidebar">
+			<h3>Ladder Game Settings</h3>
+			<div>
+				<label for="start-items">Start Items (one per line)</label>
+				<textarea id="start-items" bind:value={$configStore.ladderPlayers} rows="4"></textarea>
+			</div>
+			<div>
+				<label for="end-items">End Items (one per line)</label>
+				<textarea id="end-items" bind:value={$configStore.ladderResults} rows="4"></textarea>
+			</div>
 
-		{#if validationError}
-			<p class="error-message">{validationError}</p>
-		{/if}
-		<button onclick={applyConfigChanges} disabled={isAnimating}>Apply</button>
+			<div class="manual-mode-toggle">
+				<label>
+					<input type="checkbox" bind:checked={$configStore.ladderIsManualMode} />
+					Manual Mode
+				</label>
+			</div>
+			<div class="manual-mode-toggle">
+				<label>
+					<input type="checkbox" bind:checked={$configStore.ladderIsObfuscated} />
+					Hide Results
+				</label>
+			</div>
 
-		<div class="manual-mode-toggle">
-			<label>
-				<input type="checkbox" bind:checked={isManualMode} />
-				Manual Mode
-			</label>
-		</div>
-		<div class="manual-mode-toggle">
-			<label>
-				<input type="checkbox" bind:checked={isObfuscated} />
-				Hide Results
-			</label>
-		</div>
+			<div class="speed-control">
+				<label for="animation-speed">Animation Speed (seconds):</label>
+				<input
+					type="number"
+					id="animation-speed"
+					bind:value={$configStore.ladderAnimationSpeed}
+					min="0.1"
+					step="0.1"
+					class="speed-input"
+				/>
+			</div>
 
-		<h4 class="config-header">Style Options</h4>
-		<div class="style-grid">
-			<label for="font-family-input">Font Family</label>
-			<input id="font-family-input" type="text" bind:value={styleOptions.fontFamily} />
-			<label for="font-size-input">Font Size (px)</label>
-			<input id="font-size-input" type="number" bind:value={styleOptions.fontSize} min="8" />
-			<label for="font-weight-select">Font Weight</label>
-			<select id="font-weight-select" bind:value={styleOptions.fontWeight}>
-				<option value="normal">Normal</option>
-				<option value="bold">Bold</option>
-				<option value="lighter">Lighter</option>
-			</select>
-			<label for="text-color-input">Text Color</label>
-			<input id="text-color-input" type="color" bind:value={styleOptions.textColor} />
-			<label for="bg-color-input">Background Color</label>
-			<input id="bg-color-input" type="color" bind:value={styleOptions.backgroundColor} />
-			<label for="line-color-input">Line Color</label>
-			<input id="line-color-input" type="color" bind:value={styleOptions.lineColor} />
-			<label for="rung-color-input">Rung Color</label>
-			<input id="rung-color-input" type="color" bind:value={styleOptions.rungColor} />
-			<label for="line-thickness-range">Line Thickness: {styleOptions.lineThickness}px</label>
-			<input
-				id="line-thickness-range"
-				type="range"
-				bind:value={styleOptions.lineThickness}
-				min="1"
-				max="10"
-				class="slider"
-			/>
-		</div>
+			<h4 class="config-header">Dimensions</h4>
+			<div class="style-grid">
+				<label for="ladder-height">Height (px)</label>
+				<input id="ladder-height" type="number" bind:value={$configStore.ladderHeight} />
+				<label for="ladder-width">Width (px)</label>
+				<input id="ladder-width" type="number" bind:value={$configStore.ladderWidth} />
+			</div>
 
-		<h4 class="config-header">Save & Share</h4>
-		<div class="save-share-grid">
-			<button onclick={exportState}>Export to Clipboard</button>
-			<textarea bind:value={importJson} placeholder="Paste JSON..."></textarea>
-			<button onclick={importState}>Import from JSON</button>
+			<h4 class="config-header">Style Options</h4>
+			<div class="style-grid">
+				<label for="font-family-input">Font Family</label>
+				<input
+					id="font-family-input"
+					type="text"
+					bind:value={$configStore.ladderStyleOptions.fontFamily}
+				/>
+				<label for="font-size-input">Font Size (px)</label>
+				<input
+					id="font-size-input"
+					type="number"
+					bind:value={$configStore.ladderStyleOptions.fontSize}
+					min="8"
+				/>
+				<label for="font-weight-select">Font Weight</label>
+				<select id="font-weight-select" bind:value={$configStore.ladderStyleOptions.fontWeight}>
+					<option value="normal">Normal</option>
+					<option value="bold">Bold</option>
+					<option value="lighter">Lighter</option>
+				</select>
+				<label for="text-color-input">Text Color</label>
+				<input
+					id="text-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.textColor}
+				/>
+				<label for="bg-color-input">Background Color</label>
+				<input
+					id="bg-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.backgroundColor}
+				/>
+				<label for="line-color-input">Line Color</label>
+				<input
+					id="line-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.lineColor}
+				/>
+				<label for="rung-color-input">Rung Color</label>
+				<input
+					id="rung-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.rungColor}
+				/>
+				<label for="line-thickness-range"
+					>Line Thickness: {$configStore.ladderStyleOptions.lineThickness}px</label
+				>
+				<input
+					id="line-thickness-range"
+					type="range"
+					bind:value={$configStore.ladderStyleOptions.lineThickness}
+					min="1"
+					max="10"
+					class="slider"
+				/>
+			</div>
 		</div>
 	</div>
 </div>
 
 <style>
 	.game-container {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding: 1rem;
 		box-sizing: border-box;
+		width: 100%;
+		min-height: 100vh;
+		overflow-x: hidden;
 	}
 	.inputs,
 	.results-container {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: 10px;
 		margin-bottom: 10px;
 	}
@@ -614,9 +546,6 @@
 	.result-input {
 		width: 90px;
 		text-align: center;
-	}
-	.player-input,
-	.result-input {
 		cursor: pointer;
 	}
 	input {
@@ -632,7 +561,7 @@
 	}
 	.svg-container {
 		width: 100%;
-		max-width: 800px; /* Prevent it from getting too wide */
+		max-width: 800px;
 	}
 	.ladder-svg {
 		width: 100%;
@@ -671,38 +600,67 @@
 		border: 1px solid #ccc;
 		padding: 10px;
 		width: 300px;
+		text-align: center;
 	}
-	.config-panel {
-		margin-top: 20px;
-		padding: 15px;
-		border: 1px solid #ddd;
-		border-radius: 8px;
+	.winners h3 {
+		margin: 0; /* Reset margin from h3 */
+	}
+	.results-header-button {
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		font: inherit;
+		color: inherit;
+		cursor: pointer;
+		text-align: inherit;
 		width: 100%;
-		max-width: 500px;
+	}
+	.sidebar-toggle {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 1001;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		font-size: 24px;
+		line-height: 1;
+	}
+	.sidebar-container {
+		position: fixed;
+		top: 0;
+		right: -350px; /* Hidden off-screen */
+		width: 350px;
+		height: 100%;
+		background: #f9f9f9;
+		box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+		transition: right 0.3s ease-in-out;
+		z-index: 1000;
+	}
+	.sidebar-container.open {
+		right: 0; /* Slides in */
+	}
+	.sidebar {
+		padding: 15px;
+		height: 100%;
+		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
 	}
-	.config-panel h3,
-	.config-panel h4 {
+	.sidebar h3,
+	.sidebar h4 {
 		margin: 0;
 		text-align: center;
 	}
-	.config-panel textarea {
+	.sidebar textarea {
 		width: 100%;
 		box-sizing: border-box;
 		padding: 8px;
 		border-radius: 4px;
 		border: 1px solid #ccc;
-		background-color: inherit;
-		color: inherit;
 		font-family: inherit;
-	}
-	.error-message {
-		color: red;
-		font-weight: bold;
-		margin: 0;
-		text-align: center;
 	}
 	.config-header {
 		margin-top: 15px;
@@ -721,11 +679,6 @@
 		text-align: right;
 		font-size: 0.9em;
 	}
-	.save-share-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
 	.manual-mode-toggle {
 		display: flex;
 		align-items: center;
@@ -742,7 +695,8 @@
 		cursor: pointer;
 	}
 	.style-grid input,
-	.style-grid select {
+	.style-grid select,
+	.speed-input {
 		width: 100%;
 		box-sizing: border-box;
 		padding: 4px;
