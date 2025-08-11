@@ -79,7 +79,7 @@
 		};
 		const json = JSON.stringify(state, null, 2);
 		navigator.clipboard.writeText(json);
-		alert('設定已複製到剪貼簿！');
+		alert('Settings copied to clipboard!');
 	}
 
 	function importState() {
@@ -87,7 +87,7 @@
 			const state = JSON.parse(importJson);
 			// Basic validation
 			if (!state.players || !state.results || !state.rungs || !state.styleOptions) {
-				throw new Error('無效的設定格式');
+				throw new Error('Invalid JSON format.');
 			}
 			players = state.players;
 			results = state.results;
@@ -100,9 +100,9 @@
 			startItemsInput = players.join('\n');
 			endItemsInput = results.join('\n');
 
-			alert('設定已成功匯入！');
+			alert('Import successful!');
 		} catch (e) {
-			alert('匯入失敗：無效的 JSON 或格式錯誤。');
+			alert('Import failed: Invalid JSON format or missing fields.');
 			console.error(e);
 		}
 	}
@@ -119,14 +119,14 @@
 			.filter(Boolean);
 
 		if (newPlayers.length < newResults.length) {
-			validationError = '錯誤：起始點數量不能少於結束點數量。';
+			validationError = 'Number of players must be greater than or equal to the number of results.';
 			return;
 		}
 
 		if (newResults.length < newPlayers.length) {
 			const diff = newPlayers.length - newResults.length;
 			for (let i = 0; i < diff; i++) {
-				newResults.push(`結果 ${newResults.length + 1}`);
+				newResults.push(`Prize ${newResults.length + 1}`);
 			}
 		}
 
@@ -153,18 +153,19 @@
 		if (laneIndex >= players.length - 1) return; // Clicked outside of lanes
 
 		// Find the closest y-level to the click position
-		const yLevels = Array.from(
-			{ length: 12 },
-			(_, i) => (LADDER_HEIGHT / (12 + 1)) * (i + 1)
-		);
+		const yLevels = Array.from({ length: 12 }, (_, i) => (LADDER_HEIGHT / (12 + 1)) * (i + 1));
 		const closestY = yLevels.reduce((prev, curr) =>
 			Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev
 		);
 
 		const rungIndex = rungs.findIndex(([rLane, rY]) => rLane === laneIndex && rY === closestY);
 		const isOccupied = rungIndex !== -1;
-		const isPrevLaneOccupied = rungs.some(([rLane, rY]) => rLane === laneIndex - 1 && rY === closestY);
-		const isNextLaneOccupied = rungs.some(([rLane, rY]) => rLane === laneIndex + 1 && rY === closestY);
+		const isPrevLaneOccupied = rungs.some(
+			([rLane, rY]) => rLane === laneIndex - 1 && rY === closestY
+		);
+		const isNextLaneOccupied = rungs.some(
+			([rLane, rY]) => rLane === laneIndex + 1 && rY === closestY
+		);
 
 		if (isOccupied) {
 			// Rung exists, so remove it
@@ -389,78 +390,80 @@
 			onclick={handleSvgClick}
 			onkeydown={handleSvgKeyDown}
 		>
-		<!-- Ladders -->
-		{#each players as player, i}
-			<line
-				data-player={player}
-				x1={i * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y1="0"
-				x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y2={LADDER_HEIGHT}
-				stroke={styleOptions.lineColor}
-				stroke-width={styleOptions.lineThickness}
-			/>
-		{/each}
-		<!-- Rungs -->
-		{#each rungs as [ladderIndex, y]}
-			<line
-				x1={ladderIndex * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y1={y}
-				x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
-				y2={y}
-				stroke={styleOptions.rungColor}
-				stroke-width={styleOptions.lineThickness}
-			/>
-		{/each}
-		<!-- Paths -->
-		{#if showPaths}
-			{@const finalPaths = isAnimating ? paths : Object.values(visiblePaths)}
-			{@const pathKeys = isAnimating ? paths.map((_, i) => i) : Object.keys(visiblePaths).map(Number)}
-
-			<!-- Render non-hovered paths first -->
-			{#each pathKeys as i}
-				{@const path = isAnimating ? paths[i] : visiblePaths[i]}
-				{#if path && i !== hoveredPathIndex}
-					<path
-						d={path}
-						stroke={[
-							'rgba(255, 0, 0, 0.7)',
-							'rgba(0, 0, 255, 0.7)',
-							'rgba(0, 128, 0, 0.7)',
-							'rgba(255, 165, 0, 0.7)'
-						][i % 4]}
-						stroke-width={3}
-						fill="none"
-						class:trace-path={isAnimating && paths[i]}
-						style:opacity={hoveredPathIndex !== null ? 0.3 : 1}
-						style:transition="all 0.2s"
-						style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
-					/>
-				{/if}
+			<!-- Ladders -->
+			{#each players as player, i}
+				<line
+					data-player={player}
+					x1={i * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y1="0"
+					x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y2={LADDER_HEIGHT}
+					stroke={styleOptions.lineColor}
+					stroke-width={styleOptions.lineThickness}
+				/>
 			{/each}
-			<!-- Render hovered path last so it's on top -->
-			{#if hoveredPathIndex !== null}
-				{@const i = hoveredPathIndex}
-				{@const path = isAnimating ? paths[i] : visiblePaths[i]}
-				{#if path}
-					<path
-						d={path}
-						stroke={[
-							'rgba(255, 0, 0, 0.7)',
-							'rgba(0, 0, 255, 0.7)',
-							'rgba(0, 128, 0, 0.7)',
-							'rgba(255, 165, 0, 0.7)'
-						][i % 4]}
-						stroke-width={5}
-						fill="none"
-						class:trace-path={isAnimating && paths[i]}
-						style:transition="all 0.2s"
-						style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
-					/>
+			<!-- Rungs -->
+			{#each rungs as [ladderIndex, y]}
+				<line
+					x1={ladderIndex * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y1={y}
+					x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
+					y2={y}
+					stroke={styleOptions.rungColor}
+					stroke-width={styleOptions.lineThickness}
+				/>
+			{/each}
+			<!-- Paths -->
+			{#if showPaths}
+				{@const finalPaths = isAnimating ? paths : Object.values(visiblePaths)}
+				{@const pathKeys = isAnimating
+					? paths.map((_, i) => i)
+					: Object.keys(visiblePaths).map(Number)}
+
+				<!-- Render non-hovered paths first -->
+				{#each pathKeys as i}
+					{@const path = isAnimating ? paths[i] : visiblePaths[i]}
+					{#if path && i !== hoveredPathIndex}
+						<path
+							d={path}
+							stroke={[
+								'rgba(255, 0, 0, 0.7)',
+								'rgba(0, 0, 255, 0.7)',
+								'rgba(0, 128, 0, 0.7)',
+								'rgba(255, 165, 0, 0.7)'
+							][i % 4]}
+							stroke-width={3}
+							fill="none"
+							class:trace-path={isAnimating && paths[i]}
+							style:opacity={hoveredPathIndex !== null ? 0.3 : 1}
+							style:transition="all 0.2s"
+							style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
+						/>
+					{/if}
+				{/each}
+				<!-- Render hovered path last so it's on top -->
+				{#if hoveredPathIndex !== null}
+					{@const i = hoveredPathIndex}
+					{@const path = isAnimating ? paths[i] : visiblePaths[i]}
+					{#if path}
+						<path
+							d={path}
+							stroke={[
+								'rgba(255, 0, 0, 0.7)',
+								'rgba(0, 0, 255, 0.7)',
+								'rgba(0, 128, 0, 0.7)',
+								'rgba(255, 165, 0, 0.7)'
+							][i % 4]}
+							stroke-width={5}
+							fill="none"
+							class:trace-path={isAnimating && paths[i]}
+							style:transition="all 0.2s"
+							style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
+						/>
+					{/if}
 				{/if}
 			{/if}
-		{/if}
-	</svg>
+		</svg>
 	</div>
 	<div class="results-container">
 		{#each results as result, i}
@@ -512,7 +515,7 @@
 
 	{#if Object.keys(resultsToShow).length > 0}
 		<div class="winners">
-			<h3>結果</h3>
+			<h3>Results</h3>
 			<ul>
 				{#each Object.entries(resultsToShow) as [player, result]}
 					<li>{player} → {result}</li>
@@ -522,55 +525,55 @@
 	{/if}
 
 	<div class="config-panel">
-		<h3>設定</h3>
+		<h3>Ladder Game Settings</h3>
 		<div>
-			<label for="start-items">起始項目 (一行一個)</label>
+			<label for="start-items">Start Items (one per line)</label>
 			<textarea id="start-items" bind:value={startItemsInput} rows="4"></textarea>
 		</div>
 		<div>
-			<label for="end-items">結束項目 (一行一個)</label>
+			<label for="end-items">End Items (one per line)</label>
 			<textarea id="end-items" bind:value={endItemsInput} rows="4"></textarea>
 		</div>
 
 		{#if validationError}
 			<p class="error-message">{validationError}</p>
 		{/if}
-		<button onclick={applyConfigChanges} disabled={isAnimating}>套用設定</button>
+		<button onclick={applyConfigChanges} disabled={isAnimating}>Apply</button>
 
 		<div class="manual-mode-toggle">
 			<label>
 				<input type="checkbox" bind:checked={isManualMode} />
-				手動編輯模式
+				Manual Mode
 			</label>
 		</div>
 		<div class="manual-mode-toggle">
 			<label>
 				<input type="checkbox" bind:checked={isObfuscated} />
-				隱藏終點
+				Hide Results
 			</label>
 		</div>
 
-		<h4 class="config-header">樣式設定</h4>
+		<h4 class="config-header">Style Options</h4>
 		<div class="style-grid">
-			<label for="font-family-input">字體</label>
+			<label for="font-family-input">Font Family</label>
 			<input id="font-family-input" type="text" bind:value={styleOptions.fontFamily} />
-			<label for="font-size-input">字體大小 (px)</label>
+			<label for="font-size-input">Font Size (px)</label>
 			<input id="font-size-input" type="number" bind:value={styleOptions.fontSize} min="8" />
-			<label for="font-weight-select">字體粗細</label>
+			<label for="font-weight-select">Font Weight</label>
 			<select id="font-weight-select" bind:value={styleOptions.fontWeight}>
 				<option value="normal">Normal</option>
 				<option value="bold">Bold</option>
 				<option value="lighter">Lighter</option>
 			</select>
-			<label for="text-color-input">文字顏色</label>
+			<label for="text-color-input">Text Color</label>
 			<input id="text-color-input" type="color" bind:value={styleOptions.textColor} />
-			<label for="bg-color-input">背景顏色</label>
+			<label for="bg-color-input">Background Color</label>
 			<input id="bg-color-input" type="color" bind:value={styleOptions.backgroundColor} />
-			<label for="line-color-input">梯線顏色</label>
+			<label for="line-color-input">Line Color</label>
 			<input id="line-color-input" type="color" bind:value={styleOptions.lineColor} />
-			<label for="rung-color-input">橫線顏色</label>
+			<label for="rung-color-input">Rung Color</label>
 			<input id="rung-color-input" type="color" bind:value={styleOptions.rungColor} />
-			<label for="line-thickness-range">線條粗細: {styleOptions.lineThickness}px</label>
+			<label for="line-thickness-range">Line Thickness: {styleOptions.lineThickness}px</label>
 			<input
 				id="line-thickness-range"
 				type="range"
@@ -581,11 +584,11 @@
 			/>
 		</div>
 
-		<h4 class="config-header">儲存/分享</h4>
+		<h4 class="config-header">Save & Share</h4>
 		<div class="save-share-grid">
-			<button onclick={exportState}>匯出設定到剪貼簿</button>
-			<textarea bind:value={importJson} placeholder="在此貼上設定 JSON..."></textarea>
-			<button onclick={importState}>從 JSON 匯入設定</button>
+			<button onclick={exportState}>Export to Clipboard</button>
+			<textarea bind:value={importJson} placeholder="Paste JSON..."></textarea>
+			<button onclick={importState}>Import from JSON</button>
 		</div>
 	</div>
 </div>
