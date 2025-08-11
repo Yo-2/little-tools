@@ -18,100 +18,223 @@
 	let allCalculatedPaths = $state<(string | undefined)[]>([]);
 	let playerEditing = $state<boolean[]>([]);
 	let resultEditing = $state<boolean[]>([]);
+	let revealedWinners = $state<Record<string, string>>({});
+	let visiblePaths = $state<Record<number, string>>({});
 
 	// --- Constants ---
 	const LADDER_HEIGHT = 400;
 	const LADDER_WIDTH = 100;
 
-	// --- Lifecycle ---
-	// Sync props to state
-	$effect(() => {
-		if (playersProp) players = playersProp;
-	});
-	$effect(() => {
-		if (resultsProp) results = resultsProp;
+	// --- Component State ---
+	let startItemsInput = $state(players.join('\n'));
+	let endItemsInput = $state(results.join('\n'));
+	let validationError = $state('');
+	let isManualMode = $state(false);
+	let isObfuscated = $state(false);
+	let importJson = $state('');
+	let styleOptions = $state({
+		fontFamily: 'sans-serif',
+		fontSize: 14,
+		fontWeight: 'normal',
+		textColor: '#333333',
+		backgroundColor: '#ffffff',
+		lineColor: '#000000',
+		rungColor: '#A52A2A', // brown
+		lineThickness: 2
 	});
 
-	// Regenerate ladder when players change
+	// --- Lifecycle ---
+	// One-time initialization from props.
+	$effect.pre(() => {
+		// Pre-fill text areas from props only once
+		if (playersProp) startItemsInput = playersProp.join('\n');
+		if (resultsProp) endItemsInput = resultsProp.join('\n');
+		applyConfigChanges(); // Apply initial config
+	});
+
+	// Regenerate ladder ONLY when the players array reference changes.
 	$effect(() => {
+		const p = players; // establish dependency on players
 		generateLadders();
 	});
 
-	// Keep players and results arrays in sync, and reset editing state
+	// Sync editing state arrays when players/results change.
 	$effect(() => {
 		playerEditing = new Array(players.length).fill(false);
-		if (players.length !== results.length) {
-			const newResults = new Array(players.length);
-			for (let i = 0; i < players.length; i++) {
-				newResults[i] = results[i] || `Prize ${i + 1}`;
-			}
-			results = newResults;
-		}
 	});
-
 	$effect(() => {
 		resultEditing = new Array(results.length).fill(false);
 	});
 
 	// --- Functions ---
+	function exportState() {
+		const state = {
+			players,
+			results,
+			rungs,
+			styleOptions,
+			isManualMode,
+			isObfuscated
+		};
+		const json = JSON.stringify(state, null, 2);
+		navigator.clipboard.writeText(json);
+		alert('設定已複製到剪貼簿！');
+	}
+
+	function importState() {
+		try {
+			const state = JSON.parse(importJson);
+			// Basic validation
+			if (!state.players || !state.results || !state.rungs || !state.styleOptions) {
+				throw new Error('無效的設定格式');
+			}
+			players = state.players;
+			results = state.results;
+			rungs = state.rungs;
+			styleOptions = state.styleOptions;
+			isManualMode = state.isManualMode ?? false;
+			isObfuscated = state.isObfuscated ?? false;
+
+			// Sync textareas
+			startItemsInput = players.join('\n');
+			endItemsInput = results.join('\n');
+
+			alert('設定已成功匯入！');
+		} catch (e) {
+			alert('匯入失敗：無效的 JSON 或格式錯誤。');
+			console.error(e);
+		}
+	}
+
+	function applyConfigChanges() {
+		validationError = '';
+		const newPlayers = startItemsInput
+			.split('\n')
+			.map((s) => s.trim())
+			.filter(Boolean);
+		let newResults = endItemsInput
+			.split('\n')
+			.map((s) => s.trim())
+			.filter(Boolean);
+
+		if (newPlayers.length < newResults.length) {
+			validationError = '錯誤：起始點數量不能少於結束點數量。';
+			return;
+		}
+
+		if (newResults.length < newPlayers.length) {
+			const diff = newPlayers.length - newResults.length;
+			for (let i = 0; i < diff; i++) {
+				newResults.push(`結果 ${newResults.length + 1}`);
+			}
+		}
+
+		players = newPlayers;
+		results = newResults;
+	}
+
+	function handleSvgClick(event: MouseEvent) {
+		if (!isManualMode) return;
+
+		const svgRect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
+		const x = event.clientX - svgRect.left;
+		const y = event.clientY - svgRect.top;
+
+		const laneIndex = Math.floor(x / LADDER_WIDTH);
+		if (laneIndex >= players.length - 1) return; // Clicked outside of lanes
+
+		// Find the closest y-level to the click position
+		const yLevels = Array.from(
+			{ length: 12 },
+			(_, i) => (LADDER_HEIGHT / (12 + 1)) * (i + 1)
+		);
+		const closestY = yLevels.reduce((prev, curr) =>
+			Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev
+		);
+
+		const rungIndex = rungs.findIndex(([rLane, rY]) => rLane === laneIndex && rY === closestY);
+		const isOccupied = rungIndex !== -1;
+		const isPrevLaneOccupied = rungs.some(([rLane, rY]) => rLane === laneIndex - 1 && rY === closestY);
+		const isNextLaneOccupied = rungs.some(([rLane, rY]) => rLane === laneIndex + 1 && rY === closestY);
+
+		if (isOccupied) {
+			// Rung exists, so remove it
+			rungs = rungs.filter((_, index) => index !== rungIndex);
+		} else if (!isPrevLaneOccupied && !isNextLaneOccupied) {
+			// Rung doesn't exist and no adjacent rungs, so add it
+			rungs = [...rungs, [laneIndex, closestY]];
+		}
+	}
+
 	function generateLadders() {
+		if (isManualMode) return;
 		showPaths = false;
+		winners = {};
+		revealedWinners = {};
+		paths = [];
+		visiblePaths = {};
 		const newRungs: [number, number][] = [];
-		const numVerticals = players.length;
-		if (numVerticals <= 1) {
+		const numPlayers = players.length;
+		if (numPlayers <= 1) {
 			rungs = [];
 			return;
 		}
-		const numLanes = numVerticals - 1;
-		const minRungsPerLane = 2;
-		const numHorizontalLevels = Math.max(12, numLanes * 3); // More levels for more complex ladders
 
+		const numLanes = numPlayers - 1;
+		const minRungsPerLane = 2;
+		// Define 12 discrete vertical levels for rung placement.
+		const numLevels = 12;
 		const yLevels = Array.from(
-			{ length: numHorizontalLevels },
-			(_, i) => (LADDER_HEIGHT / (numHorizontalLevels + 1)) * (i + 1)
+			{ length: numLevels },
+			(_, i) => (LADDER_HEIGHT / (numLevels + 1)) * (i + 1)
 		);
 
-		// A map to keep track of occupied coordinates for fast lookups: y => Set of lanes
-		const occupiedRungs = new Map<number, Set<number>>();
+		// Keep track of where rungs are placed to avoid horizontal collisions.
+		// Key: y-level, Value: Set of lanes where a rung exists.
+		const occupied = new Map<number, Set<number>>();
 
-		const addRung = (lane: number, y: number) => {
-			newRungs.push([lane, y]);
-			if (!occupiedRungs.has(y)) {
-				occupiedRungs.set(y, new Set());
-			}
-			occupiedRungs.get(y)!.add(lane);
-		};
+		// Iterate through each lane to place the minimum required rungs.
+		for (let laneIndex = 0; laneIndex < numLanes; laneIndex++) {
+			const availableYLevels = [...yLevels];
+			let placedCount = 0;
 
-		// 1. Ensure minimum rungs per lane
-		for (let j = 0; j < numLanes; j++) {
-			const yLevelsCopy = [...yLevels];
-			yLevelsCopy.sort(() => Math.random() - 0.5); // Shuffle for randomness
+			// Shuffle levels to randomize rung placement.
+			availableYLevels.sort(() => Math.random() - 0.5);
 
-			let addedCount = 0;
-			for (const y of yLevelsCopy) {
-				if (addedCount >= minRungsPerLane) break;
+			for (const y of availableYLevels) {
+				if (placedCount >= minRungsPerLane) break;
 
-				// Check if the previous lane has a rung at the same y-level
-				if (!occupiedRungs.get(y)?.has(j - 1)) {
-					addRung(j, y);
-					addedCount++;
+				// Check if the adjacent previous lane has a rung at the same y-level.
+				const isPrevLaneOccupied = occupied.get(y)?.has(laneIndex - 1);
+				if (!isPrevLaneOccupied) {
+					// Add the rung
+					if (!occupied.has(y)) {
+						occupied.set(y, new Set());
+					}
+					occupied.get(y)!.add(laneIndex);
+					newRungs.push([laneIndex, y]);
+					placedCount++;
 				}
 			}
 		}
 
-		// 2. Add more random rungs for additional complexity
-		const additionalRungs = numLanes * 2;
-		for (let i = 0; i < additionalRungs; i++) {
-			const j = Math.floor(Math.random() * numLanes);
-			const y = yLevels[Math.floor(Math.random() * numHorizontalLevels)];
+		// Optional: Add a few more rungs for extra complexity, respecting the rules.
+		const extraRungs = numLanes; // Add one extra rung per lane on average.
+		for (let i = 0; i < extraRungs; i++) {
+			const laneIndex = Math.floor(Math.random() * numLanes);
+			const y = yLevels[Math.floor(Math.random() * yLevels.length)];
 
-			// Check for collisions in the same lane or adjacent lanes
-			const laneOccupied = occupiedRungs.get(y)?.has(j);
-			const prevLaneOccupied = occupiedRungs.get(y)?.has(j - 1);
-			const nextLaneOccupied = occupiedRungs.get(y)?.has(j + 1);
+			// Check for collisions: cannot be occupied in the target lane OR adjacent lanes.
+			const isOccupied = occupied.get(y)?.has(laneIndex);
+			const isPrevLaneOccupied = occupied.get(y)?.has(laneIndex - 1);
+			const isNextLaneOccupied = occupied.get(y)?.has(laneIndex + 1);
 
-			if (!laneOccupied && !prevLaneOccupied && !nextLaneOccupied) {
-				addRung(j, y);
+			if (!isOccupied && !isPrevLaneOccupied && !isNextLaneOccupied) {
+				if (!occupied.has(y)) {
+					occupied.set(y, new Set());
+				}
+				occupied.get(y)!.add(laneIndex);
+				newRungs.push([laneIndex, y]);
 			}
 		}
 
@@ -179,18 +302,22 @@
 	}
 
 	function startSinglePath(playerIndex: number) {
-		if (isAnimating) return;
+		if (isAnimating || visiblePaths[playerIndex]) return;
 		isAnimating = true;
 		showPaths = true;
 		calculateAllPaths();
+
+		// Animate just the one path
 		const newPaths: (string | undefined)[] = [];
 		newPaths[playerIndex] = allCalculatedPaths[playerIndex];
 		paths = newPaths;
 
 		setTimeout(() => {
+			// After animation, move the path to the permanent visiblePaths
+			visiblePaths[playerIndex] = allCalculatedPaths[playerIndex] as string;
+			revealedWinners[players[playerIndex]] = winners[players[playerIndex]];
+			paths = []; // Clear the temporary animation path
 			isAnimating = false;
-			paths = allCalculatedPaths;
-			showPaths = false;
 		}, $configStore.ladderAnimationSpeed * 1000);
 	}
 
@@ -214,7 +341,10 @@
 	}
 </script>
 
-<div class="game-container">
+<div
+	class="game-container"
+	style="background-color: {styleOptions.backgroundColor}; font-family: {styleOptions.fontFamily}; font-size: {styleOptions.fontSize}px; font-weight: {styleOptions.fontWeight}; color: {styleOptions.textColor};"
+>
 	<div class="inputs">
 		{#each players as player, i}
 			<div
@@ -238,7 +368,14 @@
 			</div>
 		{/each}
 	</div>
-	<svg class="ladder-svg" width={players.length * LADDER_WIDTH} height={LADDER_HEIGHT + 50}>
+	<div class="svg-container">
+		<svg
+			class="ladder-svg"
+			class:manual-mode={isManualMode}
+			viewBox={`0 0 ${players.length * LADDER_WIDTH} ${LADDER_HEIGHT + 50}`}
+			preserveAspectRatio="xMidYMin meet"
+			onclick={handleSvgClick}
+		>
 		<!-- Ladders -->
 		{#each players as player, i}
 			<line
@@ -247,7 +384,8 @@
 				y1="0"
 				x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
 				y2={LADDER_HEIGHT}
-				stroke="black"
+				stroke={styleOptions.lineColor}
+				stroke-width={styleOptions.lineThickness}
 			/>
 		{/each}
 		<!-- Rungs -->
@@ -257,34 +395,68 @@
 				y1={y}
 				x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
 				y2={y}
-				stroke="brown"
-				stroke-width="2"
+				stroke={styleOptions.rungColor}
+				stroke-width={styleOptions.lineThickness}
 			/>
 		{/each}
 		<!-- Paths -->
 		{#if showPaths}
-			{@const finalPaths = isAnimating ? paths : allCalculatedPaths}
-			{#each finalPaths as path, i}
-				<path
-					d={path}
-					stroke={[
-						'rgba(255, 0, 0, 0.7)',
-						'rgba(0, 0, 255, 0.7)',
-						'rgba(0, 128, 0, 0.7)',
-						'rgba(255, 165, 0, 0.7)'
-					][i % 4]}
-					stroke-width={hoveredPathIndex === i ? 5 : 3}
-					fill="none"
-					class:trace-path={isAnimating}
-					style:opacity={hoveredPathIndex !== null && hoveredPathIndex !== i ? 0.3 : 1}
-					style:transition="all 0.2s"
-					style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
-				/>
+			{@const finalPaths = isAnimating ? paths : Object.values(visiblePaths)}
+			{@const pathKeys = isAnimating ? paths.map((_, i) => i) : Object.keys(visiblePaths).map(Number)}
+
+			<!-- Render non-hovered paths first -->
+			{#each pathKeys as i}
+				{@const path = isAnimating ? paths[i] : visiblePaths[i]}
+				{#if path && i !== hoveredPathIndex}
+					<path
+						d={path}
+						stroke={[
+							'rgba(255, 0, 0, 0.7)',
+							'rgba(0, 0, 255, 0.7)',
+							'rgba(0, 128, 0, 0.7)',
+							'rgba(255, 165, 0, 0.7)'
+						][i % 4]}
+						stroke-width={3}
+						fill="none"
+						class:trace-path={isAnimating && paths[i]}
+						style:opacity={hoveredPathIndex !== null ? 0.3 : 1}
+						style:transition="all 0.2s"
+						style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
+					/>
+				{/if}
 			{/each}
+			<!-- Render hovered path last so it's on top -->
+			{#if hoveredPathIndex !== null}
+				{@const i = hoveredPathIndex}
+				{@const path = isAnimating ? paths[i] : visiblePaths[i]}
+				{#if path}
+					<path
+						d={path}
+						stroke={[
+							'rgba(255, 0, 0, 0.7)',
+							'rgba(0, 0, 255, 0.7)',
+							'rgba(0, 128, 0, 0.7)',
+							'rgba(255, 165, 0, 0.7)'
+						][i % 4]}
+						stroke-width={5}
+						fill="none"
+						class:trace-path={isAnimating && paths[i]}
+						style:transition="all 0.2s"
+						style:--animation-duration={$configStore.ladderAnimationSpeed + 's'}
+					/>
+				{/if}
+			{/if}
 		{/if}
 	</svg>
+	</div>
 	<div class="results-container">
 		{#each results as result, i}
+			{@const playerIndex = resultToPlayerMap[i]}
+			{@const player = players[playerIndex]}
+			{@const isRevealed =
+				!isObfuscated ||
+				(Object.keys(winners).length > 0 && !isAnimating) ||
+				(revealedWinners && revealedWinners[player])}
 			<div
 				class="result-input"
 				role="button"
@@ -294,18 +466,19 @@
 			>
 				<input
 					type="text"
-					bind:value={results[i]}
-					readonly={!resultEditing[i]}
-					ondblclick={() => (resultEditing[i] = true)}
+					value={isRevealed ? result : '???'}
+					readonly
+					style:cursor={isRevealed ? 'text' : 'help'}
+					ondblclick={() => (resultEditing[i] = isRevealed ? !resultEditing[i] : false)}
 					onblur={() => (resultEditing[i] = false)}
-					onclick={(e) => e.stopPropagation()}
+					bind:value={results[i]}
 				/>
 			</div>
 		{/each}
 	</div>
 
 	<div class="controls">
-		<button onclick={generateLadders} disabled={isAnimating}>New Ladder</button>
+		<button onclick={generateLadders} disabled={isAnimating || isManualMode}>New Ladder</button>
 		<button onclick={startAnimation} disabled={isAnimating}>Start All</button>
 		<button onclick={startAnimationSequentially} disabled={isAnimating}>Start Sequentially</button>
 	</div>
@@ -322,16 +495,84 @@
 		/>
 	</div>
 
-	{#if !isAnimating && showPaths && Object.keys(winners).length > 0}
+	{@const resultsToShow = Object.keys(winners).length > 0 ? winners : revealedWinners}
+	{#if Object.keys(resultsToShow).length > 0}
 		<div class="winners">
-			<h3>Results</h3>
+			<h3>結果</h3>
 			<ul>
-				{#each Object.entries(winners) as [player, result]}
+				{#each Object.entries(resultsToShow) as [player, result]}
 					<li>{player} → {result}</li>
 				{/each}
 			</ul>
 		</div>
 	{/if}
+
+	<div class="config-panel">
+		<h3>設定</h3>
+		<div>
+			<label for="start-items">起始項目 (一行一個)</label>
+			<textarea id="start-items" bind:value={startItemsInput} rows="4"></textarea>
+		</div>
+		<div>
+			<label for="end-items">結束項目 (一行一個)</label>
+			<textarea id="end-items" bind:value={endItemsInput} rows="4"></textarea>
+		</div>
+
+		{#if validationError}
+			<p class="error-message">{validationError}</p>
+		{/if}
+		<button onclick={applyConfigChanges} disabled={isAnimating}>套用設定</button>
+
+		<div class="manual-mode-toggle">
+			<label>
+				<input type="checkbox" bind:checked={isManualMode} />
+				手動編輯模式
+			</label>
+		</div>
+		<div class="manual-mode-toggle">
+			<label>
+				<input type="checkbox" bind:checked={isObfuscated} />
+				隱藏終點
+			</label>
+		</div>
+
+		<h4 class="config-header">樣式設定</h4>
+		<div class="style-grid">
+			<label>字體</label>
+			<input type="text" bind:value={styleOptions.fontFamily} />
+			<label>字體大小 (px)</label>
+			<input type="number" bind:value={styleOptions.fontSize} min="8" />
+			<label>字體粗細</label>
+			<select bind:value={styleOptions.fontWeight}>
+				<option value="normal">Normal</option>
+				<option value="bold">Bold</option>
+				<option value="lighter">Lighter</option>
+			</select>
+			<label>文字顏色</label>
+			<input type="color" bind:value={styleOptions.textColor} />
+			<label>背景顏色</label>
+			<input type="color" bind:value={styleOptions.backgroundColor} />
+			<label>梯線顏色</label>
+			<input type="color" bind:value={styleOptions.lineColor} />
+			<label>橫線顏色</label>
+			<input type="color" bind:value={styleOptions.rungColor} />
+			<label>線條粗細: {styleOptions.lineThickness}px</label>
+			<input
+				type="range"
+				bind:value={styleOptions.lineThickness}
+				min="1"
+				max="10"
+				class="slider"
+			/>
+		</div>
+
+		<h4 class="config-header">儲存/分享</h4>
+		<div class="save-share-grid">
+			<button onclick={exportState}>匯出設定到剪貼簿</button>
+			<textarea bind:value={importJson} placeholder="在此貼上設定 JSON..."></textarea>
+			<button onclick={importState}>從 JSON 匯入設定</button>
+		</div>
+	</div>
 </div>
 
 <style>
@@ -339,7 +580,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		font-family: sans-serif;
+		padding: 1rem;
+		box-sizing: border-box;
 	}
 	.inputs,
 	.results-container {
@@ -365,8 +607,18 @@
 		border: 1px solid #ccc;
 		padding: 5px;
 		border-radius: 4px;
+		background-color: inherit;
+		color: inherit;
+		font-family: inherit;
+		font-size: inherit;
+	}
+	.svg-container {
+		width: 100%;
+		max-width: 800px; /* Prevent it from getting too wide */
 	}
 	.ladder-svg {
+		width: 100%;
+		height: auto;
 		border: 1px solid #eee;
 	}
 	.controls {
@@ -378,6 +630,13 @@
 		padding: 10px 20px;
 		font-size: 1em;
 		cursor: pointer;
+		background-color: #f0f0f0;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 	.trace-path {
 		stroke-dasharray: 5000;
@@ -394,5 +653,108 @@
 		border: 1px solid #ccc;
 		padding: 10px;
 		width: 300px;
+	}
+	.config-panel {
+		margin-top: 20px;
+		padding: 15px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		width: 100%;
+		max-width: 500px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.config-panel h3,
+	.config-panel h4 {
+		margin: 0;
+		text-align: center;
+	}
+	.config-panel textarea {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 8px;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+		background-color: inherit;
+		color: inherit;
+		font-family: inherit;
+	}
+	.error-message {
+		color: red;
+		font-weight: bold;
+		margin: 0;
+		text-align: center;
+	}
+	.config-header {
+		margin-top: 15px;
+		margin-bottom: 5px;
+		border-top: 1px solid #eee;
+		padding-top: 15px;
+	}
+	.style-grid {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 8px 12px;
+		align-items: center;
+	}
+	.style-grid label {
+		font-weight: normal;
+		text-align: right;
+		font-size: 0.9em;
+	}
+	.save-share-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.manual-mode-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 8px;
+		background-color: #f0f0f0;
+		border-radius: 5px;
+		margin-top: 10px;
+	}
+	.manual-mode-toggle label {
+		cursor: pointer;
+	}
+	.ladder-svg.manual-mode {
+		cursor: pointer;
+	}
+	.style-grid input,
+	.style-grid select {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 4px;
+	}
+	.slider {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 10px;
+		background: #ddd;
+		outline: none;
+		opacity: 0.7;
+		-webkit-transition: 0.2s;
+		transition: opacity 0.2s;
+		border-radius: 5px;
+	}
+	.slider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		background: #4caf50;
+		cursor: pointer;
+		border-radius: 50%;
+	}
+	.slider::-moz-range-thumb {
+		width: 20px;
+		height: 20px;
+		background: #4caf50;
+		cursor: pointer;
+		border-radius: 50%;
 	}
 </style>
