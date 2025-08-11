@@ -3,11 +3,11 @@
 	import type { Writable } from 'svelte/store';
 
 	const activeTab = getContext<Writable<number>>('activeTab');
-	let { index = 0 } = $props<{ index: number }>();
+	let { index = 0, children } = $props();
 </script>
 
 {#if $activeTab === index}
 	<div class="tab-panel">
-		<slot />
+		{@render children()}
 	</div>
 {/if}

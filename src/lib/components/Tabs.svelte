@@ -5,7 +5,7 @@
 	const activeTab = writable(0);
 	setContext('activeTab', activeTab);
 
-	let { titles = [] } = $props<{ titles: string[] }>();
+	let { titles = [], children } = $props();
 </script>
 
 <div class="tabs">
@@ -17,7 +17,7 @@
 		{/each}
 	</div>
 	<div class="tab-content">
-		<slot />
+		{@render children()}
 	</div>
 </div>
 

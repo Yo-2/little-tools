@@ -1,12 +1,29 @@
 <script lang="ts">
-	let { isOpen, close } = $props();
+	let {
+		isOpen,
+		close,
+		children
+	} = $props();
 </script>
 
 {#if isOpen}
-	<div class="sidebar-overlay" onclick={close}>
-		<div class="sidebar-content" onclick={(e) => e.stopPropagation()}>
+	<div
+		class="sidebar-overlay"
+		onclick={close}
+		onkeydown={(e) => e.key === 'Escape' && close()}
+		role="button"
+		tabindex="-1"
+	>
+		<div
+			class="sidebar-content"
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+		>
 			<button class="close-button" onclick={close}>&times;</button>
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 {/if}

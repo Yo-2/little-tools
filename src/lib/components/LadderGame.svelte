@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 
-	$props(); // No props needed, but the declaration is required for components in /routes.
-
 	// --- State ---
 	// All configuration is now derived from the global store.
 	let players = $derived($configStore.ladderPlayers.split('\n').filter(Boolean));
@@ -290,9 +288,13 @@
 
 	{#if Object.keys(resultsToShow).length > 0}
 		<div class="winners">
-			<h3 class="collapsible-header" onclick={() => (isResultsExpanded = !isResultsExpanded)}>
+			<button
+				class="collapsible-header"
+				onclick={() => (isResultsExpanded = !isResultsExpanded)}
+				aria-expanded={isResultsExpanded}
+			>
 				結果 {isResultsExpanded ? '▼' : '▶'}
-			</h3>
+			</button>
 			{#if isResultsExpanded}
 				<ul>
 					{#each Object.entries(resultsToShow) as [player, result]}
@@ -382,6 +384,14 @@
 		cursor: pointer;
 		user-select: none;
 		margin: 0 0 10px 0;
+		padding: 0;
+		border: none;
+		background: none;
+		font-size: 1.17em;
+		font-weight: bold;
+		width: 100%;
+		text-align: left;
+		color: inherit;
 	}
 	.winners ul {
 		margin: 0;
