@@ -28,6 +28,11 @@ export interface Config {
 	ladderPlayers: string;
 	ladderResults: string;
 	ladderAnimationSpeed: number;
+	ladderLineColor: string;
+	ladderRungColor: string;
+	ladderLineThickness: number;
+	ladderIsObfuscated: boolean;
+	ladderIsManualMode: boolean;
 }
 
 const defaultConfig: Config = {
@@ -51,7 +56,12 @@ const defaultConfig: Config = {
 
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
 	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D',
-	ladderAnimationSpeed: 2
+	ladderAnimationSpeed: 2,
+	ladderLineColor: '#000000',
+	ladderRungColor: '#A52A2A',
+	ladderLineThickness: 2,
+	ladderIsObfuscated: false,
+	ladderIsManualMode: false
 };
 
 function createPersistentStore<T>(key: string, startValue: T): Writable<T> {
