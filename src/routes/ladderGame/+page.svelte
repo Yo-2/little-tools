@@ -1,11 +1,10 @@
 <script lang="ts">
 	import LadderGame from '$lib/components/LadderGame.svelte';
-	let { data } = $props();
 </script>
 
 <div class="container">
 	<h1>Ladder Game</h1>
-	<LadderGame players={data.players} results={data.results} />
+	<LadderGame />
 </div>
 
 <style>

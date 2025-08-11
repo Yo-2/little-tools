@@ -25,6 +25,9 @@ export default ts.config(
 			parserOptions: {
 				parser: ts.parser
 			}
+		},
+		rules: {
+			'@typescript-eslint/no-unused-vars': 'off'
 		}
 	},
 	{
