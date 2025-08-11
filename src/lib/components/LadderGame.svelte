@@ -356,7 +356,9 @@
 				class="player-input"
 				role="button"
 				tabindex="0"
-				onmouseenter={() => (hoveredPathIndex = i)}
+				onmouseenter={() => {
+					if (!isAnimating) hoveredPathIndex = i;
+				}}
 				onmouseleave={() => (hoveredPathIndex = null)}
 			>
 				<input
@@ -469,7 +471,9 @@
 				class="result-input"
 				role="button"
 				tabindex="0"
-				onmouseenter={() => (hoveredPathIndex = resultToPlayerMap[i])}
+				onmouseenter={() => {
+					if (!isAnimating) hoveredPathIndex = resultToPlayerMap[i];
+				}}
 				onmouseleave={() => (hoveredPathIndex = null)}
 			>
 				{#if isRevealed}
