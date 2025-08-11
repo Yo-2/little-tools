@@ -4,7 +4,7 @@
 
 <div class="container">
 	<h1>Ladder Game</h1>
-	<LadderGame />
+	<LadderGame showSidebarToggle={true} />
 </div>
 
 <style>

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 
+	const { showSidebarToggle = false } = $props();
+
 	// --- Component State (non-persistent) ---
 	let rungs = $state<[number, number][]>([]); // [ladderIndex, yPosition]
 	let paths = $state<(string | undefined)[]>([]);
@@ -28,8 +30,8 @@
 			.split('\n')
 			.map((s) => s.trim())
 			.filter(Boolean);
-		if (players.length > newResults.length) {
-			const diff = players.length - newResults.length;
+		if (players().length > newResults.length) {
+			const diff = players().length - newResults.length;
 			for (let i = 0; i < diff; i++) {
 				newResults.push(`Prize ${newResults.length + 1}`);
 			}
@@ -59,7 +61,7 @@
 		const y = event.clientY - svgRect.top;
 
 		const laneIndex = Math.floor(x / $configStore.ladderWidth);
-		if (laneIndex >= players.length - 1) return;
+		if (laneIndex >= players().length - 1) return;
 
 		const yLevels = Array.from(
 			{ length: 12 },
@@ -95,7 +97,7 @@
 		isResultsCollapsed = true; // Collapse results on new ladder
 
 		const newRungs: [number, number][] = [];
-		const numPlayers = players.length;
+		const numPlayers = players().length;
 		if (numPlayers <= 1) {
 			rungs = [];
 			return;
@@ -184,10 +186,10 @@
 	function calculateAllPaths() {
 		winners = {};
 		const newResultToPlayerMap: Record<number, number> = {};
-		allCalculatedPaths = players.map((_, i) => {
+		allCalculatedPaths = players().map((_, i) => {
 			const { path, endLadder } = tracePath(i);
-			if (players[i] && results[endLadder]) {
-				winners[players[i]] = results[endLadder];
+			if (players()[i] && results()[endLadder]) {
+				winners[players()[i]] = results()[endLadder];
 				newResultToPlayerMap[endLadder] = i;
 			}
 			return path;
@@ -220,8 +222,8 @@
 
 		setTimeout(() => {
 			visiblePaths[playerIndex] = allCalculatedPaths[playerIndex] as string;
-			if (players[playerIndex] && winners[players[playerIndex]]) {
-				revealedWinners[players[playerIndex]] = winners[players[playerIndex]];
+			if (players()[playerIndex] && winners[players()[playerIndex]]) {
+				revealedWinners[players()[playerIndex]] = winners[players()[playerIndex]];
 			}
 			paths = [];
 			isAnimating = false;
@@ -234,15 +236,15 @@
 		showPaths = true;
 		calculateAllPaths();
 
-		for (let i = 0; i < players.length; i++) {
+		for (let i = 0; i < players().length; i++) {
 			const newPaths: (string | undefined)[] = [];
 			newPaths[i] = allCalculatedPaths[i];
 			paths = newPaths;
 			await new Promise((resolve) =>
 				setTimeout(resolve, $configStore.ladderAnimationSpeed * 1000 + 100)
 			);
-			if (players[i] && winners[players[i]]) {
-				revealedWinners[players[i]] = winners[players[i]];
+			if (players()[i] && winners[players()[i]]) {
+				revealedWinners[players()[i]] = winners[players()[i]];
 			}
 		}
 
@@ -253,13 +255,20 @@
 
 <div
 	class="game-container"
-	style="--animation-duration: {$configStore.ladderAnimationSpeed}s; background-color: {$configStore
-		.ladderStyleOptions.backgroundColor}; font-family: {$configStore.ladderStyleOptions
-		.fontFamily}; font-size: {$configStore.ladderStyleOptions
-		.fontSize}px; font-weight: {$configStore.ladderStyleOptions.fontWeight}; color: {$configStore
-		.ladderStyleOptions.textColor};"
+	style="
+		--animation-duration: {$configStore.ladderAnimationSpeed}s;
+		--player-count: {players.length};
+		--svg-width: {players.length * $configStore.ladderWidth}px;
+		background-color: {$configStore.ladderStyleOptions.backgroundColor};
+		font-family: {$configStore.ladderStyleOptions.fontFamily};
+		font-size: {$configStore.ladderStyleOptions.fontSize}px;
+		font-weight: {$configStore.ladderStyleOptions.fontWeight};
+		color: {$configStore.ladderStyleOptions.textColor};
+	"
 >
-	<button class="sidebar-toggle" onclick={() => (isSidebarOpen = !isSidebarOpen)}>⚙️</button>
+	{#if showSidebarToggle}
+		<button class="sidebar-toggle" onclick={() => (isSidebarOpen = !isSidebarOpen)}>⚙️</button>
+	{/if}
 
 	<div class="inputs">
 		{#each players as _, i}
@@ -369,7 +378,7 @@
 		{#each results as _, i}
 			{@const playerIndex = resultToPlayerMap[i]}
 			{@const isRevealed =
-				!$configStore.ladderIsObfuscated || revealedWinners[players()[playerIndex]]}
+				!$configStore.ladderIsObfuscated || revealedWinners[players[playerIndex]]}
 			<div
 				class="result-input"
 				role="button"
@@ -531,22 +540,32 @@
 		min-height: 100vh;
 		overflow-x: hidden;
 	}
-	.inputs,
+	.inputs {
+		display: grid;
+		grid-template-columns: repeat(var(--player-count, 1), 1fr);
+		width: var(--svg-width, 100%);
+		max-width: 100%;
+		margin-bottom: 10px;
+	}
 	.results-container {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 10px;
-		margin-bottom: 10px;
-	}
-	.results-container {
 		margin-top: 10px;
+		margin-bottom: 10px;
 	}
 	.player-input,
 	.result-input {
-		width: 90px;
 		text-align: center;
 		cursor: pointer;
+	}
+	.player-input input {
+		width: 90%; /* Give a little space */
+		margin: auto;
+	}
+	.result-input {
+		width: 90px;
 	}
 	input {
 		width: 100%;
