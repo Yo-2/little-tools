@@ -1,8 +1,19 @@
 <script lang="ts">
+	import type { Config } from '$lib/configStore';
+
 	// Props for the wheel segments and colors
 	let {
 		items = ['Prize 1', 'Prize 2', 'Prize 3', 'Prize 4', 'Prize 5', 'Prize 6'],
-		colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
+		colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A'],
+		// General styles
+		fontFamily = 'sans-serif',
+		fontSize = '1.5rem',
+		fontWeight = 'normal',
+		textColor = '#000000',
+		bgColorHex = 'rgba(0,0,0,0)',
+		// Override logic
+		spinningWheelOverrideGeneralStyle = false,
+		spinningWheelStyleOptions = {} as Config['spinningWheelStyleOptions']
 	} = $props();
 
 	let spinning = $state(false);
@@ -38,9 +49,19 @@
 			result = items[winningIndex];
 		}, 4000); // Corresponds to the CSS transition duration
 	}
+
+	const effectiveStyles = $derived(
+		spinningWheelOverrideGeneralStyle
+			? spinningWheelStyleOptions
+			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+	);
 </script>
 
-<div class="wheel-container">
+<div
+	class="wheel-container"
+	style:background-color={effectiveStyles.bgColorHex}
+	style:color={effectiveStyles.textColor}
+>
 	<div class="wheel" style:transform="rotate({rotation}deg)">
 		<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
 			{#each items as item, i}
@@ -52,7 +73,9 @@
 					x={textX * 0.6}
 					y={textY * 0.6}
 					font-size="0.1"
-					fill="#000"
+					fill={effectiveStyles.textColor}
+					font-family={effectiveStyles.fontFamily}
+					font-weight={effectiveStyles.fontWeight}
 					text-anchor="middle"
 					alignment-baseline="middle"
 					transform="rotate({(i + 0.5) * anglePerSegment + 90}, {textX * 0.6}, {textY * 0.6})"
@@ -67,7 +90,14 @@
 		{#if spinning}Spinning...{:else}Spin{/if}
 	</button>
 	{#if result}
-		<div class="result">Result: <strong>{result}</strong></div>
+		<div
+			class="result"
+			style:font-family={effectiveStyles.fontFamily}
+			style:font-size={effectiveStyles.fontSize}
+			style:font-weight={effectiveStyles.fontWeight}
+		>
+			Result: <strong>{result}</strong>
+		</div>
 	{/if}
 </div>
 
@@ -78,6 +108,8 @@
 		gap: 2rem;
 		padding: 2rem;
 		position: relative;
+		width: 100%;
+		height: 100%;
 	}
 	.wheel {
 		width: 300px;

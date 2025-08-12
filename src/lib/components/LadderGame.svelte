@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
+	import { writable } from 'svelte/store';
 
-	/* eslint-disable @typescript-eslint/no-unused-vars */
 	// --- Props ---
 	const { showSidebarToggle = false } = $props();
 
@@ -31,15 +31,37 @@
 	// --- Component State ---
 	let isManualMode = $state(false);
 	let importJson = $state('');
-	let styleOptions = $state({
+
+	// --- Style Derivations ---
+	const effectiveStylesStore = writable({
 		fontFamily: 'sans-serif',
-		fontSize: 14,
+		fontSize: '14px',
 		fontWeight: 'normal',
 		textColor: '#333333',
 		backgroundColor: '#ffffff',
 		lineColor: '#000000',
-		rungColor: '#A52A2A', // brown
+		rungColor: '#A52A2A',
 		lineThickness: 2
+	});
+
+	$effect(() => {
+		if ($configStore.ladderOverrideGeneralStyle) {
+			effectiveStylesStore.set({
+				...$configStore.ladderStyleOptions,
+				fontSize: `${$configStore.ladderStyleOptions.fontSize}px`
+			});
+		} else {
+			effectiveStylesStore.set({
+				fontFamily: $configStore.fontFamily,
+				fontSize: $configStore.fontSize,
+				fontWeight: $configStore.fontWeight,
+				textColor: $configStore.textColor,
+				backgroundColor: $configStore.bgColorHex,
+				lineColor: $configStore.textColor,
+				rungColor: '#A52A2A',
+				lineThickness: 2
+			});
+		}
 	});
 
 	// --- Lifecycle ---
@@ -79,43 +101,6 @@
 	});
 
 	// --- Functions ---
-	function exportState() {
-		const state = {
-			players,
-			results,
-			rungs,
-			styleOptions,
-			isManualMode
-		};
-		const json = JSON.stringify(state, null, 2);
-		navigator.clipboard.writeText(json);
-		alert('Settings copied to clipboard!');
-	}
-
-	function importState() {
-		try {
-			const state = JSON.parse(importJson);
-			// Basic validation
-			if (!state.players || !state.results || !state.rungs || !state.styleOptions) {
-				throw new Error('Invalid JSON format.');
-			}
-			players = state.players;
-			results = state.results;
-			rungs = state.rungs;
-			styleOptions = state.styleOptions;
-			isManualMode = state.isManualMode ?? false;
-
-			// Sync textareas
-			startItemsInput = players.join('\n');
-			endItemsInput = results.join('\n');
-
-			alert('Import successful!');
-		} catch (e) {
-			alert('Import failed: Invalid JSON format or missing fields.');
-			console.error(e);
-		}
-	}
-
 	function handleSvgKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			// This is a simplified handler to satisfy a11y.
@@ -340,11 +325,11 @@
 	style="
 		--player-count: {players.length};
 		--svg-width: {players.length * LADDER_WIDTH}px;
-		background-color: {styleOptions.backgroundColor};
-		font-family: {styleOptions.fontFamily};
-		font-size: {styleOptions.fontSize}px;
-		font-weight: {styleOptions.fontWeight};
-		color: {styleOptions.textColor};
+		background-color: {$effectiveStylesStore.backgroundColor};
+		font-family: {$effectiveStylesStore.fontFamily};
+		font-size: {$effectiveStylesStore.fontSize};
+		font-weight: {$effectiveStylesStore.fontWeight};
+		color: {$effectiveStylesStore.textColor};
 	"
 >
 	{#if showSidebarToggle}
@@ -395,8 +380,8 @@
 					y1="0"
 					x2={i * LADDER_WIDTH + LADDER_WIDTH / 2}
 					y2={LADDER_HEIGHT}
-					stroke={styleOptions.lineColor}
-					stroke-width={styleOptions.lineThickness}
+					stroke={$effectiveStylesStore.lineColor}
+					stroke-width={$effectiveStylesStore.lineThickness}
 				/>
 			{/each}
 			<!-- Rungs -->
@@ -406,8 +391,8 @@
 					y1={y}
 					x2={(ladderIndex + 1) * LADDER_WIDTH + LADDER_WIDTH / 2}
 					y2={y}
-					stroke={styleOptions.rungColor}
-					stroke-width={styleOptions.lineThickness}
+					stroke={$effectiveStylesStore.rungColor}
+					stroke-width={$effectiveStylesStore.lineThickness}
 				/>
 			{/each}
 			<!-- Paths -->
@@ -511,12 +496,13 @@
 
 	{#if Object.keys(resultsToShow).length > 0}
 		<div class="winners">
-			<h3
+			<button
+				class="results-toggle"
 				onclick={() => (isResultsCollapsed = !isResultsCollapsed)}
-				style="cursor: pointer; user-select: none;"
+				aria-expanded={!isResultsCollapsed}
 			>
-				Results {isResultsCollapsed ? '▼' : '▲'}
-			</h3>
+				<h3>Results {isResultsCollapsed ? '▼' : '▲'}</h3>
+			</button>
 			{#if !isResultsCollapsed}
 				<ul>
 					{#each Object.entries(resultsToShow) as [player, result]}
@@ -531,58 +517,78 @@
 		<div class="sidebar">
 			<h3>Ladder Game Settings</h3>
 			<div>
-			<label for="start-items">Start Items (one per line)</label>
-			<textarea id="start-items" bind:value={$configStore.ladderPlayers} rows="4"></textarea>
-		</div>
-		<div>
-			<label for="end-items">End Items (one per line)</label>
-			<textarea id="end-items" bind:value={$configStore.ladderResults} rows="4"></textarea>
-		</div>
+				<label for="start-items">Start Items (one per line)</label>
+				<textarea id="start-items" bind:value={$configStore.ladderPlayers} rows="4"></textarea>
+			</div>
+			<div>
+				<label for="end-items">End Items (one per line)</label>
+				<textarea id="end-items" bind:value={$configStore.ladderResults} rows="4"></textarea>
+			</div>
 
-		<div class="manual-mode-toggle">
-			<label>
-				<input type="checkbox" bind:checked={isManualMode} />
-				Manual Mode
-			</label>
-		</div>
+			<div class="manual-mode-toggle">
+				<label>
+					<input type="checkbox" bind:checked={isManualMode} />
+					Manual Mode
+				</label>
+			</div>
 
-		<h4 class="config-header">Style Options</h4>
-		<div class="style-grid">
-			<label for="font-family-input">Font Family</label>
-			<input id="font-family-input" type="text" bind:value={styleOptions.fontFamily} />
-			<label for="font-size-input">Font Size (px)</label>
-			<input id="font-size-input" type="number" bind:value={styleOptions.fontSize} min="8" />
-			<label for="font-weight-select">Font Weight</label>
-			<select id="font-weight-select" bind:value={styleOptions.fontWeight}>
-				<option value="normal">Normal</option>
-				<option value="bold">Bold</option>
-				<option value="lighter">Lighter</option>
-			</select>
-			<label for="text-color-input">Text Color</label>
-			<input id="text-color-input" type="color" bind:value={styleOptions.textColor} />
-			<label for="bg-color-input">Background Color</label>
-			<input id="bg-color-input" type="color" bind:value={styleOptions.backgroundColor} />
-			<label for="line-color-input">Line Color</label>
-			<input id="line-color-input" type="color" bind:value={styleOptions.lineColor} />
-			<label for="rung-color-input">Rung Color</label>
-			<input id="rung-color-input" type="color" bind:value={styleOptions.rungColor} />
-			<label for="line-thickness-range">Line Thickness: {styleOptions.lineThickness}px</label>
-			<input
-				id="line-thickness-range"
-				type="range"
-				bind:value={styleOptions.lineThickness}
-				min="1"
-				max="10"
-				class="slider"
-			/>
-		</div>
-
-		<h4 class="config-header">Save & Share</h4>
-		<div class="save-share-grid">
-			<button onclick={exportState}>Export to Clipboard</button>
-			<textarea bind:value={importJson} placeholder="Paste JSON..."></textarea>
-			<button onclick={importState}>Import from JSON</button>
-		</div>
+			<h4 class="config-header">Style Options</h4>
+			<div class="style-grid">
+				<label for="font-family-input">Font Family</label>
+				<input
+					id="font-family-input"
+					type="text"
+					bind:value={$configStore.ladderStyleOptions.fontFamily}
+				/>
+				<label for="font-size-input">Font Size (px)</label>
+				<input
+					id="font-size-input"
+					type="number"
+					bind:value={$configStore.ladderStyleOptions.fontSize}
+					min="8"
+				/>
+				<label for="font-weight-select">Font Weight</label>
+				<select id="font-weight-select" bind:value={$configStore.ladderStyleOptions.fontWeight}>
+					<option value="normal">Normal</option>
+					<option value="bold">Bold</option>
+					<option value="lighter">Lighter</option>
+				</select>
+				<label for="text-color-input">Text Color</label>
+				<input
+					id="text-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.textColor}
+				/>
+				<label for="bg-color-input">Background Color</label>
+				<input
+					id="bg-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.backgroundColor}
+				/>
+				<label for="line-color-input">Line Color</label>
+				<input
+					id="line-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.lineColor}
+				/>
+				<label for="rung-color-input">Rung Color</label>
+				<input
+					id="rung-color-input"
+					type="color"
+					bind:value={$configStore.ladderStyleOptions.rungColor}
+				/>
+				<label for="line-thickness-range"
+					>Line Thickness: {$configStore.ladderStyleOptions.lineThickness}px</label
+				>
+				<input
+					id="line-thickness-range"
+					type="range"
+					bind:value={$configStore.ladderStyleOptions.lineThickness}
+					min="1"
+					max="10"
+					class="slider"
+				/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -697,10 +703,19 @@
 		text-align: right;
 		font-size: 0.9em;
 	}
-	.save-share-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
+	.results-toggle {
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		font: inherit;
+		color: inherit;
+		cursor: pointer;
+		width: 100%;
+		text-align: left;
+	}
+	.results-toggle h3 {
+		margin: 0;
 	}
 	.manual-mode-toggle {
 		display: flex;
