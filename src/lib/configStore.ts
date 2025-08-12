@@ -159,7 +159,8 @@ export const activeProfileNameStore = createPersistentStore<string | null>(
 export function saveProfile(name: string) {
 	const currentConfig = get(configStore);
 	profilesStore.update((profiles) => {
-		profiles[name] = currentConfig;
+		// Deep copy the config object to prevent reference issues
+		profiles[name] = JSON.parse(JSON.stringify(currentConfig));
 		return profiles;
 	});
 	activeProfileNameStore.set(name);

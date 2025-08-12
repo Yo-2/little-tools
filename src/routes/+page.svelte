@@ -128,20 +128,22 @@
 		<h2>Settings</h2>
 
 		<section class="profile-manager">
-			<h3>Profiles</h3>
 			<div class="profile-controls">
-				<select
-					onchange={handleSwitchProfile}
-					class="profile-select"
-					bind:value={$activeProfileNameStore}
-				>
-					{#if profileNames.length === 0}
-						<option value="" disabled selected>No profiles saved</option>
-					{/if}
-					{#each profileNames as name}
-						<option value={name}>{name}</option>
-					{/each}
-				</select>
+				<label class="profile-label">
+					Profile:
+					<select
+						onchange={handleSwitchProfile}
+						class="profile-select"
+						bind:value={$activeProfileNameStore}
+					>
+						{#if profileNames.length === 0}
+							<option value="" disabled selected>No profiles saved</option>
+						{/if}
+						{#each profileNames as name}
+							<option value={name}>{name}</option>
+						{/each}
+					</select>
+				</label>
 				<div class="profile-buttons">
 					<button onclick={handleSaveProfile} title="Save current settings as new profile"
 						>Save As...</button
@@ -848,14 +850,8 @@
 	.profile-manager {
 		background-color: #f0f0f0;
 		padding: 1rem;
-		margin: -2rem -2rem 2rem -2rem; /* Extend to panel edges */
+		margin: 0 -2rem 2rem -2rem; /* Extend to panel edges, remove negative top margin */
 		border-bottom: 1px solid #eaeaea;
-	}
-
-	.profile-manager h3 {
-		margin-top: 0;
-		margin-bottom: 1rem;
-		text-align: center;
 	}
 
 	.profile-controls {
@@ -864,8 +860,16 @@
 		gap: 0.75rem;
 	}
 
+	.profile-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: bold;
+	}
+
 	.profile-select {
-		width: 100%;
+		flex-grow: 1;
+		font-weight: normal; /* Override bold from label */
 	}
 
 	.profile-buttons {

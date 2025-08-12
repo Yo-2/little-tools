@@ -605,7 +605,8 @@
 		min-height: 100vh;
 		overflow-x: hidden;
 	}
-	.inputs {
+	.inputs,
+	.results-container {
 		display: grid;
 		grid-template-columns: repeat(var(--player-count, 1), 1fr);
 		width: var(--svg-width, 100%);
@@ -613,25 +614,17 @@
 		margin-bottom: 10px;
 	}
 	.results-container {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 10px;
 		margin-top: 10px;
-		margin-bottom: 10px;
 	}
-	.player-input {
+	.player-input,
+	.result-input {
 		text-align: center;
 		cursor: pointer;
 	}
-	.player-input input {
+	.player-input input,
+	.result-input input {
 		width: 90%; /* Give a little space */
 		margin: auto;
-	}
-	.result-input {
-		width: 90px;
-		text-align: center;
-		cursor: pointer;
 	}
 	input {
 		width: 100%;
