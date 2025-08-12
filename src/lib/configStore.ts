@@ -166,6 +166,17 @@ export function saveProfile(name: string) {
 	activeProfileNameStore.set(name);
 }
 
+export function updateActiveProfile() {
+	const activeName = get(activeProfileNameStore);
+	if (!activeName) return;
+
+	const currentConfig = get(configStore);
+	profilesStore.update((profiles) => {
+		profiles[activeName] = JSON.parse(JSON.stringify(currentConfig));
+		return profiles;
+	});
+}
+
 export function renameProfile(oldName: string, newName: string) {
 	profilesStore.update((profiles) => {
 		if (profiles[oldName] && !profiles[newName]) {

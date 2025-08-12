@@ -533,62 +533,70 @@
 			</div>
 
 			<h4 class="config-header">Style Options</h4>
-			<div class="style-grid">
-				<label for="font-family-input">Font Family</label>
-				<input
-					id="font-family-input"
-					type="text"
-					bind:value={$configStore.ladderStyleOptions.fontFamily}
-				/>
-				<label for="font-size-input">Font Size (px)</label>
-				<input
-					id="font-size-input"
-					type="number"
-					bind:value={$configStore.ladderStyleOptions.fontSize}
-					min="8"
-				/>
-				<label for="font-weight-select">Font Weight</label>
-				<select id="font-weight-select" bind:value={$configStore.ladderStyleOptions.fontWeight}>
-					<option value="normal">Normal</option>
-					<option value="bold">Bold</option>
-					<option value="lighter">Lighter</option>
-				</select>
-				<label for="text-color-input">Text Color</label>
-				<input
-					id="text-color-input"
-					type="color"
-					bind:value={$configStore.ladderStyleOptions.textColor}
-				/>
-				<label for="bg-color-input">Background Color</label>
-				<input
-					id="bg-color-input"
-					type="color"
-					bind:value={$configStore.ladderStyleOptions.backgroundColor}
-				/>
-				<label for="line-color-input">Line Color</label>
-				<input
-					id="line-color-input"
-					type="color"
-					bind:value={$configStore.ladderStyleOptions.lineColor}
-				/>
-				<label for="rung-color-input">Rung Color</label>
-				<input
-					id="rung-color-input"
-					type="color"
-					bind:value={$configStore.ladderStyleOptions.rungColor}
-				/>
-				<label for="line-thickness-range"
-					>Line Thickness: {$configStore.ladderStyleOptions.lineThickness}px</label
-				>
-				<input
-					id="line-thickness-range"
-					type="range"
-					bind:value={$configStore.ladderStyleOptions.lineThickness}
-					min="1"
-					max="10"
-					class="slider"
-				/>
+			<div class="manual-mode-toggle" style="padding: 8px; background-color: #f0f0f0;">
+				<label style="cursor: pointer;">
+					<input type="checkbox" bind:checked={$configStore.ladderOverrideGeneralStyle} />
+					Override general styles
+				</label>
 			</div>
+			{#if $configStore.ladderOverrideGeneralStyle}
+				<div class="style-grid">
+					<label for="font-family-input">Font Family</label>
+					<input
+						id="font-family-input"
+						type="text"
+						bind:value={$configStore.ladderStyleOptions.fontFamily}
+					/>
+					<label for="font-size-input">Font Size (px)</label>
+					<input
+						id="font-size-input"
+						type="number"
+						bind:value={$configStore.ladderStyleOptions.fontSize}
+						min="8"
+					/>
+					<label for="font-weight-select">Font Weight</label>
+					<select id="font-weight-select" bind:value={$configStore.ladderStyleOptions.fontWeight}>
+						<option value="normal">Normal</option>
+						<option value="bold">Bold</option>
+						<option value="lighter">Lighter</option>
+					</select>
+					<label for="text-color-input">Text Color</label>
+					<input
+						id="text-color-input"
+						type="color"
+						bind:value={$configStore.ladderStyleOptions.textColor}
+					/>
+					<label for="bg-color-input">Background Color</label>
+					<input
+						id="bg-color-input"
+						type="color"
+						bind:value={$configStore.ladderStyleOptions.backgroundColor}
+					/>
+					<label for="line-color-input">Line Color</label>
+					<input
+						id="line-color-input"
+						type="color"
+						bind:value={$configStore.ladderStyleOptions.lineColor}
+					/>
+					<label for="rung-color-input">Rung Color</label>
+					<input
+						id="rung-color-input"
+						type="color"
+						bind:value={$configStore.ladderStyleOptions.rungColor}
+					/>
+					<label for="line-thickness-range"
+						>Line Thickness: {$configStore.ladderStyleOptions.lineThickness}px</label
+					>
+					<input
+						id="line-thickness-range"
+						type="range"
+						bind:value={$configStore.ladderStyleOptions.lineThickness}
+						min="1"
+						max="10"
+						class="slider"
+					/>
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -610,7 +618,9 @@
 		display: grid;
 		grid-template-columns: repeat(var(--player-count, 1), 1fr);
 		width: var(--svg-width, 100%);
-		max-width: 100%;
+		max-width: 800px; /* Match the svg-container */
+		margin-left: auto;
+		margin-right: auto;
 		margin-bottom: 10px;
 	}
 	.results-container {

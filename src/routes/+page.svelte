@@ -14,6 +14,7 @@
 		profilesStore,
 		activeProfileNameStore,
 		saveProfile as saveProfileToStore,
+		updateActiveProfile,
 		renameProfile as renameProfileInStore,
 		deleteProfile as deleteProfileFromStore,
 		loadProfile
@@ -45,6 +46,11 @@
 		} else if (name) {
 			alert(`A profile named "${name}" already exists.`);
 		}
+	}
+
+	function handleUpdateProfile() {
+		updateActiveProfile();
+		alert(`Profile "${$activeProfileNameStore}" has been saved.`);
 	}
 
 	function handleRenameProfile() {
@@ -145,6 +151,11 @@
 					</select>
 				</label>
 				<div class="profile-buttons">
+					<button
+						onclick={handleUpdateProfile}
+						title="Save changes to current profile"
+						disabled={!$activeProfileNameStore}>Save</button
+					>
 					<button onclick={handleSaveProfile} title="Save current settings as new profile"
 						>Save As...</button
 					>
@@ -874,7 +885,7 @@
 
 	.profile-buttons {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, 1fr);
 		gap: 0.5rem;
 	}
 
