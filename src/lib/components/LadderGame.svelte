@@ -617,7 +617,7 @@
 	.results-container {
 		display: grid;
 		grid-template-columns: repeat(var(--player-count, 1), 1fr);
-		width: var(--svg-width, 100%);
+		width: 100%;
 		max-width: 800px; /* Match the svg-container */
 		margin-left: auto;
 		margin-right: auto;
@@ -774,9 +774,6 @@
 		top: 20px;
 		right: 20px;
 		z-index: 1001;
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
 		font-size: 24px;
 		line-height: 1;
 	}
