@@ -14,8 +14,21 @@
 		}[];
 	}
 
+	import type { Config } from '$lib/configStore';
+
 	// --- Props ---
-	let { location = 'London' } = $props();
+	let {
+		location = 'London',
+		// General styles
+		fontFamily = 'sans-serif',
+		fontSize = '1rem',
+		fontWeight = 'normal',
+		textColor = '#000000',
+		bgColorHex = '#ffffff',
+		// Override logic
+		weatherOverrideGeneralStyle = false,
+		weatherStyleOptions = {} as Config['weatherStyleOptions']
+	} = $props();
 
 	// --- State ---
 	let weatherData = $state<WeatherData | null>(null);
@@ -62,9 +75,23 @@
 			loading = false;
 		}
 	}
+
+	const effectiveStyles = $derived(
+		weatherOverrideGeneralStyle
+			? weatherStyleOptions
+			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+	);
+
+	let style = $derived(`
+		--bg-color: ${effectiveStyles.bgColorHex || '#ffffff'};
+		--text-color: ${effectiveStyles.textColor || '#000000'};
+		--font-size: ${effectiveStyles.fontSize || '1rem'};
+		--font-weight: ${effectiveStyles.fontWeight || 'normal'};
+		--font-family: ${effectiveStyles.fontFamily || 'sans-serif'};
+	`);
 </script>
 
-<div class="weather-widget">
+<div class="weather-widget" {style}>
 	{#if loading}
 		<p>Loading...</p>
 	{:else if error}
@@ -88,12 +115,20 @@
 
 <style>
 	.weather-widget {
-		font-family: sans-serif;
+		font-family: var(--font-family);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
+		color: var(--text-color);
+		background-color: var(--bg-color);
 		padding: 1rem;
 		border: 1px solid #ccc;
 		border-radius: 8px;
 		min-width: 200px;
 		text-align: center;
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-content: center;
 	}
 	.error {
 		color: red;

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
+	import type { Config } from '$lib/configStore';
+
 	let {
 		hours: initialHours = 0,
 		minutes: initialMinutes = 0,
@@ -10,7 +12,10 @@
 		textColor = '#000000',
 		fontSize = '2rem',
 		fontWeight = 'normal',
-		fontFamily = 'sans-serif'
+		fontFamily = 'sans-serif',
+
+		timerOverrideGeneralStyle = false,
+		timerStyleOptions = {} as Config['timerStyleOptions']
 	} = $props();
 
 	let defaultData = $derived({
@@ -94,12 +99,18 @@
 		clearInterval(timerId);
 	});
 
+	const effectiveStyles = $derived(
+		timerOverrideGeneralStyle
+			? timerStyleOptions
+			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+	);
+
 	let style = $derived(`
-		--bg-color: ${bgColorHex || 'rgba(0,0,0,0)'};
-		--text-color: ${textColor || '#000000'};
-		--font-size: ${fontSize || '2rem'};
-		--font-weight: ${fontWeight || 'normal'};
-		--font-family: ${fontFamily || 'sans-serif'};
+		--bg-color: ${effectiveStyles.bgColorHex || 'rgba(0,0,0,0)'};
+		--text-color: ${effectiveStyles.textColor || '#000000'};
+		--font-size: ${effectiveStyles.fontSize || '2rem'};
+		--font-weight: ${effectiveStyles.fontWeight || 'normal'};
+		--font-family: ${effectiveStyles.fontFamily || 'sans-serif'};
 	`);
 
 	let ariaLabel = $derived(
