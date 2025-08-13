@@ -33,6 +33,9 @@ export interface Config {
 	showDay: boolean;
 	timezone: string;
 	digitalClockWidth: string;
+	analogClockWidth: string;
+	clockOverrideGeneralStyle: boolean;
+	clockStyleOptions: ToolStyleOptions;
 
 	// Countdown Timer specific
 	hours: number;
@@ -80,6 +83,15 @@ const defaultConfig: Config = {
 	showDay: false,
 	timezone: '',
 	digitalClockWidth: '100%',
+	analogClockWidth: '100%',
+	clockOverrideGeneralStyle: false,
+	clockStyleOptions: {
+		fontFamily: 'sans-serif',
+		fontSize: '2rem',
+		fontWeight: 'normal',
+		textColor: '#000000',
+		bgColorHex: '#ffffff'
+	},
 
 	hours: 0,
 	minutes: 5,

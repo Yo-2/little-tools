@@ -2,28 +2,38 @@
 	import { onDestroy } from 'svelte';
 	import AnalogClock from './AnalogClock.svelte';
 
+	import type { ToolStyleOptions } from '$lib/configStore';
+
 	let {
 		styleType = 'digital', // 'digital' | 'analog'
 		showDate = false,
 		showDay = false,
 		timezone, // undefined means user's local time
 		digitalClockWidth = '100%',
+		analogClockWidth = '100%',
+		// General styles
 		bgColorHex = 'rgba(0,0,0,0)',
 		textColor = '#000000',
 		fontSize = '2rem',
 		fontWeight = 'normal',
-		fontFamily = 'sans-serif'
+		fontFamily = 'sans-serif',
+		// Override styles
+		clockOverrideGeneralStyle = false,
+		clockStyleOptions
 	} = $props<{
 		styleType?: 'digital' | 'analog';
 		showDate?: boolean;
 		showDay?: boolean;
 		timezone?: string;
 		digitalClockWidth?: string;
+		analogClockWidth?: string;
 		bgColorHex?: string;
 		textColor?: string;
 		fontSize?: string;
 		fontWeight?: string;
 		fontFamily?: string;
+		clockOverrideGeneralStyle?: boolean;
+		clockStyleOptions?: ToolStyleOptions;
 	}>();
 
 	let time = $state(new Date());
@@ -87,18 +97,39 @@
 		clearInterval(timerId);
 	});
 
+	const finalStyles = $derived(() => {
+		if (clockOverrideGeneralStyle && clockStyleOptions) {
+			return {
+				bgColor: clockStyleOptions.bgColorHex,
+				textColor: clockStyleOptions.textColor,
+				fontSize: clockStyleOptions.fontSize,
+				fontWeight: clockStyleOptions.fontWeight,
+				fontFamily: clockStyleOptions.fontFamily
+			};
+		}
+		return {
+			bgColor: bgColorHex,
+			textColor: textColor,
+			fontSize: fontSize,
+			fontWeight: fontWeight,
+			fontFamily: fontFamily
+		};
+	});
+
 	let style = $derived(`
-		--bg-color: ${bgColorHex || 'rgba(0,0,0,0)'};
-		--text-color: ${textColor || '#000000'};
-		--font-size: ${fontSize || '2rem'};
-		--font-weight: ${fontWeight || 'normal'};
-		--font-family: ${fontFamily || 'sans-serif'};
+		--bg-color: ${finalStyles().bgColor || 'rgba(0,0,0,0)'};
+		--text-color: ${finalStyles().textColor || '#000000'};
+		--font-size: ${finalStyles().fontSize || '2rem'};
+		--font-weight: ${finalStyles().fontWeight || 'normal'};
+		--font-family: ${finalStyles().fontFamily || 'sans-serif'};
 	`);
 </script>
 
 <div class="clock-container" {style}>
 	{#if styleType === 'analog'}
-		<AnalogClock {...timeParts()} {textColor} />
+		<div class="analog-clock-wrapper" style="width: {analogClockWidth};">
+			<AnalogClock {...timeParts()} textColor={finalStyles().textColor} />
+		</div>
 	{:else}
 		<div class="digital-clock-wrapper" style="width: {digitalClockWidth};">
 			<p class="clock" role="timer" aria-live="polite">{formatTime(time)}</p>
@@ -121,6 +152,7 @@
 		height: 100%;
 		background-color: var(--bg-color);
 	}
+	.analog-clock-wrapper,
 	.digital-clock-wrapper {
 		display: flex;
 		flex-direction: column;

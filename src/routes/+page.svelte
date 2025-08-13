@@ -112,8 +112,70 @@
 		return yiq >= 128 ? '#000000' : '#ffffff';
 	}
 
+	const googleFontsMap: Record<string, string> = {
+		'Noto Sans TC': 'Noto+Sans+TC',
+		'LXGW WenKai TC': 'LXGW+WenKai+TC',
+		DotGothic16: 'DotGothic16',
+		Orbitron: 'Orbitron',
+		Roboto: 'Roboto',
+		Inter: 'Inter',
+		'Roboto Slab': 'Roboto+Slab',
+		'Press Start 2P': 'Press+Start+2P'
+	};
+
+	function loadFont(fontName: string) {
+		if (!googleFontsMap[fontName] || document.getElementById(`font-link-${fontName}`)) {
+			return;
+		}
+
+		const link = document.createElement('link');
+		link.id = `font-link-${fontName}`;
+		link.rel = 'stylesheet';
+		link.href = `https://fonts.googleapis.com/css2?family=${googleFontsMap[fontName]}&display=swap`;
+		document.head.appendChild(link);
+	}
+
+	// --- Reactive Font Loading ---
+	$effect(() => {
+		// General font
+		if ($configStore.fontFamily) {
+			loadFont($configStore.fontFamily);
+		}
+		// Per-tool override fonts
+		if ($configStore.clockOverrideGeneralStyle && $configStore.clockStyleOptions.fontFamily) {
+			loadFont($configStore.clockStyleOptions.fontFamily);
+		}
+		if ($configStore.timerOverrideGeneralStyle && $configStore.timerStyleOptions.fontFamily) {
+			loadFont($configStore.timerStyleOptions.fontFamily);
+		}
+		if ($configStore.textOverrideGeneralStyle && $configStore.textStyleOptions.fontFamily) {
+			loadFont($configStore.textStyleOptions.fontFamily);
+		}
+		if (
+			$configStore.spinningWheelOverrideGeneralStyle &&
+			$configStore.spinningWheelStyleOptions.fontFamily
+		) {
+			loadFont($configStore.spinningWheelStyleOptions.fontFamily);
+		}
+		if ($configStore.ladderOverrideGeneralStyle && $configStore.ladderStyleOptions.fontFamily) {
+			loadFont($configStore.ladderStyleOptions.fontFamily);
+		}
+		if ($configStore.weatherOverrideGeneralStyle && $configStore.weatherStyleOptions.fontFamily) {
+			loadFont($configStore.weatherStyleOptions.fontFamily);
+		}
+	});
+
 	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
-	const fontFamilies = ['Orbitron', 'Roboto', 'Inter', 'Roboto Slab', 'Press Start 2P'];
+	const fontFamilies = [
+		'Orbitron',
+		'Roboto',
+		'Inter',
+		'Roboto Slab',
+		'Press Start 2P',
+		'Noto Sans TC',
+		'LXGW WenKai TC',
+		'DotGothic16'
+	];
 </script>
 
 <div class="config-page">
@@ -228,14 +290,34 @@
 							Analog
 						</label>
 					</div>
-					<label class="checkbox-label">
-						<input type="checkbox" bind:checked={$configStore.showDate} />
-						Show Date
-					</label>
-					<label class="checkbox-label">
-						<input type="checkbox" bind:checked={$configStore.showDay} />
-						Show Day of Week
-					</label>
+					{#if $configStore.styleType === 'digital'}
+						<label class="checkbox-label">
+							<input type="checkbox" bind:checked={$configStore.showDate} />
+							Show Date
+						</label>
+						<label class="checkbox-label">
+							<input type="checkbox" bind:checked={$configStore.showDay} />
+							Show Day of Week
+						</label>
+						<label>
+							Digital Clock Width
+							<input
+								type="text"
+								bind:value={$configStore.digitalClockWidth}
+								placeholder="e.g., 100% or 300px"
+							/>
+						</label>
+					{/if}
+					{#if $configStore.styleType === 'analog'}
+						<label>
+							Analog Clock Width
+							<input
+								type="text"
+								bind:value={$configStore.analogClockWidth}
+								placeholder="e.g., 300px or 100%"
+							/>
+						</label>
+					{/if}
 					<label>
 						Timezone
 						<input
@@ -244,14 +326,70 @@
 							placeholder="e.g., America/New_York"
 						/>
 					</label>
-					<label>
-						Digital Clock Width
-						<input
-							type="text"
-							bind:value={$configStore.digitalClockWidth}
-							placeholder="e.g., 100% or 300px"
-						/>
+
+					<h4 class="style-header">Style</h4>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.clockOverrideGeneralStyle} />
+						Override general styles
 					</label>
+
+					{#if $configStore.clockOverrideGeneralStyle}
+						<div class="style-options-group">
+							<label>
+								Font Family
+								<MultiSelect
+									bind:value={$configStore.clockStyleOptions.fontFamily}
+									options={fontFamilies}
+								/>
+							</label>
+							<label>
+								Font Size
+								<input type="text" bind:value={$configStore.clockStyleOptions.fontSize} />
+							</label>
+							<label>
+								Font Weight
+								<select bind:value={$configStore.clockStyleOptions.fontWeight}>
+									<option value="100">100</option>
+									<option value="200">200</option>
+									<option value="300">300</option>
+									<option value="400">400</option>
+									<option value="500">500</option>
+									<option value="600">600</option>
+									<option value="700">700</option>
+									<option value="800">800</option>
+									<option value="900">900</option>
+								</select>
+							</label>
+							<label>
+								Text Color
+								<div class="color-input-group">
+									<input type="color" bind:value={$configStore.clockStyleOptions.textColor} />
+									<input
+										type="text"
+										bind:value={$configStore.clockStyleOptions.textColor}
+										style="background-color: {$configStore.clockStyleOptions
+											.textColor}; color: {getContrastingTextColor(
+											$configStore.clockStyleOptions.textColor
+										)};"
+									/>
+								</div>
+							</label>
+							<label>
+								Background Color
+								<div class="color-input-group">
+									<input type="color" bind:value={$configStore.clockStyleOptions.bgColorHex} />
+									<input
+										type="text"
+										bind:value={$configStore.clockStyleOptions.bgColorHex}
+										style="background-color: {$configStore.clockStyleOptions
+											.bgColorHex}; color: {getContrastingTextColor(
+											$configStore.clockStyleOptions.bgColorHex
+										)};"
+									/>
+								</div>
+							</label>
+						</div>
+					{/if}
 				</section>
 			</Tab>
 			<Tab index={2}>
