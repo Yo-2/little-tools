@@ -7,6 +7,7 @@
 		showDate = false,
 		showDay = false,
 		timezone, // undefined means user's local time
+		digitalClockWidth = '100%',
 		bgColorHex = 'rgba(0,0,0,0)',
 		textColor = '#000000',
 		fontSize = '2rem',
@@ -17,6 +18,7 @@
 		showDate?: boolean;
 		showDay?: boolean;
 		timezone?: string;
+		digitalClockWidth?: string;
 		bgColorHex?: string;
 		textColor?: string;
 		fontSize?: string;
@@ -98,7 +100,7 @@
 	{#if styleType === 'analog'}
 		<AnalogClock {...timeParts()} {textColor} />
 	{:else}
-		<div class="digital-clock-wrapper">
+		<div class="digital-clock-wrapper" style="width: {digitalClockWidth};">
 			<p class="clock" role="timer" aria-live="polite">{formatTime(time)}</p>
 			{#if showDate}
 				<p class="date">{formatDate(time)}</p>

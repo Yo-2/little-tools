@@ -12,6 +12,7 @@ export function load({ url }) {
 		fontWeight: url.searchParams.get('fontWeight'),
 		showDate: showDate === 'true',
 		showDay: showDay === 'true',
-		timezone: url.searchParams.get('timezone')
+		timezone: url.searchParams.get('timezone'),
+		digitalClockWidth: url.searchParams.get('digitalClockWidth')
 	};
 }

@@ -112,21 +112,8 @@
 		return yiq >= 128 ? '#000000' : '#ffffff';
 	}
 
-	const tabTitles = ['General', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
-	const fontFamilies = [
-		'serif',
-		'sans-serif',
-		'monospace',
-		'cursive',
-		'fantasy',
-		'Arial',
-		'Verdana',
-		'Tahoma',
-		'Trebuchet MS',
-		'Times New Roman',
-		'Georgia',
-		'Courier New'
-	];
+	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
+	const fontFamilies = ['Orbitron', 'Roboto', 'Inter', 'Roboto Slab', 'Press Start 2P'];
 </script>
 
 <div class="config-page">
@@ -229,6 +216,46 @@
 			</Tab>
 			<Tab index={1}>
 				<section>
+					<h3>Clock</h3>
+					<div class="control-group">
+						<span>Style</span>
+						<label>
+							<input type="radio" bind:group={$configStore.styleType} value="digital" />
+							Digital
+						</label>
+						<label>
+							<input type="radio" bind:group={$configStore.styleType} value="analog" />
+							Analog
+						</label>
+					</div>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.showDate} />
+						Show Date
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.showDay} />
+						Show Day of Week
+					</label>
+					<label>
+						Timezone
+						<input
+							type="text"
+							bind:value={$configStore.timezone}
+							placeholder="e.g., America/New_York"
+						/>
+					</label>
+					<label>
+						Digital Clock Width
+						<input
+							type="text"
+							bind:value={$configStore.digitalClockWidth}
+							placeholder="e.g., 100% or 300px"
+						/>
+					</label>
+				</section>
+			</Tab>
+			<Tab index={2}>
+				<section>
 					<h3>Countdown Timer</h3>
 					<label>
 						Hours
@@ -312,7 +339,7 @@
 					{/if}
 				</section>
 			</Tab>
-			<Tab index={2}>
+			<Tab index={3}>
 				<section>
 					<h3>Text Display</h3>
 					<label>
@@ -385,7 +412,7 @@
 					{/if}
 				</section>
 			</Tab>
-			<Tab index={3}>
+			<Tab index={4}>
 				<section>
 					<h3>Spinning Wheel</h3>
 					<label>
@@ -464,7 +491,7 @@
 					{/if}
 				</section>
 			</Tab>
-			<Tab index={4}>
+			<Tab index={5}>
 				<section>
 					<h3>Ladder Game</h3>
 					<label>
@@ -583,7 +610,7 @@
 					{/if}
 				</section>
 			</Tab>
-			<Tab index={5}>
+			<Tab index={6}>
 				<section>
 					<h3>Weather Widget</h3>
 					<label>
@@ -900,5 +927,23 @@
 	.profile-buttons button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	.control-group {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 0.75rem;
+	}
+	.control-group span {
+		font-weight: bold;
+		min-width: 80px; /* Adjust as needed for alignment */
+	}
+	.control-group label {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		margin-bottom: 0; /* Override default label margin */
+		font-weight: normal;
 	}
 </style>

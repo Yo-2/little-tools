@@ -27,6 +27,13 @@ export interface Config {
 	textColor: string;
 	bgColorHex: string;
 
+	// Clock specific
+	styleType: 'digital' | 'analog';
+	showDate: boolean;
+	showDay: boolean;
+	timezone: string;
+	digitalClockWidth: string;
+
 	// Countdown Timer specific
 	hours: number;
 	minutes: number;
@@ -66,6 +73,13 @@ const defaultConfig: Config = {
 	fontWeight: 'normal',
 	textColor: '#000000',
 	bgColorHex: '#ffffff',
+
+	// Clock specific
+	styleType: 'digital',
+	showDate: false,
+	showDay: false,
+	timezone: '',
+	digitalClockWidth: '100%',
 
 	hours: 0,
 	minutes: 5,
