@@ -166,6 +166,7 @@
 	});
 
 	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
+	const timezones = Intl.supportedValuesOf('timeZone');
 	const fontFamilies = [
 		'Orbitron',
 		'Roboto',
@@ -299,14 +300,6 @@
 							<input type="checkbox" bind:checked={$configStore.showDay} />
 							Show Day of Week
 						</label>
-						<label>
-							Digital Clock Width
-							<input
-								type="text"
-								bind:value={$configStore.digitalClockWidth}
-								placeholder="e.g., 100% or 300px"
-							/>
-						</label>
 					{/if}
 					{#if $configStore.styleType === 'analog'}
 						<label>
@@ -320,11 +313,12 @@
 					{/if}
 					<label>
 						Timezone
-						<input
-							type="text"
-							bind:value={$configStore.timezone}
-							placeholder="e.g., America/New_York"
-						/>
+						<select bind:value={$configStore.timezone}>
+							<option value="">(User's Local Time)</option>
+							{#each timezones as tz}
+								<option value={tz}>{tz}</option>
+							{/each}
+						</select>
 					</label>
 
 					<h4 class="style-header">Style</h4>

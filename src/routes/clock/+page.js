@@ -13,7 +13,6 @@ export function load({ url }) {
 		showDate: showDate === 'true',
 		showDay: showDay === 'true',
 		timezone: url.searchParams.get('timezone'),
-		digitalClockWidth: url.searchParams.get('digitalClockWidth'),
 		analogClockWidth: url.searchParams.get('analogClockWidth')
 	};
 }

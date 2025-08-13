@@ -32,7 +32,6 @@ export interface Config {
 	showDate: boolean;
 	showDay: boolean;
 	timezone: string;
-	digitalClockWidth: string;
 	analogClockWidth: string;
 	clockOverrideGeneralStyle: boolean;
 	clockStyleOptions: ToolStyleOptions;
@@ -82,7 +81,6 @@ const defaultConfig: Config = {
 	showDate: false,
 	showDay: false,
 	timezone: '',
-	digitalClockWidth: '100%',
 	analogClockWidth: '100%',
 	clockOverrideGeneralStyle: false,
 	clockStyleOptions: {
