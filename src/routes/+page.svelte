@@ -8,6 +8,7 @@
 	import Tabs from '$lib/components/Tabs.svelte';
 	import Tab from '$lib/components/Tab.svelte';
 	import MultiSelect from '$lib/components/MultiSelect.svelte';
+	import ComboBox from '$lib/components/ComboBox.svelte';
 	import {
 		configStore,
 		type Config,
@@ -19,6 +20,7 @@
 		deleteProfile as deleteProfileFromStore,
 		loadProfile
 	} from '$lib/configStore';
+	import { cities } from '$lib/cities';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
@@ -112,56 +114,45 @@
 		return yiq >= 128 ? '#000000' : '#ffffff';
 	}
 
-	const googleFontsMap: Record<string, string> = {
-		'Noto Sans TC': 'Noto+Sans+TC',
-		'LXGW WenKai TC': 'LXGW+WenKai+TC',
-		DotGothic16: 'DotGothic16',
-		Orbitron: 'Orbitron',
-		Roboto: 'Roboto',
-		Inter: 'Inter',
-		'Roboto Slab': 'Roboto+Slab',
-		'Press Start 2P': 'Press+Start+2P'
-	};
+	function loadFonts(fontFamilies: string) {
+		if (!fontFamilies) return;
 
-	function loadFont(fontName: string) {
-		if (!googleFontsMap[fontName] || document.getElementById(`font-link-${fontName}`)) {
-			return;
+		const fonts = fontFamilies.split(',').map((f) => f.trim());
+		for (const fontName of fonts) {
+			const fontId = `font-link-${fontName.replace(/\s/g, '-')}`;
+			if (!document.getElementById(fontId)) {
+				const link = document.createElement('link');
+				link.id = fontId;
+				link.rel = 'stylesheet';
+				link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(
+					/\s/g,
+					'+'
+				)}&display=swap`;
+				document.head.appendChild(link);
+			}
 		}
-
-		const link = document.createElement('link');
-		link.id = `font-link-${fontName}`;
-		link.rel = 'stylesheet';
-		link.href = `https://fonts.googleapis.com/css2?family=${googleFontsMap[fontName]}&display=swap`;
-		document.head.appendChild(link);
 	}
 
 	// --- Reactive Font Loading ---
 	$effect(() => {
-		// General font
-		if ($configStore.fontFamily) {
-			loadFont($configStore.fontFamily);
+		loadFonts($configStore.fontFamily);
+		if ($configStore.clockOverrideGeneralStyle) {
+			loadFonts($configStore.clockStyleOptions.fontFamily);
 		}
-		// Per-tool override fonts
-		if ($configStore.clockOverrideGeneralStyle && $configStore.clockStyleOptions.fontFamily) {
-			loadFont($configStore.clockStyleOptions.fontFamily);
+		if ($configStore.timerOverrideGeneralStyle) {
+			loadFonts($configStore.timerStyleOptions.fontFamily);
 		}
-		if ($configStore.timerOverrideGeneralStyle && $configStore.timerStyleOptions.fontFamily) {
-			loadFont($configStore.timerStyleOptions.fontFamily);
+		if ($configStore.textOverrideGeneralStyle) {
+			loadFonts($configStore.textStyleOptions.fontFamily);
 		}
-		if ($configStore.textOverrideGeneralStyle && $configStore.textStyleOptions.fontFamily) {
-			loadFont($configStore.textStyleOptions.fontFamily);
+		if ($configStore.spinningWheelOverrideGeneralStyle) {
+			loadFonts($configStore.spinningWheelStyleOptions.fontFamily);
 		}
-		if (
-			$configStore.spinningWheelOverrideGeneralStyle &&
-			$configStore.spinningWheelStyleOptions.fontFamily
-		) {
-			loadFont($configStore.spinningWheelStyleOptions.fontFamily);
+		if ($configStore.ladderOverrideGeneralStyle) {
+			loadFonts($configStore.ladderStyleOptions.fontFamily);
 		}
-		if ($configStore.ladderOverrideGeneralStyle && $configStore.ladderStyleOptions.fontFamily) {
-			loadFont($configStore.ladderStyleOptions.fontFamily);
-		}
-		if ($configStore.weatherOverrideGeneralStyle && $configStore.weatherStyleOptions.fontFamily) {
-			loadFont($configStore.weatherStyleOptions.fontFamily);
+		if ($configStore.weatherOverrideGeneralStyle) {
+			loadFonts($configStore.weatherStyleOptions.fontFamily);
 		}
 	});
 
@@ -274,6 +265,10 @@
 								)};"
 							/>
 						</div>
+					</label>
+					<label>
+						Google Fonts API Key
+						<input type="password" bind:value={$configStore.googleFontsApiKey} />
 					</label>
 				</section>
 			</Tab>
@@ -747,7 +742,11 @@
 					<h3>Weather Widget</h3>
 					<label>
 						Location
-						<input type="text" bind:value={$configStore.weatherLocation} />
+						<ComboBox
+							bind:value={$configStore.weatherLocation}
+							options={cities}
+							placeholder="Select or type a city..."
+						/>
 					</label>
 					<label>
 						OpenWeatherMap API Key
