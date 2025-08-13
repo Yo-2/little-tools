@@ -1,26 +1,85 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import AnalogClock from './AnalogClock.svelte';
 
 	let {
+		styleType = 'digital', // 'digital' | 'analog'
+		showDate = false,
+		showDay = false,
+		timezone, // undefined means user's local time
 		bgColorHex = 'rgba(0,0,0,0)',
 		textColor = '#000000',
 		fontSize = '2rem',
 		fontWeight = 'normal',
 		fontFamily = 'sans-serif'
-	} = $props();
+	} = $props<{
+		styleType?: 'digital' | 'analog';
+		showDate?: boolean;
+		showDay?: boolean;
+		timezone?: string;
+		bgColorHex?: string;
+		textColor?: string;
+		fontSize?: string;
+		fontWeight?: string;
+		fontFamily?: string;
+	}>();
 
 	let time = $state(new Date());
 
-	function padZero(num: number) {
-		return num.toString().padStart(2, '0');
-	}
+	const timeFormatter = $derived(() => {
+		return new Intl.DateTimeFormat('en-US', {
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+			timeZone: timezone
+		});
+	});
+
+	const dateFormatter = $derived(() => {
+		return new Intl.DateTimeFormat('sv-SE', {
+			// ISO 8601 format YYYY-MM-DD
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			timeZone: timezone
+		});
+	});
+
+	const dayFormatter = $derived(() => {
+		return new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: timezone });
+	});
+
 	function formatTime(time: Date) {
-		return `${padZero(time.getHours())}:${padZero(time.getMinutes())}:${padZero(time.getSeconds())}`;
+		return timeFormatter().format(time);
+	}
+
+	function formatDate(time: Date) {
+		return dateFormatter().format(time);
+	}
+
+	function formatDay(time: Date) {
+		return dayFormatter().format(time);
 	}
 
 	const timerId = setInterval(() => {
 		time = new Date();
 	}, 1000);
+
+	let timeParts = $derived(() => {
+		const parts = new Intl.DateTimeFormat('en-US', {
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric',
+			hour12: false,
+			timeZone: timezone
+		}).formatToParts(time);
+		return {
+			hours: parseInt(parts.find((p) => p.type === 'hour')?.value || '0'),
+			minutes: parseInt(parts.find((p) => p.type === 'minute')?.value || '0'),
+			seconds: parseInt(parts.find((p) => p.type === 'second')?.value || '0')
+		};
+	});
 
 	onDestroy(() => {
 		clearInterval(timerId);
@@ -36,7 +95,19 @@
 </script>
 
 <div class="clock-container" {style}>
-	<p class="clock" role="timer" aria-live="polite">{formatTime(time)}</p>
+	{#if styleType === 'analog'}
+		<AnalogClock {...timeParts()} {textColor} />
+	{:else}
+		<div class="digital-clock-wrapper">
+			<p class="clock" role="timer" aria-live="polite">{formatTime(time)}</p>
+			{#if showDate}
+				<p class="date">{formatDate(time)}</p>
+			{/if}
+			{#if showDay}
+				<p class="day">{formatDay(time)}</p>
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -48,13 +119,28 @@
 		height: 100%;
 		background-color: var(--bg-color);
 	}
-	.clock {
+	.digital-clock-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25em; /* Spacing between time, date, and day */
+	}
+	.clock,
+	.date,
+	.day {
 		margin: 0;
 		color: var(--text-color);
-		font-size: var(--font-size);
-		font-weight: var(--font-weight);
 		font-family: var(--font-family);
 		width: 100%;
 		text-align: center;
+	}
+	.clock {
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
+	}
+	.date,
+	.day {
+		font-size: calc(var(--font-size) * 0.4);
+		font-weight: normal;
 	}
 </style>
