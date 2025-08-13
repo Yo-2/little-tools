@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import type { Snippet } from 'svelte';
 
 	const activeTab = getContext<Writable<number>>('activeTab');
-	let { index = 0 } = $props<{ index: number }>();
+	let { index = 0, children } = $props<{ index: number; children: Snippet }>();
 </script>
 
 {#if $activeTab === index}
 	<div class="tab-panel">
-		<slot />
+		{@render children()}
 	</div>
 {/if}

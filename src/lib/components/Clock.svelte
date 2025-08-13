@@ -34,7 +34,7 @@
 			minute: '2-digit',
 			second: '2-digit',
 			hour12: false,
-			timeZone: timezone
+			timeZone: timezone || undefined
 		});
 	});
 
@@ -44,12 +44,12 @@
 			year: 'numeric',
 			month: '2-digit',
 			day: '2-digit',
-			timeZone: timezone
+			timeZone: timezone || undefined
 		});
 	});
 
 	const dayFormatter = $derived(() => {
-		return new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: timezone });
+		return new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: timezone || undefined });
 	});
 
 	function formatTime(time: Date) {
@@ -74,7 +74,7 @@
 			minute: 'numeric',
 			second: 'numeric',
 			hour12: false,
-			timeZone: timezone
+			timeZone: timezone || undefined
 		}).formatToParts(time);
 		return {
 			hours: parseInt(parts.find((p) => p.type === 'hour')?.value || '0'),

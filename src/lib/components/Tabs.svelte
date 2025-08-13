@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { setContext } from 'svelte';
+	import type { Snippet } from 'svelte';
 
 	const activeTab = writable(0);
 	setContext('activeTab', activeTab);
 
-	let { titles = [] } = $props<{ titles: string[] }>();
+	let { titles = [], children } = $props<{ titles: string[]; children: Snippet }>();
 </script>
 
 <div class="tabs">
@@ -17,7 +18,7 @@
 		{/each}
 	</div>
 	<div class="tab-content">
-		<slot />
+		{@render children()}
 	</div>
 </div>
 
