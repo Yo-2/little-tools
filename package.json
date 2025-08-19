@@ -1,6 +1,7 @@
 {
 	"name": "little-tools",
 	"version": "0.0.1",
+	"license": "MIT",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
