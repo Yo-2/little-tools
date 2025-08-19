@@ -130,9 +130,9 @@
 		border-right: 15px solid transparent;
 		border-top: 30px solid #e74c3c;
 		position: absolute;
-		top: -10px;
+		top: 50%;
 		left: 50%;
-		transform: translateX(-50%);
+		transform: translate(-50%, -165px); /* Move relative to center */
 		z-index: 10;
 	}
 	.spin-button {
