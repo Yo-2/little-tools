@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 
-	let {
-		value = $bindable(''),
-		placeholder = 'Search Google Fonts...',
-		options = []
-	} = $props();
+	let { value = $bindable(''), placeholder = 'Search Google Fonts...', options = [] } = $props();
 
 	let inputValue = $state('');
 	let items = $derived(
@@ -43,12 +39,10 @@
 			if (!response.ok) {
 				throw new Error('Failed to fetch font list');
 			}
-			const data = await response.json();
-			const allFonts = data.items.map((font: any) => font.family);
+			const data: { items: { family: string }[] } = await response.json();
+			const allFonts = data.items.map((font) => font.family);
 			// Simple search filter
-			fontList = allFonts.filter((font: string) =>
-				font.toLowerCase().includes(inputValue.toLowerCase())
-			);
+			fontList = allFonts.filter((font) => font.toLowerCase().includes(inputValue.toLowerCase()));
 		} catch (error) {
 			console.error('Error fetching Google Fonts:', error);
 			fontList = options; // Fallback to popular fonts on error
@@ -106,10 +100,11 @@
 </script>
 
 <div class="multi-select">
-	<div class="items">
+	<div class="items" role="list">
 		{#each items as item (item)}
 			<div
 				class="item"
+				role="listitem"
 				draggable="true"
 				ondragstart={() => handleDragStart(item)}
 				ondragover={handleDragOver}

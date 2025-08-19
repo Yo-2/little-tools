@@ -218,14 +218,27 @@ export function renameProfile(oldName: string, newName: string) {
 	}
 }
 
-export function deleteProfile(name: string) {
-	profilesStore.update((profiles) => {
-		delete profiles[name];
-		return profiles;
-	});
-	if (get(activeProfileNameStore) === name) {
-		activeProfileNameStore.set(null);
+export function deleteProfile(name: string): boolean {
+	const profiles = get(profilesStore);
+	if (Object.keys(profiles).length <= 1) {
+		return false; // Prevent deleting the last profile
 	}
+
+	delete profiles[name];
+	profilesStore.set(profiles);
+
+	if (get(activeProfileNameStore) === name) {
+		const remainingProfileNames = Object.keys(profiles);
+		const newActiveProfile = remainingProfileNames.length > 0 ? remainingProfileNames[0] : null;
+
+		if (newActiveProfile) {
+			loadProfile(newActiveProfile);
+		} else {
+			activeProfileNameStore.set(null);
+		}
+	}
+
+	return true;
 }
 
 export function loadProfile(name: string) {

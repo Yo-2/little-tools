@@ -1,18 +1,9 @@
 <script lang="ts">
-	let {
-		value = $bindable(''),
-		options = [],
-		placeholder = ''
-	} = $props();
+	let { value = $bindable(''), options = [], placeholder = '' } = $props();
 </script>
 
 <div class="combobox">
-	<input
-		type="text"
-		bind:value
-		{placeholder}
-		list="combobox-options"
-	/>
+	<input type="text" bind:value {placeholder} list="combobox-options" />
 	<datalist id="combobox-options">
 		{#each options as option}
 			<option value={option}></option>

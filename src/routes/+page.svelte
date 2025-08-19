@@ -28,15 +28,25 @@
 	let profileNames = $derived(Object.keys($profilesStore));
 
 	onMount(() => {
+		const profiles = get(profilesStore);
+		let profileNames = Object.keys(profiles);
+
 		// On initial load, check if any profiles exist. If not, create a default one.
-		if (Object.keys(get(profilesStore)).length === 0) {
+		if (profileNames.length === 0) {
 			saveProfileToStore('Default');
+			// After creating 'Default', profile-related stores are updated.
+			// We need to get the latest state to proceed.
+			return; // The $derived `profileNames` will trigger updates.
 		}
 
 		// Check if there was a previously active profile and load it.
 		const lastActiveProfile = get(activeProfileNameStore);
-		if (lastActiveProfile && get(profilesStore)[lastActiveProfile]) {
+		if (lastActiveProfile && profiles[lastActiveProfile]) {
 			loadProfile(lastActiveProfile);
+		} else if (profileNames.length > 0) {
+			// If no active profile is set or the last active one was deleted,
+			// load the first available profile.
+			loadProfile(profileNames[0]);
 		}
 	});
 
@@ -70,6 +80,12 @@
 	function handleDeleteProfile() {
 		const activeName = $activeProfileNameStore;
 		if (!activeName) return;
+
+		if (Object.keys($profilesStore).length <= 1) {
+			alert('Cannot delete the last profile.');
+			return;
+		}
+
 		if (confirm(`Are you sure you want to delete the profile "${activeName}"?`)) {
 			deleteProfileFromStore(activeName);
 		}
