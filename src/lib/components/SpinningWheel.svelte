@@ -132,7 +132,7 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%, -165px); /* Move relative to center */
+		transform: translate(-50%, -180px); /* 150px radius + 30px pointer height */
 		z-index: 10;
 	}
 	.spin-button {
