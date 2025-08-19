@@ -62,30 +62,35 @@
 	style:background-color={effectiveStyles.bgColorHex}
 	style:color={effectiveStyles.textColor}
 >
-	<div class="wheel" style:transform="rotate({rotation}deg)">
-		<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
-			{#each items as item, i}
-				{@const [x, y] = getCoordinatesForPercent(i / numSegments)}
-				{@const [x2, y2] = getCoordinatesForPercent((i + 1) / numSegments)}
-				<path d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z" fill={colors[i % colors.length]} />
-				{@const [textX, textY] = getCoordinatesForPercent((i + 0.5) / numSegments)}
-				<text
-					x={textX * 0.6}
-					y={textY * 0.6}
-					font-size="0.1"
-					fill={effectiveStyles.textColor}
-					font-family={effectiveStyles.fontFamily}
-					font-weight={effectiveStyles.fontWeight}
-					text-anchor="middle"
-					alignment-baseline="middle"
-					transform="rotate({(i + 0.5) * anglePerSegment + 90}, {textX * 0.6}, {textY * 0.6})"
-				>
-					{item}
-				</text>
-			{/each}
-		</svg>
+	<div class="wheel-wrapper">
+		<div class="wheel" style:transform="rotate({rotation}deg)">
+			<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
+				{#each items as item, i}
+					{@const [x, y] = getCoordinatesForPercent(i / numSegments)}
+					{@const [x2, y2] = getCoordinatesForPercent((i + 1) / numSegments)}
+					<path
+						d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z"
+						fill={colors[i % colors.length]}
+					/>
+					{@const [textX, textY] = getCoordinatesForPercent((i + 0.5) / numSegments)}
+					<text
+						x={textX * 0.6}
+						y={textY * 0.6}
+						font-size="0.1"
+						fill={effectiveStyles.textColor}
+						font-family={effectiveStyles.fontFamily}
+						font-weight={effectiveStyles.fontWeight}
+						text-anchor="middle"
+						alignment-baseline="middle"
+						transform="rotate({(i + 0.5) * anglePerSegment + 90}, {textX * 0.6}, {textY * 0.6})"
+					>
+						{item}
+					</text>
+				{/each}
+			</svg>
+		</div>
+		<div class="pointer"></div>
 	</div>
-	<div class="pointer"></div>
 	<button class="spin-button" onclick={spin} disabled={spinning}>
 		{#if spinning}Spinning...{:else}Spin{/if}
 	</button>
@@ -111,11 +116,15 @@
 		width: 100%;
 		height: 100%;
 	}
-	.wheel {
+	.wheel-wrapper {
+		position: relative;
 		width: 300px;
 		height: 300px;
+	}
+	.wheel {
+		width: 100%;
+		height: 100%;
 		border-radius: 50%;
-		position: relative;
 		overflow: hidden;
 		transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
 	}
@@ -130,9 +139,9 @@
 		border-right: 15px solid transparent;
 		border-top: 30px solid #e74c3c;
 		position: absolute;
-		top: 50%;
+		top: 0;
 		left: 50%;
-		transform: translate(-50%, -180px); /* 150px radius + 30px pointer height */
+		transform: translate(-50%, -100%);
 		z-index: 10;
 	}
 	.spin-button {
