@@ -39,12 +39,9 @@
 		width: 100%;
 		height: 100%;
 		background-color: var(--bg-color);
+		font-family: var(--font-family);
 	}
 	.text {
 		margin: 0;
-		color: var(--text-color);
-		font-size: var(--font-size);
-		font-weight: var(--font-weight);
-		font-family: var(--font-family);
 	}
 </style>
