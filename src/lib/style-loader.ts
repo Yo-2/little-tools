@@ -14,11 +14,8 @@ export function loadStyles(url: URL, componentName: string) {
 		try {
 			const specificStyles = JSON.parse(styleOptionsStr) as ToolStyleOptions;
 			return {
-				fontFamily: specificStyles.fontFamily || fontFamily,
-				fontSize: specificStyles.fontSize || fontSize,
-				fontWeight: specificStyles.fontWeight || fontWeight,
-				textColor: specificStyles.textColor || textColor,
-				bgColorHex: specificStyles.bgColorHex || bgColorHex
+				[`${componentName}OverrideGeneralStyle`]: true,
+				[`${componentName}StyleOptions`]: specificStyles
 			};
 		} catch (e) {
 			console.error('Failed to parse style options:', e);
