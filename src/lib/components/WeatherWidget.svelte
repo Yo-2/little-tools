@@ -115,7 +115,6 @@
 
 <style>
 	.weather-widget {
-		font-family: var(--font-family);
 		font-size: var(--font-size);
 		font-weight: var(--font-weight);
 		color: var(--text-color);
@@ -129,6 +128,7 @@
 		height: 100%;
 		display: grid;
 		place-content: center;
+		font-family: var(--font-family);
 	}
 	.error {
 		color: red;

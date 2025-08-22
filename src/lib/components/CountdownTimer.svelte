@@ -147,14 +147,14 @@
 		background-color: var(--bg-color);
 		border: none;
 		cursor: pointer;
+		font-family: var(--font-family);
+		color: var(--text-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
 	}
 	.countdown-timer {
 		margin: 0;
 		word-break: keep-all;
-		color: var(--text-color);
-		font-size: var(--font-size);
-		font-weight: var(--font-weight);
-		font-family: var(--font-family);
 		width: 100%;
 		text-align: center;
 	}

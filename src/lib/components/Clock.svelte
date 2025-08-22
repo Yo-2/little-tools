@@ -149,6 +149,10 @@
 		width: 100%;
 		height: 100%;
 		background-color: var(--bg-color);
+		font-family: var(--font-family);
+		color: var(--text-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
 	}
 	.analog-clock-wrapper,
 	.digital-clock-wrapper {
@@ -161,14 +165,8 @@
 	.date,
 	.day {
 		margin: 0;
-		color: var(--text-color);
-		font-family: var(--font-family);
 		width: 100%;
 		text-align: center;
-	}
-	.clock {
-		font-size: var(--font-size);
-		font-weight: var(--font-weight);
 	}
 	.date,
 	.day {
