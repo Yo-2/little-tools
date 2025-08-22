@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 
+	let { children } = $props();
+
 	function loadFonts(fontFamilies: string) {
 		if (!fontFamilies) return;
 
@@ -46,4 +48,4 @@
 	});
 </script>
 
-<slot />
+{@render children?.()}
