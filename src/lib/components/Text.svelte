@@ -43,5 +43,8 @@
 	}
 	.text {
 		margin: 0;
+		color: var(--text-color);
+		font-size: var(--font-size);
+		font-weight: var(--font-weight);
 	}
 </style>
