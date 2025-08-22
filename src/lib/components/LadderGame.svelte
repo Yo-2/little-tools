@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { configStore } from '$lib/configStore';
 	import { writable } from 'svelte/store';
+	import { hexToRgba } from '$lib/colorUtils';
 
 	// --- Props ---
 	const { showSidebarToggle = false } = $props();
@@ -48,16 +49,24 @@
 		if ($configStore.ladderOverrideGeneralStyle) {
 			effectiveStylesStore.set({
 				...$configStore.ladderStyleOptions,
-				fontSize: `${$configStore.ladderStyleOptions.fontSize}px`
+				fontSize: `${$configStore.ladderStyleOptions.fontSize}px`,
+				textColor: hexToRgba(
+					$configStore.ladderStyleOptions.textColor,
+					$configStore.ladderStyleOptions.textColorOpacity
+				),
+				backgroundColor: hexToRgba(
+					$configStore.ladderStyleOptions.backgroundColor,
+					$configStore.ladderStyleOptions.backgroundColorOpacity
+				)
 			});
 		} else {
 			effectiveStylesStore.set({
 				fontFamily: $configStore.fontFamily,
 				fontSize: $configStore.fontSize,
 				fontWeight: $configStore.fontWeight,
-				textColor: $configStore.textColor,
-				backgroundColor: $configStore.bgColorHex,
-				lineColor: $configStore.textColor,
+				textColor: hexToRgba($configStore.textColor, $configStore.textColorOpacity),
+				backgroundColor: hexToRgba($configStore.bgColorHex, $configStore.bgColorOpacity),
+				lineColor: hexToRgba($configStore.textColor, $configStore.textColorOpacity),
 				rungColor: '#A52A2A',
 				lineThickness: 2
 			});

@@ -6,6 +6,8 @@ export function loadStyles(url: URL, componentName: string) {
 	const fontWeight = url.searchParams.get('fontWeight');
 	const textColor = url.searchParams.get('textColor');
 	const bgColorHex = url.searchParams.get('bgColorHex');
+	const bgColorOpacity = url.searchParams.get('bgColorOpacity');
+	const textColorOpacity = url.searchParams.get('textColorOpacity');
 
 	const overrideFlag = url.searchParams.get(`${componentName}OverrideGeneralStyle`);
 	const styleOptionsStr = url.searchParams.get(`${componentName}StyleOptions`);
@@ -27,6 +29,8 @@ export function loadStyles(url: URL, componentName: string) {
 		fontSize,
 		fontWeight,
 		textColor,
-		bgColorHex
+		bgColorHex,
+		bgColorOpacity,
+		textColorOpacity
 	};
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-
+	import { hexToRgba } from '$lib/colorUtils';
 	import type { Config } from '$lib/configStore';
 
 	let {
@@ -8,8 +8,10 @@
 		minutes: initialMinutes = 0,
 		seconds: initialSeconds = 0,
 		timeupText = "Time's up!",
-		bgColorHex = 'rgba(0,0,0,0)',
+		bgColorHex = '#ffffff',
 		textColor = '#000000',
+		bgColorOpacity = 100,
+		textColorOpacity = 100,
 		fontSize = '2rem',
 		fontWeight = 'normal',
 		fontFamily = 'sans-serif',
@@ -102,12 +104,20 @@
 	const effectiveStyles = $derived(
 		timerOverrideGeneralStyle
 			? timerStyleOptions
-			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+			: {
+					fontFamily,
+					fontSize,
+					fontWeight,
+					textColor,
+					bgColorHex,
+					textColorOpacity,
+					bgColorOpacity
+				}
 	);
 
 	let style = $derived(`
-		--bg-color: ${effectiveStyles.bgColorHex || 'rgba(0,0,0,0)'};
-		--text-color: ${effectiveStyles.textColor || '#000000'};
+		--bg-color: ${hexToRgba(effectiveStyles.bgColorHex, effectiveStyles.bgColorOpacity) || 'rgba(0,0,0,0)'};
+		--text-color: ${hexToRgba(effectiveStyles.textColor, effectiveStyles.textColorOpacity) || '#000000'};
 		--font-size: ${effectiveStyles.fontSize || '2rem'};
 		--font-weight: ${effectiveStyles.fontWeight || 'normal'};
 		--font-family: ${effectiveStyles.fontFamily || 'sans-serif'};

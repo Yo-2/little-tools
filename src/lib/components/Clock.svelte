@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import AnalogClock from './AnalogClock.svelte';
+	import { hexToRgba } from '$lib/colorUtils';
 
 	import type { ToolStyleOptions } from '$lib/configStore';
 
@@ -11,8 +12,10 @@
 		timezone, // undefined means user's local time
 		analogClockWidth = '100%',
 		// General styles
-		bgColorHex = 'rgba(0,0,0,0)',
+		bgColorHex = '#ffffff',
 		textColor = '#000000',
+		bgColorOpacity = 100,
+		textColorOpacity = 100,
 		fontSize = '2rem',
 		fontWeight = 'normal',
 		fontFamily = 'sans-serif',
@@ -27,6 +30,8 @@
 		analogClockWidth?: string;
 		bgColorHex?: string;
 		textColor?: string;
+		bgColorOpacity?: number;
+		textColorOpacity?: number;
 		fontSize?: string;
 		fontWeight?: string;
 		fontFamily?: string;
@@ -98,16 +103,16 @@
 	const finalStyles = $derived(() => {
 		if (clockOverrideGeneralStyle && clockStyleOptions) {
 			return {
-				bgColor: clockStyleOptions.bgColorHex,
-				textColor: clockStyleOptions.textColor,
+				bgColor: hexToRgba(clockStyleOptions.bgColorHex, clockStyleOptions.bgColorOpacity),
+				textColor: hexToRgba(clockStyleOptions.textColor, clockStyleOptions.textColorOpacity),
 				fontSize: clockStyleOptions.fontSize,
 				fontWeight: clockStyleOptions.fontWeight,
 				fontFamily: clockStyleOptions.fontFamily
 			};
 		}
 		return {
-			bgColor: bgColorHex,
-			textColor: textColor,
+			bgColor: hexToRgba(bgColorHex, bgColorOpacity),
+			textColor: hexToRgba(textColor, textColorOpacity),
 			fontSize: fontSize,
 			fontWeight: fontWeight,
 			fontFamily: fontFamily

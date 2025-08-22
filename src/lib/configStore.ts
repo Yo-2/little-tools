@@ -10,6 +10,8 @@ export interface LadderStyleOptions {
 	lineColor: string;
 	rungColor: string;
 	lineThickness: number;
+	textColorOpacity: number;
+	backgroundColorOpacity: number;
 }
 
 export interface ToolStyleOptions {
@@ -18,6 +20,8 @@ export interface ToolStyleOptions {
 	fontWeight: string;
 	textColor: string;
 	bgColorHex: string;
+	bgColorOpacity: number;
+	textColorOpacity: number;
 }
 
 export interface Config {
@@ -26,6 +30,8 @@ export interface Config {
 	fontWeight: string;
 	textColor: string;
 	bgColorHex: string;
+	bgColorOpacity: number;
+	textColorOpacity: number;
 
 	// Clock specific
 	styleType: 'digital' | 'analog';
@@ -78,6 +84,8 @@ const defaultConfig: Config = {
 	fontWeight: 'normal',
 	textColor: '#000000',
 	bgColorHex: '#ffffff',
+	bgColorOpacity: 100,
+	textColorOpacity: 100,
 
 	// Clock specific
 	styleType: 'digital',
@@ -91,7 +99,9 @@ const defaultConfig: Config = {
 		fontSize: '2rem',
 		fontWeight: 'normal',
 		textColor: '#000000',
-		bgColorHex: '#ffffff'
+		bgColorHex: '#ffffff',
+		bgColorOpacity: 100,
+		textColorOpacity: 100
 	},
 
 	hours: 0,
@@ -104,7 +114,9 @@ const defaultConfig: Config = {
 		fontSize: '2rem',
 		fontWeight: 'normal',
 		textColor: '#000000',
-		bgColorHex: '#ffffff'
+		bgColorHex: '#ffffff',
+		bgColorOpacity: 100,
+		textColorOpacity: 100
 	},
 
 	text: 'Sample Text',
@@ -114,7 +126,9 @@ const defaultConfig: Config = {
 		fontSize: '2rem',
 		fontWeight: 'normal',
 		textColor: '#000000',
-		bgColorHex: '#ffffff'
+		bgColorHex: '#ffffff',
+		bgColorOpacity: 100,
+		textColorOpacity: 100
 	},
 
 	spinningWheelItems: 'Prize 1\nPrize 2\nPrize 3\nPrize 4\nPrize 5\nPrize 6',
@@ -124,7 +138,9 @@ const defaultConfig: Config = {
 		fontSize: '1rem',
 		fontWeight: 'bold',
 		textColor: '#000000',
-		bgColorHex: '#ffffff'
+		bgColorHex: '#ffffff',
+		bgColorOpacity: 100,
+		textColorOpacity: 100
 	},
 
 	weatherLocation: 'London',
@@ -136,7 +152,9 @@ const defaultConfig: Config = {
 		fontSize: '1rem',
 		fontWeight: 'normal',
 		textColor: '#000000',
-		bgColorHex: '#ffffff'
+		bgColorHex: '#ffffff',
+		bgColorOpacity: 100,
+		textColorOpacity: 100
 	},
 
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
@@ -152,7 +170,9 @@ const defaultConfig: Config = {
 		backgroundColor: '#ffffff',
 		lineColor: '#000000',
 		rungColor: '#A52A2A',
-		lineThickness: 2
+		lineThickness: 2,
+		textColorOpacity: 100,
+		backgroundColorOpacity: 100
 	}
 };
 

@@ -138,6 +138,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			styleType,
 			showDate,
 			showDay,
@@ -152,6 +154,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			styleType,
 			showDate,
 			showDay,
@@ -169,6 +173,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			hours,
 			minutes,
 			seconds,
@@ -182,6 +188,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			hours,
 			minutes,
 			seconds,
@@ -198,6 +206,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			text,
 			textOverrideGeneralStyle,
 			textStyleOptions
@@ -208,6 +218,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			text,
 			textOverrideGeneralStyle,
 			textStyleOptions: JSON.stringify(textStyleOptions)
@@ -221,6 +233,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			spinningWheelItems,
 			spinningWheelOverrideGeneralStyle,
 			spinningWheelStyleOptions
@@ -231,6 +245,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			spinningWheelItems,
 			spinningWheelOverrideGeneralStyle,
 			spinningWheelStyleOptions: JSON.stringify(spinningWheelStyleOptions)
@@ -244,6 +260,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			ladderPlayers,
 			ladderResults,
 			ladderIsManualMode,
@@ -256,6 +274,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			ladderPlayers,
 			ladderResults,
 			ladderIsManualMode,
@@ -271,6 +291,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			weatherLocation,
 			weatherApiKey,
 			weatherOverrideGeneralStyle,
@@ -282,6 +304,8 @@
 			fontWeight,
 			textColor,
 			bgColorHex,
+			bgColorOpacity,
+			textColorOpacity,
 			weatherLocation,
 			weatherApiKey,
 			weatherOverrideGeneralStyle,
@@ -452,6 +476,11 @@
 							/>
 						</div>
 					</label>
+					<label class="opacity-slider">
+						Text Opacity
+						<input type="range" min="0" max="100" bind:value={$configStore.textColorOpacity} />
+						<span>{$configStore.textColorOpacity}</span>
+					</label>
 					<label>
 						Background Color
 						<div class="color-input-group">
@@ -464,6 +493,11 @@
 								)};"
 							/>
 						</div>
+					</label>
+					<label class="opacity-slider">
+						Background Opacity
+						<input type="range" min="0" max="100" bind:value={$configStore.bgColorOpacity} />
+						<span>{$configStore.bgColorOpacity}</span>
 					</label>
 					<label>
 						Google Fonts API Key
@@ -562,6 +596,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.clockStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.clockStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -575,6 +619,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.clockStyleOptions.bgColorOpacity}
+								/>
+								<span>{$configStore.clockStyleOptions.bgColorOpacity}</span>
 							</label>
 						</div>
 					{/if}
@@ -647,6 +701,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.timerStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.timerStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -660,6 +724,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.timerStyleOptions.bgColorOpacity}
+								/>
+								<span>{$configStore.timerStyleOptions.bgColorOpacity}</span>
 							</label>
 						</div>
 					{/if}
@@ -720,6 +794,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.textStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.textStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -733,6 +817,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.textStyleOptions.bgColorOpacity}
+								/>
+								<span>{$configStore.textStyleOptions.bgColorOpacity}</span>
 							</label>
 						</div>
 					{/if}
@@ -796,6 +890,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.spinningWheelStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.spinningWheelStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -812,6 +916,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.spinningWheelStyleOptions.bgColorOpacity}
+								/>
+								<span>{$configStore.spinningWheelStyleOptions.bgColorOpacity}</span>
 							</label>
 						</div>
 					{/if}
@@ -878,6 +992,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.ladderStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.ladderStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -894,6 +1018,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.ladderStyleOptions.backgroundColorOpacity}
+								/>
+								<span>{$configStore.ladderStyleOptions.backgroundColorOpacity}</span>
 							</label>
 							<label>
 								Line Color
@@ -998,6 +1132,16 @@
 									/>
 								</div>
 							</label>
+							<label class="opacity-slider">
+								Text Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.weatherStyleOptions.textColorOpacity}
+								/>
+								<span>{$configStore.weatherStyleOptions.textColorOpacity}</span>
+							</label>
 							<label>
 								Background Color
 								<div class="color-input-group">
@@ -1011,6 +1155,16 @@
 										)};"
 									/>
 								</div>
+							</label>
+							<label class="opacity-slider">
+								Background Opacity
+								<input
+									type="range"
+									min="0"
+									max="100"
+									bind:value={$configStore.weatherStyleOptions.bgColorOpacity}
+								/>
+								<span>{$configStore.weatherStyleOptions.bgColorOpacity}</span>
 							</label>
 						</div>
 					{/if}
