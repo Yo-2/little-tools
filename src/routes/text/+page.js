@@ -1,11 +1,11 @@
+import { loadStyles } from '$lib/style-loader';
+
 /** @type {import('./$types').PageLoad} */
 export function load({ url }) {
+	const styles = loadStyles(url, 'text');
+
 	return {
-		bgColorHex: url.searchParams.get('bgColorHex'),
-		textColor: url.searchParams.get('textColor'),
-		fontSize: url.searchParams.get('fontSize'),
-		fontFamily: url.searchParams.get('fontFamily'),
-		fontWeight: url.searchParams.get('fontWeight'),
+		...styles,
 		text: url.searchParams.get('text')
 	};
 }

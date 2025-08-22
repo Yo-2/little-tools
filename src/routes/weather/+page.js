@@ -1,6 +1,12 @@
+import { loadStyles } from '$lib/style-loader';
+
 /** @type {import('./$types').PageLoad} */
 export function load({ url }) {
+	const styles = loadStyles(url, 'weather');
+
 	return {
-		weatherLocation: url.searchParams.get('weatherLocation')
+		...styles,
+		weatherLocation: url.searchParams.get('weatherLocation'),
+		weatherApiKey: url.searchParams.get('weatherApiKey')
 	};
 }

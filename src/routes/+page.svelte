@@ -99,10 +99,27 @@
 		}
 	}
 
-	function generateUrl(path: string, params: Partial<Config>) {
+	type UrlParams = Omit<
+		Partial<Config>,
+		| 'clockStyleOptions'
+		| 'timerStyleOptions'
+		| 'textStyleOptions'
+		| 'spinningWheelStyleOptions'
+		| 'ladderStyleOptions'
+		| 'weatherStyleOptions'
+	> & {
+		clockStyleOptions?: string;
+		timerStyleOptions?: string;
+		textStyleOptions?: string;
+		spinningWheelStyleOptions?: string;
+		ladderStyleOptions?: string;
+		weatherStyleOptions?: string;
+	};
+
+	function generateUrl(path: string, params: UrlParams) {
 		const url = new URL(base + path, window.location.origin);
 		for (const key in params) {
-			const value = params[key as keyof Config];
+			const value = params[key as keyof UrlParams];
 			if (value !== null && value !== undefined && value !== '') {
 				url.searchParams.set(key, String(value));
 			}
@@ -110,8 +127,166 @@
 		return url.toString();
 	}
 
-	function openInNewTab(path: string, params: Partial<Config>) {
+	function openInNewTab(path: string, params: UrlParams) {
 		window.open(generateUrl(path, params), '_blank');
+	}
+
+	function getClockParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			styleType,
+			showDate,
+			showDay,
+			timezone,
+			analogClockWidth,
+			clockOverrideGeneralStyle,
+			clockStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			styleType,
+			showDate,
+			showDay,
+			timezone,
+			analogClockWidth,
+			clockOverrideGeneralStyle,
+			clockStyleOptions: JSON.stringify(clockStyleOptions)
+		};
+	}
+
+	function getTimerParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			hours,
+			minutes,
+			seconds,
+			timeupText,
+			timerOverrideGeneralStyle,
+			timerStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			hours,
+			minutes,
+			seconds,
+			timeupText,
+			timerOverrideGeneralStyle,
+			timerStyleOptions: JSON.stringify(timerStyleOptions)
+		};
+	}
+
+	function getTextParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			text,
+			textOverrideGeneralStyle,
+			textStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			text,
+			textOverrideGeneralStyle,
+			textStyleOptions: JSON.stringify(textStyleOptions)
+		};
+	}
+
+	function getWheelParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			spinningWheelItems,
+			spinningWheelOverrideGeneralStyle,
+			spinningWheelStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			spinningWheelItems,
+			spinningWheelOverrideGeneralStyle,
+			spinningWheelStyleOptions: JSON.stringify(spinningWheelStyleOptions)
+		};
+	}
+
+	function getLadderParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			ladderPlayers,
+			ladderResults,
+			ladderIsManualMode,
+			ladderOverrideGeneralStyle,
+			ladderStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			ladderPlayers,
+			ladderResults,
+			ladderIsManualMode,
+			ladderOverrideGeneralStyle,
+			ladderStyleOptions: JSON.stringify(ladderStyleOptions)
+		};
+	}
+
+	function getWeatherParams() {
+		const {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			weatherLocation,
+			weatherApiKey,
+			weatherOverrideGeneralStyle,
+			weatherStyleOptions
+		} = get(configStore);
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			textColor,
+			bgColorHex,
+			weatherLocation,
+			weatherApiKey,
+			weatherOverrideGeneralStyle,
+			weatherStyleOptions: JSON.stringify(weatherStyleOptions)
+		};
 	}
 
 	function getContrastingTextColor(hexcolor: string) {
@@ -894,14 +1069,15 @@
 				<div class="preview-content">
 					<Clock {...$configStore} />
 				</div>
-				<button onclick={() => openInNewTab('/clock', $configStore)}>Open Clock</button>
+				<button onclick={() => openInNewTab('/clock', getClockParams())}>Open Clock</button>
 			</div>
 			<div class="preview-item">
 				<h3>Countdown Timer</h3>
 				<div class="preview-content">
 					<CountdownTimer {...$configStore} />
 				</div>
-				<button onclick={() => openInNewTab('/countdownTimer', $configStore)}>Open Countdown</button
+				<button onclick={() => openInNewTab('/countdownTimer', getTimerParams())}
+					>Open Countdown</button
 				>
 			</div>
 			<div class="preview-item">
@@ -909,7 +1085,7 @@
 				<div class="preview-content">
 					<Text {...$configStore} />
 				</div>
-				<button onclick={() => openInNewTab('/text', $configStore)}>Open Text Display</button>
+				<button onclick={() => openInNewTab('/text', getTextParams())}>Open Text Display</button>
 			</div>
 			<div class="preview-item">
 				<h3>Spinning Wheel</h3>
@@ -918,7 +1094,7 @@
 						items={$configStore.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
 					/>
 				</div>
-				<button onclick={() => openInNewTab('/spinningWheel', $configStore)}
+				<button onclick={() => openInNewTab('/spinningWheel', getWheelParams())}
 					>Open Spinning Wheel</button
 				>
 			</div>
@@ -927,17 +1103,16 @@
 				<div class="preview-content">
 					<LadderGame />
 				</div>
-				<button onclick={() => openInNewTab('/ladderGame', $configStore)}>Open Ladder Game</button>
+				<button onclick={() => openInNewTab('/ladderGame', getLadderParams())}
+					>Open Ladder Game</button
+				>
 			</div>
 			<div class="preview-item">
 				<h3>Weather Widget</h3>
 				<div class="preview-content">
 					<WeatherWidget location={$configStore.weatherLocation} />
 				</div>
-				<button
-					onclick={() =>
-						openInNewTab('/weather', { weatherLocation: $configStore.weatherLocation })}
-				>
+				<button onclick={() => openInNewTab('/weather', getWeatherParams())}>
 					Open Weather Widget
 				</button>
 			</div>

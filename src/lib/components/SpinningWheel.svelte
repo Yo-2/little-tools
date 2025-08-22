@@ -68,10 +68,7 @@
 				{#each items as item, i}
 					{@const [x, y] = getCoordinatesForPercent(i / numSegments)}
 					{@const [x2, y2] = getCoordinatesForPercent((i + 1) / numSegments)}
-					<path
-						d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z"
-						fill={colors[i % colors.length]}
-					/>
+					<path d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z" fill={colors[i % colors.length]} />
 					{@const [textX, textY] = getCoordinatesForPercent((i + 0.5) / numSegments)}
 					<text
 						x={textX * 0.6}
