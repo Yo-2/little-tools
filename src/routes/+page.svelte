@@ -382,10 +382,10 @@
 			<Tab index={0}>
 				<section>
 					<h3>General</h3>
-					<label>
+					<div class="label-like">
 						Font Family
 						<MultiSelect bind:value={$configStore.fontFamily} options={fontCategories} />
-					</label>
+					</div>
 					<label>
 						Font Size
 						<input type="text" bind:value={$configStore.fontSize} />
@@ -494,13 +494,13 @@
 
 					{#if $configStore.clockOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.clockStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size
 								<input type="text" bind:value={$configStore.clockStyleOptions.fontSize} />
@@ -599,13 +599,13 @@
 
 					{#if $configStore.timerOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.timerStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size
 								<input type="text" bind:value={$configStore.timerStyleOptions.fontSize} />
@@ -692,13 +692,13 @@
 
 					{#if $configStore.textOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.textStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size
 								<input type="text" bind:value={$configStore.textStyleOptions.fontSize} />
@@ -785,13 +785,13 @@
 
 					{#if $configStore.spinningWheelOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.spinningWheelStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size
 								<input type="text" bind:value={$configStore.spinningWheelStyleOptions.fontSize} />
@@ -892,13 +892,13 @@
 
 					{#if $configStore.ladderOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.ladderStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size (px)
 								<input
@@ -1030,13 +1030,13 @@
 
 					{#if $configStore.weatherOverrideGeneralStyle}
 						<div class="style-options-group">
-							<label>
+							<div class="label-like">
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.weatherStyleOptions.fontFamily}
 									options={fontCategories}
 								/>
-							</label>
+							</div>
 							<label>
 								Font Size
 								<input type="text" bind:value={$configStore.weatherStyleOptions.fontSize} />
@@ -1196,7 +1196,8 @@
 		margin-top: 0;
 	}
 
-	.settings-panel label {
+	.settings-panel label,
+	.label-like {
 		display: block;
 		margin-bottom: 0.75rem;
 	}
