@@ -66,9 +66,6 @@ export interface Config {
 	weatherOverrideGeneralStyle: boolean;
 	weatherStyleOptions: ToolStyleOptions;
 
-	// Google Fonts
-	googleFontsApiKey: string;
-
 	// Ladder Game specific
 	ladderPlayers: string;
 	ladderResults: string;
@@ -145,7 +142,6 @@ const defaultConfig: Config = {
 
 	weatherLocation: 'London',
 	weatherApiKey: '',
-	googleFontsApiKey: '',
 	weatherOverrideGeneralStyle: false,
 	weatherStyleOptions: {
 		fontFamily: 'sans-serif',

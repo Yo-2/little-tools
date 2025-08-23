@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { configStore } from '$lib/configStore';
-
-	let { value = $bindable(''), placeholder = 'Search Google Fonts...', options = [] } = $props();
+	let {
+		value = $bindable(''),
+		placeholder = 'Search available fonts...',
+		options = []
+	} = $props();
 
 	let inputValue = $state('');
 	let items = $derived(
@@ -12,44 +14,14 @@
 					.filter(Boolean)
 			: []
 	);
-	let fontList = $state<string[]>(options);
-	let loading = $state(false);
+
+	let filteredOptions = $derived(
+		inputValue
+			? options.filter((option) => option.toLowerCase().includes(inputValue.toLowerCase()))
+			: options
+	);
 
 	let draggedItem: string | null = null;
-
-	async function searchFonts() {
-		const apiKey = $configStore.googleFontsApiKey;
-		if (!apiKey) {
-			// Silently fail if no API key is provided
-			fontList = options;
-			return;
-		}
-
-		if (inputValue.length < 2) {
-			fontList = options; // Show popular fonts if search is short
-			return;
-		}
-
-		loading = true;
-		try {
-			// In a real scenario, you would proxy this request to hide the API key.
-			const response = await fetch(
-				`https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`
-			);
-			if (!response.ok) {
-				throw new Error('Failed to fetch font list');
-			}
-			const data: { items: { family: string }[] } = await response.json();
-			const allFonts = data.items.map((font) => font.family);
-			// Simple search filter
-			fontList = allFonts.filter((font) => font.toLowerCase().includes(inputValue.toLowerCase()));
-		} catch (error) {
-			console.error('Error fetching Google Fonts:', error);
-			fontList = options; // Fallback to popular fonts on error
-		} finally {
-			loading = false;
-		}
-	}
 
 	function addItem(font: string) {
 		if (font && !items.includes(font)) {
@@ -57,7 +29,6 @@
 			value = newItems.join(', ');
 		}
 		inputValue = '';
-		fontList = options; // Reset to popular list
 	}
 
 	function removeItem(itemToRemove: string) {
@@ -69,7 +40,9 @@
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			// Find the best match from the current list and add it
-			const bestMatch = fontList.find((f) => f.toLowerCase().startsWith(inputValue.toLowerCase()));
+			const bestMatch = filteredOptions.find((f) =>
+				f.toLowerCase().startsWith(inputValue.toLowerCase())
+			);
 			if (bestMatch) {
 				addItem(bestMatch);
 			}
@@ -120,17 +93,13 @@
 		<input
 			type="text"
 			bind:value={inputValue}
-			oninput={searchFonts}
 			onkeydown={handleKeydown}
 			{placeholder}
 			list="font-family-options"
 		/>
-		{#if loading}
-			<div class="spinner"></div>
-		{/if}
 	</div>
 	<datalist id="font-family-options">
-		{#each fontList as option}
+		{#each filteredOptions as option}
 			<option value={option}></option>
 		{/each}
 	</datalist>
@@ -188,25 +157,5 @@
 	.input-wrapper {
 		position: relative;
 		display: flex;
-	}
-	.spinner {
-		border: 2px solid #f3f3f3;
-		border-top: 2px solid #3498db;
-		border-radius: 50%;
-		width: 16px;
-		height: 16px;
-		animation: spin 1s linear infinite;
-		position: absolute;
-		right: 10px;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-	@keyframes spin {
-		0% {
-			transform: translateY(-50%) rotate(0deg);
-		}
-		100% {
-			transform: translateY(-50%) rotate(360deg);
-		}
 	}
 </style>

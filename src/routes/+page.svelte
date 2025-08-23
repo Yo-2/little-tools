@@ -24,6 +24,7 @@
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
+	import { fontFamilies } from '$lib/fonts';
 
 	let profileNames = $derived(Object.keys($profilesStore));
 
@@ -331,66 +332,6 @@
 
 	const tabTitles = ['General', 'Clock', 'Timer', 'Text', 'Wheel', 'Ladder', 'Weather'];
 	const timezones = Intl.supportedValuesOf('timeZone');
-	const fontFamilies = [
-		'Orbitron',
-		'Roboto',
-		'Inter',
-		'Roboto Slab',
-		'Press Start 2P',
-		'Noto Sans TC',
-		'LXGW WenKai TC',
-		'DotGothic16',
-		'Source Han Serif',
-		'Noto Serif CJK',
-		'Source Han Sans',
-		'Noto Sans CJK',
-		'WenQuanYi Zen Hei',
-		'WenQuanYi Micro Hei',
-		'Microsoft JhengHei',
-		'Microsoft YaHei',
-		'Nanum Myeongjo',
-		'Nanum Gothic',
-		'Hiragino Kaku Gothic',
-		'Hiragino Minchō',
-		'Yu Gothic',
-		'Meiryo',
-		'MS Gothic',
-		'MS Mincho',
-		'SimSun',
-		'PMingLiU',
-		'DFKai-SB',
-		'Kaiti',
-		'Lobster',
-		'Pacifico',
-		'Caveat',
-		'Dancing Script',
-		'Shadows Into Light',
-		'Amatic SC',
-		'Permanent Marker',
-		'Bangers',
-		'Creepster',
-		'VT323',
-		'Share Tech Mono',
-		'Major Mono Display',
-		'Black Ops One',
-		'Special Elite',
-		'Monoton',
-		'Bungee',
-		'Merriweather',
-		'Playfair Display',
-		'Lora',
-		'PT Serif',
-		'Georgia',
-		'Times New Roman',
-		'ZCOOL XiaoWei',
-		'ZCOOL KuaiLe',
-		'ZCOOL QingKe HuangYou',
-		'Roboto Mono',
-		'Source Code Pro',
-		'Inconsolata',
-		'Courier New',
-		'monospace'
-	];
 </script>
 
 <div class="config-page">
@@ -498,10 +439,6 @@
 						Background Opacity
 						<input type="range" min="0" max="100" bind:value={$configStore.bgColorOpacity} />
 						<span>{$configStore.bgColorOpacity}</span>
-					</label>
-					<label>
-						Google Fonts API Key
-						<input type="password" bind:value={$configStore.googleFontsApiKey} />
 					</label>
 				</section>
 			</Tab>
