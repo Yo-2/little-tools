@@ -1,11 +1,15 @@
 <script lang="ts">
+	import type { FontCategory, Font } from '$lib/fonts';
+
 	let {
 		value = $bindable(''),
 		placeholder = 'Search available fonts...',
-		options = []
+		options = [] as FontCategory[]
 	} = $props();
 
 	let inputValue = $state('');
+	let showDropdown = $state(false);
+
 	let items = $derived(
 		value
 			? value
@@ -15,20 +19,28 @@
 			: []
 	);
 
-	let filteredOptions = $derived(
+	const filteredCategories: FontCategory[] = $derived(
 		inputValue
-			? options.filter((option) => option.toLowerCase().includes(inputValue.toLowerCase()))
+			? options
+					.map((category) => ({
+						...category,
+						fonts: category.fonts.filter((font) =>
+							font.label.toLowerCase().includes(inputValue.toLowerCase())
+						)
+					}))
+					.filter((category) => category.fonts.length > 0)
 			: options
 	);
 
 	let draggedItem: string | null = null;
 
-	function addItem(font: string) {
-		if (font && !items.includes(font)) {
-			const newItems = [...items, font];
+	function addItem(font: Font) {
+		if (font.value && !items.includes(font.value)) {
+			const newItems = [...items, font.value];
 			value = newItems.join(', ');
 		}
 		inputValue = '';
+		showDropdown = false;
 	}
 
 	function removeItem(itemToRemove: string) {
@@ -39,12 +51,9 @@
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter') {
 			event.preventDefault();
-			// Find the best match from the current list and add it
-			const bestMatch = filteredOptions.find((f) =>
-				f.toLowerCase().startsWith(inputValue.toLowerCase())
-			);
-			if (bestMatch) {
-				addItem(bestMatch);
+			const firstMatch = filteredCategories[0]?.fonts[0];
+			if (firstMatch) {
+				addItem(firstMatch);
 			}
 		}
 	}
@@ -72,7 +81,13 @@
 	}
 </script>
 
-<div class="multi-select">
+<div
+	class="multi-select"
+	role="combobox"
+	aria-haspopup="listbox"
+	aria-expanded={showDropdown}
+	aria-controls="font-dropdown"
+>
 	<div class="items" role="list">
 		{#each items as item (item)}
 			<div
@@ -94,19 +109,38 @@
 			type="text"
 			bind:value={inputValue}
 			onkeydown={handleKeydown}
+			onfocus={() => (showDropdown = true)}
+			onblur={() => setTimeout(() => (showDropdown = false), 150)}
 			{placeholder}
-			list="font-family-options"
+			aria-autocomplete="list"
 		/>
+		{#if showDropdown && filteredCategories.length > 0}
+			<div class="dropdown" role="listbox" id="font-dropdown">
+				{#each filteredCategories as category (category.name)}
+					<div class="category">
+						<div class="category-name" role="presentation">{category.name}</div>
+						{#each category.fonts as font (font.value)}
+							<div
+								class="option"
+								role="option"
+								aria-selected="false"
+								tabindex="0"
+								onmousedown={() => addItem(font)}
+								onkeydown={(e) => e.key === 'Enter' && addItem(font)}
+							>
+								{font.label}
+							</div>
+						{/each}
+					</div>
+				{/each}
+			</div>
+		{/if}
 	</div>
-	<datalist id="font-family-options">
-		{#each filteredOptions as option}
-			<option value={option}></option>
-		{/each}
-	</datalist>
 </div>
 
 <style>
 	.multi-select {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		border: 1px solid #ccc;
@@ -157,5 +191,35 @@
 	.input-wrapper {
 		position: relative;
 		display: flex;
+	}
+	.dropdown {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background-color: white;
+		border: 1px solid #ccc;
+		border-top: none;
+		border-radius: 0 0 4px 4px;
+		max-height: 300px;
+		overflow-y: auto;
+		z-index: 1000;
+	}
+	.category {
+		padding: 0.5rem;
+	}
+	.category-name {
+		font-weight: bold;
+		font-size: 0.9em;
+		color: #555;
+		padding: 0.5rem 0.25rem;
+		border-bottom: 1px solid #eee;
+	}
+	.option {
+		padding: 0.5rem;
+		cursor: pointer;
+	}
+	.option:hover {
+		background-color: #f0f0f0;
 	}
 </style>

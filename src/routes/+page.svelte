@@ -24,7 +24,7 @@
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
-	import { fontFamilies } from '$lib/fonts';
+	import { fontCategories } from '$lib/fonts';
 
 	let profileNames = $derived(Object.keys($profilesStore));
 
@@ -384,7 +384,7 @@
 					<h3>General</h3>
 					<label>
 						Font Family
-						<MultiSelect bind:value={$configStore.fontFamily} options={fontFamilies} />
+						<MultiSelect bind:value={$configStore.fontFamily} options={fontCategories} />
 					</label>
 					<label>
 						Font Size
@@ -498,7 +498,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.clockStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>
@@ -603,7 +603,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.timerStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>
@@ -696,7 +696,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.textStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>
@@ -789,7 +789,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.spinningWheelStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>
@@ -896,7 +896,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.ladderStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>
@@ -1034,7 +1034,7 @@
 								Font Family
 								<MultiSelect
 									bind:value={$configStore.weatherStyleOptions.fontFamily}
-									options={fontFamilies}
+									options={fontCategories}
 								/>
 							</label>
 							<label>

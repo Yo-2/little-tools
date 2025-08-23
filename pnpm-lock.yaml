@@ -8,34 +8,88 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/abril-fatface':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/albert-sans':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/alegreya':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/alegreya-sans':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/alfa-slab-one':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/archivo-narrow':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/arimo':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/arvo':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/asap':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@fontsource/azeret-mono':
         specifier: ^5.2.9
         version: 5.2.9
+      '@fontsource/bangers':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/barlow':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/biorhyme':
         specifier: ^5.2.8
         version: 5.2.8
       '@fontsource/bitter':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/black-han-sans':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/black-ops-one':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/bricolage-grotesque':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/bungee':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/cabin':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/cairo':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/cardo':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/cascadia-code':
+        specifier: ^5.2.2
+        version: 5.2.2
+      '@fontsource/caveat':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/chivo':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/comic-mono':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@fontsource/cormorant':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/creepster':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/dancing-script':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/dm-sans':
@@ -47,10 +101,31 @@ importers:
       '@fontsource/dm-serif-text':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/domine':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/dosis':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/eb-garamond':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/eczar':
         specifier: ^5.2.7
         version: 5.2.7
+      '@fontsource/exo-2':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/familjen-grotesk':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/faustina':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/figtree':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/fira-code':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/fira-sans':
@@ -59,9 +134,33 @@ importers:
       '@fontsource/fraunces':
         specifier: ^5.2.7
         version: 5.2.7
+      '@fontsource/gaegu':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/gamja-flower':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/geist-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/gentium-basic':
         specifier: ^4.5.7
         version: 4.5.7
+      '@fontsource/gothic-a1':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/gowun-batang':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/hina-mincho':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/hind':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/honk':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/ibm-plex-sans':
         specifier: ^5.2.6
         version: 5.2.6
@@ -80,18 +179,36 @@ importers:
       '@fontsource/inter':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/jetbrains-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/josefin-sans':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/josefin-slab':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/jost':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/kaisei-decol':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/kanit':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/karla':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/klee-one':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/lato':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/lexend':
+        specifier: ^5.2.9
+        version: 5.2.9
       '@fontsource/libre-baskerville':
         specifier: ^5.2.6
         version: 5.2.6
@@ -101,7 +218,28 @@ importers:
       '@fontsource/literata':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/lobster':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/long-cang':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/lora':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/lxgw-wenkai-tc':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/m-plus-1p':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/m-plus-rounded-1c':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/ma-shan-zheng':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/major-mono-display':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/manrope':
@@ -110,7 +248,25 @@ importers:
       '@fontsource/merriweather':
         specifier: ^5.2.9
         version: 5.2.9
+      '@fontsource/merriweather-sans':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/monoton':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/montserrat':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/mulish':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/nanum-gothic':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/nanum-myeongjo':
+        specifier: ^5.2.9
+        version: 5.2.9
+      '@fontsource/nanum-pen-script':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/neuton':
@@ -119,6 +275,33 @@ importers:
       '@fontsource/newsreader':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/noto-sans-jp':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-sans-kr':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-sans-sc':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-sans-tc':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-serif':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/noto-serif-jp':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-serif-kr':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-serif-sc':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/noto-serif-tc':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/nunito-sans':
         specifier: ^5.2.6
         version: 5.2.6
@@ -128,10 +311,25 @@ importers:
       '@fontsource/open-sans':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/orbitron':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/oswald':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/outfit':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/overpass':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/pacifico':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/permanent-marker':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/pixelify-sans':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/playfair-display':
@@ -143,6 +341,9 @@ importers:
       '@fontsource/poppins':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/press-start-2p':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/proza-libre':
         specifier: ^5.2.6
         version: 5.2.6
@@ -152,10 +353,16 @@ importers:
       '@fontsource/pt-serif':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/quicksand':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/rajdhani':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/raleway':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/redacted-script':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/roboto':
@@ -165,6 +372,36 @@ importers:
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/rubik':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/rubik-doodle-shadow':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/rubik-glitch':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/rubik-pixels':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/ruslan-display':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/sawarabi-gothic':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/sawarabi-mincho':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/shadows-into-light':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/signika':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/silkscreen':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/sora':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/source-sans-pro':
@@ -188,10 +425,49 @@ importers:
       '@fontsource/syne':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/syne-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/ultra':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/unifrakturmaguntia':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/urbanist':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/varela-round':
         specifier: ^5.2.6
         version: 5.2.6
+      '@fontsource/victor-mono':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/vollkorn':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/vt323':
+        specifier: ^5.2.6
+        version: 5.2.6
       '@fontsource/work-sans':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/yusei-magic':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/zcool-qingke-huangyou':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/zcool-xiaowei':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/zen-kaku-gothic-new':
+        specifier: ^5.2.6
+        version: 5.2.6
+      '@fontsource/zen-maru-gothic':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/zen-old-mincho':
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/zilla-slab':
@@ -436,17 +712,41 @@ packages:
     resolution: {integrity: sha512-Ul5l+lHEcw3L5+k8POx6r74mxEYKG5kOb6Xpy2gCRW6zweT6TEhAf8vhxGgjhqrd/VO/Dirhsb+1hNpD1ue9hw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@fontsource/abril-fatface@5.2.6':
+    resolution: {integrity: sha512-4/RFkhuXO4bzFtN2pSJvgFakJfEUaQytYy2oVnAsODocDYY6BdzWjDnCVwdQb3YgHLDCcZRbA13NDFVPrql+bA==}
+
+  '@fontsource/albert-sans@5.2.6':
+    resolution: {integrity: sha512-Cb4NdQL4biLuRmTXHoz/3EuWvaUsQPUGKimxFNZaqNGdRB4J0H7VnJ9z0m/HiilfQ5mCp2dU5xV0qN34N5aROQ==}
+
   '@fontsource/alegreya-sans@5.2.6':
     resolution: {integrity: sha512-bty3mypgJe/JcBmoxn3xghCbeO8eNL57RxyxdSuNjw94mhCMjIhXyWeAcxn+Qcg4KNeSyXctdQ5FFCLOJTABOw==}
 
   '@fontsource/alegreya@5.2.6':
     resolution: {integrity: sha512-JMaiVCsp+eawcv7t7S5nvzpCFGy5QD8qDiGFCvtiOd6uzjGFo6ID6qFcB12neglsPsxEkEuDvFBvhDvfR+aOlA==}
 
+  '@fontsource/alfa-slab-one@5.2.6':
+    resolution: {integrity: sha512-kh28TroXQdYrrlB+UfzCZ6xluPFnkJqgUB8v26xDVP8VQDpQrNewehBFyo/socwC5jC1IGr+eQUyhlqipSyWxA==}
+
   '@fontsource/archivo-narrow@5.2.6':
     resolution: {integrity: sha512-HI1cVZqtbgzHhVYj6xC5LyIVh4umuzXF4vnjCTZ3W8s6ZxqlSpUkRfcHAXZmuMq7JwcjAN0t5NDQSOydABF2lQ==}
 
+  '@fontsource/arimo@5.2.6':
+    resolution: {integrity: sha512-D2fJ0DHYjJz0mSiqtd4HUykEaRZ1o0hMxyFg8/QAnDfNiZapPDXKaflRX4ZDuyxwkI/oizJ9yZkwdBL75MFnoQ==}
+
+  '@fontsource/arvo@5.2.6':
+    resolution: {integrity: sha512-DuY0im9WS4OAXhcvFLSZ6nUD06vamru27g5ET4IqXyn6RrgI6CM2bjgXuYefX0w3fcbmTlgW9ujwSAU+8y5NYA==}
+
+  '@fontsource/asap@5.2.7':
+    resolution: {integrity: sha512-NI8SSK0HibV4KRrt/TsqBwv79i+IQmGpPugN3teDFVVcO5NutYalKQLDcfgJymm9exKzh79Z9BSkqqmAgekh6A==}
+
   '@fontsource/azeret-mono@5.2.9':
     resolution: {integrity: sha512-1qnbVspQPI38qhSTSidWU4bjG5ynWCfkMwfPxahqxejJO/u4yT1FbPqG73s4fDmQSuDQYoA8jfTpoQiod7+fuA==}
+
+  '@fontsource/bangers@5.2.6':
+    resolution: {integrity: sha512-KSOq6IE/wOwRRDPmpxBzleTy2Kg8GDkzYNdb15ZYWnJZIrfzP9Cllr3vqf7t/mxanI9ssE4hq5sT5fGyS1dz3A==}
+
+  '@fontsource/barlow@5.2.6':
+    resolution: {integrity: sha512-+Pdt0FkBlbwq+byIEPnD6vHs1TS9CuLWEpqG3M2Jw1mA4s5Ia1DVDAInUKdO4MvsjrwvGNJmdsjgA8mQCCh4mQ==}
 
   '@fontsource/biorhyme@5.2.8':
     resolution: {integrity: sha512-Nad3Jzm77v+lCo/H602JWnzdxgj7sZ0NW3p9YpAOwNfc0A292+MTRkv7Iky8hmAPlEChCHQxhNMNV6QcSBEJ3g==}
@@ -454,17 +754,47 @@ packages:
   '@fontsource/bitter@5.2.8':
     resolution: {integrity: sha512-wUqqjrfYlaqSVr/BDUPiA5pgDqkLt96cxjCP4k7vpqgebwFZH4GJY6tGLp7PrdL9K5zMOQu5x1VQ4KE6hHdgKw==}
 
+  '@fontsource/black-han-sans@5.2.6':
+    resolution: {integrity: sha512-VA2NUqswZRo1jnEzWdBvPmIvMoZCyDNUtCZRnjv4rcoeVc0H7bTiIMscbTtvVOkerEKyrVbx72CRvhhc/hw/GA==}
+
+  '@fontsource/black-ops-one@5.2.6':
+    resolution: {integrity: sha512-v450fSLwmpRclDMUEAAZu0cz73tSDO69Iqbd0eHUjzbl28NTuiEDAa3Sp4HTOgpiMFaEBx2PNGL59G5OtIA6oQ==}
+
   '@fontsource/bricolage-grotesque@5.2.8':
     resolution: {integrity: sha512-DVCqsxTGDIL/CdDgw1tiAFmtt6OKrgUx9IbzUcMu4EMrrdq7W2/AMM2hgksVy9F0mKGfao76IVL+4gxk4T4LTw==}
+
+  '@fontsource/bungee@5.2.6':
+    resolution: {integrity: sha512-bA0VFjqjCs0iJ0F5Shvo3AemOp/JoYDefOqo/OPPoDjx18oUfUMI3w5kRFsCmpOX1izpCeHnGnK0LcflO1ztqQ==}
+
+  '@fontsource/cabin@5.2.6':
+    resolution: {integrity: sha512-B1kUAlMhr/imrfG44zPX2Y5S4jCoAbZ5CJCEh+0VldPEyZIuR419JwgboPQQtzkqulHoq8WNJIj9poj0tF2Y6A==}
+
+  '@fontsource/cairo@5.2.6':
+    resolution: {integrity: sha512-hD9nzwA4NpqPdkyhGHoZ00Jh4VPaLMVJ6G/zUhBRrjAoxJ6ILt2WgQKS74jBT9JcyTyOaihkIMqW2R0M+Dmeig==}
 
   '@fontsource/cardo@5.2.6':
     resolution: {integrity: sha512-pfoT7DbG1Du0N+PjBStTEMX6fTh1v8rmKtXNU73F1t84Ygz3Bt55CFLdJjnaugRwCZdtteZUZjWlE9qFkQhRkg==}
 
+  '@fontsource/cascadia-code@5.2.2':
+    resolution: {integrity: sha512-snTU9kuaH7N7QUySXF5/hGDwrxnkkwow3hi9IMnck+fxtc+5ZMj7dNPZZ8kvsiygA0Vn+uFuexkqckm1o1ilPg==}
+
+  '@fontsource/caveat@5.2.6':
+    resolution: {integrity: sha512-OKS809xrwMZq7wFQFBQ5DfK7EL7Pd0dVl7/cKyx3bwplugYhwLDp/+/7/PJH9F6KCHuit9aVdxMCxAbxFgKhSA==}
+
   '@fontsource/chivo@5.2.6':
     resolution: {integrity: sha512-lH6WjzUXzfOY30lkElJoiOf2suw8GL6Qvr1mj3fX8/rVBoSgXEUOUIBSkCcMXn1uwt7MvgPkpFWtW6chHzm4eQ==}
 
+  '@fontsource/comic-mono@5.2.5':
+    resolution: {integrity: sha512-LkTanqEt2YSFors2j+VSnvJlVO5n8zDyjlQU+hz9yl30MHyRsyJfgWyrVHKfE0NjbMVlVScZ4xT5Q72oR0MyXA==}
+
   '@fontsource/cormorant@5.2.6':
     resolution: {integrity: sha512-igrv+f71zXy3lelNpRoG9pN2x1rzv8dUDcn2TFzwbrgp4pBQ9L5pfoPO8soM9hPTeqmopUnK4cd2y0Zby+bTCg==}
+
+  '@fontsource/creepster@5.2.6':
+    resolution: {integrity: sha512-w0m8BkLThrNjTHVJjYX0DTnMY1vPC5ededRskIXhlTZpooYDFq3DSa0kOzrQ6JKeGDzMlOs80M3jTfllVKmzNQ==}
+
+  '@fontsource/dancing-script@5.2.6':
+    resolution: {integrity: sha512-W6hAg34v1AyX10ijrBKMf0jg6V641RpylfBi1oXG1pzKgi+z2cpl0N9UDKDHoedpWnajjMuT6MgoaJvFxVAW5w==}
 
   '@fontsource/dm-sans@5.2.6':
     resolution: {integrity: sha512-3AmJcX93hqmevsC2ixNwHj3iO3sNY/YHBqGhg0MjIyfhk6aZLNv1s2HqJ6xf8yf1rXXK3yR56rzyA3O21htKkg==}
@@ -475,11 +805,32 @@ packages:
   '@fontsource/dm-serif-text@5.2.6':
     resolution: {integrity: sha512-cAseLZfZ+B1q67quhbuikCrT8ID3RxXXdNOs6FRvkA2JbqBO90Tf9kdf2tRmuNQjaD3p59y3XU4cr/XnJnfrLg==}
 
+  '@fontsource/domine@5.2.6':
+    resolution: {integrity: sha512-bdmZS5qE9LnyuMaWfj9y7GRnVmWMhwV92bGiI0QbydmQ6EFhJo9f8p1/zowPz7Q+ehaRnKRwfhhxwimktAm3eg==}
+
+  '@fontsource/dosis@5.2.6':
+    resolution: {integrity: sha512-YBqE5pd0S/W/J51dIRmJVNv2FrR0dBpXFh3oUP/2ONEf4zovyiHLDV4NIhoXGNKuSHNUnOrqi2ZuzSAA89+DeQ==}
+
+  '@fontsource/eb-garamond@5.2.6':
+    resolution: {integrity: sha512-tyfij001YUzGAdIVxWSmID5zlR6PUzMUDm4GjwDlfBEtlS+slyypAmtkM7x4oG1mS0n9pqFbQW+WlmNm1UVJQA==}
+
   '@fontsource/eczar@5.2.7':
     resolution: {integrity: sha512-8Kuvjk2wA8cS8mJ2lj69xjbwUfwOksfaZAHDYtRoGCv/8t+fxAd3MdQ8vMQcXOVHL1EuCCbGvsk4wfnlfHKydQ==}
 
+  '@fontsource/exo-2@5.2.6':
+    resolution: {integrity: sha512-8JKiOCWQIEY9KmBUhENFRKXk8h0Me0HfDc6ta+zFJz/OjvJOcVEjipCaXLaduob0hZu1CiRH8kB2DnaImbE9lw==}
+
   '@fontsource/familjen-grotesk@5.2.6':
     resolution: {integrity: sha512-9QRgCzXix1Anzzd3ZbqkHPSMVQJ17XQQrtdHq+gIAFQkRczgveqyJtzzTUqtkZFU/Q8IJ6bh/+AZdVFGJnw0RA==}
+
+  '@fontsource/faustina@5.2.6':
+    resolution: {integrity: sha512-l+IH9TdY1Y336VA+/+sLY0Thk4aouWuSBmFHgAVgsIMzwH4pFVFfnRA2GJH1Y4bYq+kCv0Z/4TbR9usYDH/5pg==}
+
+  '@fontsource/figtree@5.2.8':
+    resolution: {integrity: sha512-FC+t9RSdZDUK402+h+D7kKBXEo1L5xw/ff8SpTo9ZO0xHzqFJ0u78PmNyAju5D77oXPsR3wfs+rjZvWPx4diSA==}
+
+  '@fontsource/fira-code@5.2.6':
+    resolution: {integrity: sha512-wCkIpPm0BqlkCPLYeY4Vui96ODmVUV0/GpEe3OfJ4v8EJn/BF2SlyxvarFsTs1CKiGjrO2cXlIZbBrKi9F+hUQ==}
 
   '@fontsource/fira-sans@5.2.6':
     resolution: {integrity: sha512-WsqXZCzlbifRoOLppDr6pwMRrZ4U+e+mv+oRZLrZOvkTv/q63B1CIUW+lfaaJuP15YBhOV1OCxS+n1pP8d3IhQ==}
@@ -487,8 +838,32 @@ packages:
   '@fontsource/fraunces@5.2.7':
     resolution: {integrity: sha512-/Dayni4YeluyJ0VArMKJ3KXAe4GePW9SJ5DWorZJUOB0ESHrR4g9J3s0+gklVNDlIaqpc7krFvBwC7SOBeUFog==}
 
+  '@fontsource/gaegu@5.2.6':
+    resolution: {integrity: sha512-mT1ovIiIQnR+CB9Px9oUs7dP10NPngkMsad01/BUFDFXHlkMulD6s2wqKwD+wcKLlEJpcYsy3jN6MVjkjqWTnA==}
+
+  '@fontsource/gamja-flower@5.2.6':
+    resolution: {integrity: sha512-R2lBw2NzR3lywxxcaOIgCKY+SEdZFMy8U24qHG3EpX5Dii/ikUA6PZTvZKJKmMSJMFwPqkSDjApx3KLqDVls4w==}
+
+  '@fontsource/geist-mono@5.2.6':
+    resolution: {integrity: sha512-I3hsRP+8Gmhk35cwlPAR4w5xqk7e5pro2F1o51ZmB+lN+dPcwN3jYHKN+u0E5AMuiQKpTdkrqfEpvBjzQax3cQ==}
+
   '@fontsource/gentium-basic@4.5.7':
     resolution: {integrity: sha512-IfkU16YchWpw356s3TEIH+9ogOzCTm9Lsf32WH0EOYGftI8W9M2FlxS5FCYcuV+dYIjp9vBlhxlG09qKz+woqA==}
+
+  '@fontsource/gothic-a1@5.2.6':
+    resolution: {integrity: sha512-q46jUp/0ogYtXFw8xCoa5gW1+Ng8LhRsEpTHC5PDVDe87VZ4Izew8PM3iPEqnfmsT2hr3yyWN0ZHqPZDzhlktg==}
+
+  '@fontsource/gowun-batang@5.2.6':
+    resolution: {integrity: sha512-tBUDyLnB4giksr2RDjGq0bI06oApAmGvHG05urRiRoilNDEpYbp2aLIJE7QUc35LZZRHMAvsliiphsv+AclM5A==}
+
+  '@fontsource/hina-mincho@5.2.6':
+    resolution: {integrity: sha512-5S9jkExs7nWLjc3S0w7Mq7Ecqcj1MuEp0W3NQ/bzE2ZASQfoL4jk2qG8jW/oYDBC+GpFpH7TM6U/phgQu7w/nA==}
+
+  '@fontsource/hind@5.2.6':
+    resolution: {integrity: sha512-GTcW+27VygEgMq+PNf5LiMzUC+nM5n5ZghljqUoFsL+34Fhna5i1TmY2XOEn3TsDfdP9NTZB6933whHb/bS7ew==}
+
+  '@fontsource/honk@5.2.8':
+    resolution: {integrity: sha512-yJZW/5u1p8EF8gVLG9+mQB+FAOF059W/n4bLJ6Bx/asFOwedCyl0OUbNDxvtFtD4ZgiXqfo2J3CiVVtTEv+f7w==}
 
   '@fontsource/ibm-plex-sans@5.2.6':
     resolution: {integrity: sha512-yclktpagJncROwdWHHEfPsrIfoo3uiIeDFchvmjNmTW/YMBfLYWJnUv19EAqPNhGizdtmcH9FjzOR2094Z2uPg==}
@@ -508,17 +883,35 @@ packages:
   '@fontsource/inter@5.2.6':
     resolution: {integrity: sha512-CZs9S1CrjD0jPwsNy9W6j0BhsmRSQrgwlTNkgQXTsAeDRM42LBRLo3eo9gCzfH4GvV7zpyf78Ozfl773826csw==}
 
+  '@fontsource/jetbrains-mono@5.2.6':
+    resolution: {integrity: sha512-nz//dBr99hXZmHp10wgNI00qThWImkzRR5PQjvRM+rpmuHO5rYBJCqPPWufidCvmkkryXx/GOP/lgqsM3R3Org==}
+
   '@fontsource/josefin-sans@5.2.6':
     resolution: {integrity: sha512-VNbrLNlkTXtb9IW5tFU2Wc1TpIGr2uizz7GLorJxwiJ9sfqM1FZC+T9XM2QLhwUp4QdzKbR8Z0/fJlj7pc8MjQ==}
 
   '@fontsource/josefin-slab@5.2.6':
     resolution: {integrity: sha512-9aEnhXBy9L1ScrWERydo/QrPcBLSv0mD6zB/EUZKJRVdwVpzto8e2Bld1iprn4GSGZGYr2ZKl2Nkvr3HgbXZ8Q==}
 
+  '@fontsource/jost@5.2.6':
+    resolution: {integrity: sha512-9r/ZSnCORLvboyiOCZT8Ff7/Nvmu/+hKXpAtoL4b7KlewWD1G/RCaUeiduE05VhBwnxcCgkgvJ4S4HSQB/5/1w==}
+
+  '@fontsource/kaisei-decol@5.2.6':
+    resolution: {integrity: sha512-PRF4X3HL9gneDbfW5GakHRzJEPOtHNnWc1J/vRTPKV6n38qtMe7NEgI6otbc2WlOhUtY/ld2W86IynNpkusbJw==}
+
+  '@fontsource/kanit@5.2.6':
+    resolution: {integrity: sha512-L+oVLRRrL/D5l3gMtO5FFrQFlg7P7hn7Z7wHgMur/tNUrHTLAKTQfo095/NFqhJanWX511rBf5BsCr7G5C73rg==}
+
   '@fontsource/karla@5.2.6':
     resolution: {integrity: sha512-7/rHgmOKB/BaAKFYSyB2n6TldG6mwLVQ49bWGV/5zKg96pPw7fW4pV81oavKTUhHbEUqkkvms6k4lYOYzOHTqg==}
 
+  '@fontsource/klee-one@5.2.6':
+    resolution: {integrity: sha512-fajZuLIDHWsQhj3vZbYGe+DZwtqLLASQt60AOruoODMr58qJE/wdSL689uj2Q1MtUyMvnv+d1EoXmGf7vXraFQ==}
+
   '@fontsource/lato@5.2.6':
     resolution: {integrity: sha512-ykbyuHKHdFsV8QNWPgo2kkCV0veY8/w1HzPlTd7f08LRGGYijPoN7QHkVKPq5QLpgeNauPPe+0a6oRhd8b6MpQ==}
+
+  '@fontsource/lexend@5.2.9':
+    resolution: {integrity: sha512-0a5xzwksBilec8Q+QwPvTFKFcXYw31oyf5CthPKd+C5NJZDl1aHw4FcMz9bcRMPhq0LXO69BXI8aVxmj15pzNA==}
 
   '@fontsource/libre-baskerville@5.2.6':
     resolution: {integrity: sha512-L5FAQooEooa/pfY3Q8i5jO1g/IG12EJkfqJaAA38xrWeQ1AbPBz/Am6CqttGx0GYnyEZ4RGM3x9o1GhRj//lGA==}
@@ -529,23 +922,89 @@ packages:
   '@fontsource/literata@5.2.6':
     resolution: {integrity: sha512-u2AvDdEQ6AGpYeicKN+3gx7DMMZqLpd2tBYMGF3Lo3hcXaXNFcRVS8mZLz0CzGIRfTulJbRgss0QsWaxbqkXow==}
 
+  '@fontsource/lobster@5.2.6':
+    resolution: {integrity: sha512-Vyo8qzcfwUOu6pnRHLBUHALp3ZUO3TcGxzTA/O7fDnCTDb/JtycFaA3GsrsbSbTyZxYSsHzVNXG2rSCaIHcuyA==}
+
+  '@fontsource/long-cang@5.2.6':
+    resolution: {integrity: sha512-N5tQAzX2k9ysQmSYNg3/9OuSv48MWJleIM4Y636hb/95g2nq1z0HEkLHNSWkNXH7hArHMfR0ybScNY4hBj7+Rw==}
+
   '@fontsource/lora@5.2.6':
     resolution: {integrity: sha512-t/am+C/kdrvpWuOL1enoKCrlHiRHH0hejaPm9dA88Vp2gsDKF4o6OzKzuAMQo8kLd4Jlmg08Cb6Z76LaYB/Bsw==}
+
+  '@fontsource/lxgw-wenkai-tc@5.2.7':
+    resolution: {integrity: sha512-mj5Mu4kWG/9LljtbfpjG8wPrAFn6vdAGaY2EVsxwYo/Hq5f3RJn1SbN1Crs2y6uyz+aMfkOWygvRGo9txS01ZA==}
+
+  '@fontsource/m-plus-1p@5.2.6':
+    resolution: {integrity: sha512-sFH0bkcDR6WUxEymt9EQW7xpywda3xcu3QItpUUkTmPBgVcIq26MYqOjqIxFqCDxuutE7oDjZqQBrpVuuTJhTQ==}
+
+  '@fontsource/m-plus-rounded-1c@5.2.8':
+    resolution: {integrity: sha512-XBW1hHdfvVlcohcUtvihWVprqtQJgDJWzsml0zU0l01qU7y6Ryu/mVnMfqMgzNGRqlrRgYGqytKOZFQZsG7H/w==}
+
+  '@fontsource/ma-shan-zheng@5.2.6':
+    resolution: {integrity: sha512-ageBkqG6vJZtWEfMr0TP5gUfXSpj5VnS2ZoCxWzIbDOHaaGuDpTmtHN5tA5eJpOBElvS58+sOOHIu2CNB9w+Sg==}
+
+  '@fontsource/major-mono-display@5.2.6':
+    resolution: {integrity: sha512-AbSMnEK1W70CwX89NTxtnbh31OnxHPO/HFaz9zV0sl1FJvYJol/KlJOu5wD2dw/OohkFy+gWAJoowqTuj9Myzg==}
 
   '@fontsource/manrope@5.2.6':
     resolution: {integrity: sha512-tboCPLGXWWkNORL7gRhA1m16FJj2QuObk2lhBvkNrpjW0911pGawvHwxuierKHojPtXptfMJo7CUWxXGkKN5zA==}
 
+  '@fontsource/merriweather-sans@5.2.6':
+    resolution: {integrity: sha512-bzhRWDC0qM1Na5Pw6YFnRSOodxUYYosmEQ1DuQuWv0qCJtW+I3uXTjqY4/KUTKCAeO7yB5gFFwhKbY/m+XWO2Q==}
+
   '@fontsource/merriweather@5.2.9':
     resolution: {integrity: sha512-amd5Wp7BM5U0HE/FUgsJmf/dvfqSKYf55HrxR1tMlpT3BqQmVZHB9RJDBpNqqf3/yF6fkryCbx5H9fEMa4mY3g==}
 
+  '@fontsource/monoton@5.2.6':
+    resolution: {integrity: sha512-Tsw1P00EXvDMAfnB0BGuSXNB6MRIsGaV+TJv7keu0KfWlJPArSQLK2BeL9XfmRu4iCM/KkFuDDaSuuXGFP2i+Q==}
+
   '@fontsource/montserrat@5.2.6':
     resolution: {integrity: sha512-AfFxq1q5tgkOsjQfMFsh95uMXh39VbGOuBLlHLFg16/txv93lqK7Sr6jev0neuJzZy1kqRG16SH6xpUYnk4cZg==}
+
+  '@fontsource/mulish@5.2.6':
+    resolution: {integrity: sha512-5fGU/WT3vvpdYEqmAf0ufmoacpFTkXmvaIQ/rKvXTW9p39+Y5HlZAcHQOm/mVVb+xUUV+d9Djzlhr+pJtSDJhg==}
+
+  '@fontsource/nanum-gothic@5.2.6':
+    resolution: {integrity: sha512-X1Ns3dKTDPNUG6IELrVWIcav9Sv5Y/sz2Y3dwxWIdoPwCXoHFG8SuDK4nyOsPhjxsEUpWSPDGlgQFE5WLt28YA==}
+
+  '@fontsource/nanum-myeongjo@5.2.9':
+    resolution: {integrity: sha512-oICKdoNQvT2ep6upBZTkSwz+13XJ6Ezj0W0gvHGrYG/eHpAk+J2+62iuatzpShvb7knImo+57jpOO/775j71ZA==}
+
+  '@fontsource/nanum-pen-script@5.2.6':
+    resolution: {integrity: sha512-zmnaoYaRbqSxgh/1DdPX+pVnG6cnondGUkSkbPXPeQZU+u1mVn//8T0oVyBNl77Bzzt++mef9r3wXKU5Alo6vg==}
 
   '@fontsource/neuton@5.2.6':
     resolution: {integrity: sha512-itIe1nlPDHtGCtmPmH55Kpe4ILh9ipuTiRwZp+a1XtYky5HbxBju/csDjLWdgjBkyYxTC/eWfDmc1D2XWndDQw==}
 
   '@fontsource/newsreader@5.2.8':
     resolution: {integrity: sha512-ypQcHa0kpmO+U4NRf8L4g1ST9EeUsW7UU+Mgw+bFa/RwEInLJXRVZtEatohc+0nd3SClBgSM1FxlP298UjOABA==}
+
+  '@fontsource/noto-sans-jp@5.2.6':
+    resolution: {integrity: sha512-BvUHYZKL87yWGRNFqInxDciU/Czp6klOEcB9l/6CnjMN77F5jc21r/A4XkMx46eY8FzVvfjCYTYUB4zExlX2Ww==}
+
+  '@fontsource/noto-sans-kr@5.2.6':
+    resolution: {integrity: sha512-8yVWUzOT+El3PAqY8ZKvNatgzL7EgrvLoNp0GjYSLkgDKvvX+xaIZ34W8gfATjeXKmolj9lQN4TqADfPlbmUsg==}
+
+  '@fontsource/noto-sans-sc@5.2.6':
+    resolution: {integrity: sha512-hk0xVQ+mL/W0rXDhBhud2U5te/slsQKcaU+3Ni6ZxeFP1jJmcNmxHEZOG5DjLBOi0L//0R5Nwvn6ebTiZrwVZw==}
+
+  '@fontsource/noto-sans-tc@5.2.6':
+    resolution: {integrity: sha512-cXpi78o0adtqz/7/3Onpp2u/O8G2XC4WufuT8EQjEu2Mvdq2WRgLZk/KOrhh7kH/3BSijbKnYUwQ5mTEvaSF5A==}
+
+  '@fontsource/noto-serif-jp@5.2.6':
+    resolution: {integrity: sha512-m5H34KRFhHFDiYOc93dtzYAr893mOmlfam6pp4aiVvUE68GsgHDdy67haSwZ9y8YUrNQqo2/e7ZCi75EagX0uA==}
+
+  '@fontsource/noto-serif-kr@5.2.6':
+    resolution: {integrity: sha512-0fyVEPm3hrG97Io4m2E+89tUxt4Rg7F2qhnHjwNI5R0+Xb54gMTHx+Qgq7vTKuHZlUnP5guyaFgmVcAuAdqqsg==}
+
+  '@fontsource/noto-serif-sc@5.2.6':
+    resolution: {integrity: sha512-Hag6qMMXvE6JZNTJYg6ijpRocanhym9odupJvu/c+yL8qmld4jQRQbQMR7G+t7pfGjB7HjZBDf8N1AHBS0n59g==}
+
+  '@fontsource/noto-serif-tc@5.2.6':
+    resolution: {integrity: sha512-IdrMFvtJlhHuWv5bjJt3p3v94VDO55p9NQKIFTn6zoqegwzaQ8EU1Bm1hGWxmDqPwGifX+2uWh1fJtWkx/c4DA==}
+
+  '@fontsource/noto-serif@5.2.7':
+    resolution: {integrity: sha512-EcsWb3Pxrg5DwLcY1bg4fmRhdytzi+vX6JPJjtzPjPy0fxpBqmk12RqgF4vmAT7zjjppdCD7z2iwyXl3AqeNRQ==}
 
   '@fontsource/nunito-sans@5.2.6':
     resolution: {integrity: sha512-f3qQqoZXtJPqhrh1M/CTeFZnRsZj7fEnILmGmbyNdlx9GrddQ3avQWwsa0cnBkG5UFGWvnzcfuJp1s+PNHjBsg==}
@@ -556,11 +1015,26 @@ packages:
   '@fontsource/open-sans@5.2.6':
     resolution: {integrity: sha512-mnfnUmBWQ+J220gqbibbzmKcc1kawV+lb3/Pspzu+Opnxza12oUffIg0ufG8g+3j1fnSznEWgyNV40MjtmJj6g==}
 
+  '@fontsource/orbitron@5.2.6':
+    resolution: {integrity: sha512-m6lI9jsts7Wk1gyMysEJSexkrZAqxDZ3DjTKMo4PJPKrYA3i//9iUp1Zy5NggPL6zyfQNbfpZwjtX9lrA3Zd3Q==}
+
+  '@fontsource/oswald@5.2.6':
+    resolution: {integrity: sha512-2rMxNdRrTjuhz2alrqMgOR45HOdxcLdzHYTdmque2idEH7TmG7fsYEpRr3qCL3TFpInr5OygAYvTEGWBy2d06g==}
+
   '@fontsource/outfit@5.2.6':
     resolution: {integrity: sha512-fXkIBhYAFJ2VU+PcPd/xi4vCdXHUaGMgSlJ0KCXcwEHqayMwzoExuoharIVgnae9wd5/QtcepFKXtmabsqIoEQ==}
 
   '@fontsource/overpass@5.2.6':
     resolution: {integrity: sha512-a1y3g+dw4lj4sh593ETL1Z/feY1m7r3inXvHE4Es9l6nSd9ImOAr/ydWr0C/2/awJuc7Js69uvl9k2pO6DmYfA==}
+
+  '@fontsource/pacifico@5.2.6':
+    resolution: {integrity: sha512-fiFNIwcG96tXG+B3Bc3pbSzFooqYAXr2+GeiqkgufXrVE/WAlKx8DHHL/km8HRP1FzRJUp12ZJX7YPogbfU0Ng==}
+
+  '@fontsource/permanent-marker@5.2.6':
+    resolution: {integrity: sha512-ClY1yNx1u/Gh94FRLL0Ze/60Ml63nZOwR3N4JBhUh7Aq+k349PCN+psVJ4KdaPfIchmNw7LwSL1gTja6uioNkg==}
+
+  '@fontsource/pixelify-sans@5.2.6':
+    resolution: {integrity: sha512-OvHb2k35TJPy75LRyBi1EUG8hkj9BBW64QpUS+b8IBnbTDN/XOg1BDVjXYEbWptLZfHsRnwu5FB7P97qHmJjNg==}
 
   '@fontsource/playfair-display@5.2.6':
     resolution: {integrity: sha512-hWfFm2j+Dlg+UwabNJu5vi45otmLSG64hUzNFJ8pIDBgqWBviEPpVaDIZWHm2RYyIxhg9YXTPsZWdpvsu7fkqQ==}
@@ -571,6 +1045,9 @@ packages:
   '@fontsource/poppins@5.2.6':
     resolution: {integrity: sha512-NFr0121+vWCfzLDVvSZOzwAjRUaNj6QHA9gtUh/KHHoWf1Qn23EkwVFs63XZ6UtF5K1b3UNmCx77YEMGgV7BOQ==}
 
+  '@fontsource/press-start-2p@5.2.6':
+    resolution: {integrity: sha512-qzNBsl4yQaLpQLftsj9kfrNvOrhftj5MUoNk3vQf3tQwZ4mhpDD6XucBWySlA1kG2q054pVqRt73UZSP0AldYA==}
+
   '@fontsource/proza-libre@5.2.6':
     resolution: {integrity: sha512-qDfcjbvQKr9RtBNlQdoHYKSM2Y3LCRqtNHJ9tmWqmtFDxp2figgKe3uFRM7WQFT6DmExdFr3/87W3QCXDo/21w==}
 
@@ -580,11 +1057,17 @@ packages:
   '@fontsource/pt-serif@5.2.6':
     resolution: {integrity: sha512-RYVCUZQ0pRt0RBtn8qXqrZLJlwBw8Ro32iNQ05IdYEcwpDF7Afy+DIE0L6jA15LGl8Cc3WxFjEOZhn1dOmEMfg==}
 
+  '@fontsource/quicksand@5.2.8':
+    resolution: {integrity: sha512-YRgnt2eQfNrk5OWqYJZmFoi6B6sioRIbjKJj3/l5CnezeE0TzD8XL35Q4fRNfHLpOzLi/ckNvTZySBHVVP1G6w==}
+
   '@fontsource/rajdhani@5.2.6':
     resolution: {integrity: sha512-B9hBDcwKf4VMM3Pc1WLlomIsaBpWReH5j8GZFy2sIfHCz4cwOLbyxQQ40PsKD6zmLVlvU17zCmfAZGX4+qB6Dw==}
 
   '@fontsource/raleway@5.2.6':
     resolution: {integrity: sha512-ztY/2G0Axrjt3ObLWGEXDtZKad38Hpbn/Vk3TdBextTPiuN2i8pVQLRpjWmS9iX31O2JH3o5b80PsVvuiRGjJA==}
+
+  '@fontsource/redacted-script@5.2.6':
+    resolution: {integrity: sha512-U3bAd6pjVsyqArglvxsBWrVnyFp5nq3TQPpgtpakZaTQETJJ0ReJLdi3kbM+VTR1d2NhxMQdeECeOvRK9srHTw==}
 
   '@fontsource/roboto-serif@5.2.6':
     resolution: {integrity: sha512-NZf/DsjLcdN4UZ33zgXjuaxYwu5BOOZtryOGdtm2BsbZ8sChlcriTK4lsJhosalH3mAiutONThWcdX+uSHuiRw==}
@@ -592,8 +1075,38 @@ packages:
   '@fontsource/roboto@5.2.6':
     resolution: {integrity: sha512-hzarG7yAhMoP418smNgfY4fO7UmuUEm5JUtbxCoCcFHT0hOJB+d/qAEyoNjz7YkPU5OjM2LM8rJnW8hfm0JLaA==}
 
+  '@fontsource/rubik-doodle-shadow@5.2.6':
+    resolution: {integrity: sha512-M/oedSDMDibXtG4k7xlk+xsiLYiybiivg9vSrYH0mZ/8eW5TVhdKNAZ+vDqC4UsUC+0rFA/UxtpD7IVAeliINQ==}
+
+  '@fontsource/rubik-glitch@5.2.6':
+    resolution: {integrity: sha512-+XLXW0Lwy8/mQVRf0bkEiJMWWWf2T4zQMUpGjf6Y9DdshX83Xs8MnmUUA2WRFnXT4WgtGAyYD1xQ177+9Gcesw==}
+
+  '@fontsource/rubik-pixels@5.2.6':
+    resolution: {integrity: sha512-tDDiB3fukxzqUNjEsQKxCoI07dWcKa89Q/WxrKe43WkjAbuGxUdrDI7VuceJ0mDC1xkEzSqJlPXKZsrnauR97w==}
+
   '@fontsource/rubik@5.2.6':
     resolution: {integrity: sha512-KNY87CIXAzmKMfL8gnQV0nbePn9g/kG3tF4GJoUEASSz+ECFWYoPir8TSySblYfXTInDL/kHJm6CMrrEW/U/ZA==}
+
+  '@fontsource/ruslan-display@5.2.6':
+    resolution: {integrity: sha512-i62P2HqjQfN0ob0SNcU73Q9fwLkjfd6mT7Mk+3PCZQJt+Vc8q7lOG049R3ZELlOB32jbqeH//8XjGLVlqfNd5g==}
+
+  '@fontsource/sawarabi-gothic@5.2.8':
+    resolution: {integrity: sha512-Kfb3SghUU/udY8z4kDYP25lKIKSVXIH+1dC87vlphd8M8sqvO5W1urAG5gj7jHKnt+gfuRzJdhO804s8MeXwQA==}
+
+  '@fontsource/sawarabi-mincho@5.2.6':
+    resolution: {integrity: sha512-EAXCehMiO3cM9YeqWzRjXuWblFtp35bCTHxDOEvBNg2GqWem98vUf6NL3Scq+8c713+Yz0WSNldgk1AsM0DWIA==}
+
+  '@fontsource/shadows-into-light@5.2.6':
+    resolution: {integrity: sha512-YJLq6TEOoDIuMcvHnmPq1j6qMBG0Y2GStATPFnTtz7y9/gxAsqfFZkXfdPVdc0aCqmklDfkx2nQ0/v9liJsXJA==}
+
+  '@fontsource/signika@5.2.6':
+    resolution: {integrity: sha512-HQK1N33udktb+KVleNEfmYKpcdaCCkqUR0nIXJMgSUlOZI0fKxWhMVMnsEAU8BRSw4acsV10aSryRDaQrqHE2A==}
+
+  '@fontsource/silkscreen@5.2.6':
+    resolution: {integrity: sha512-m6n3gW756hNRkkeJAhc0Iiuy3S1Uozqd1IHK3XL8OSX55qLMLrZwS/B6/mdqKxKHllKa2t0uOO8Xbt/FP0e/rQ==}
+
+  '@fontsource/sora@5.2.6':
+    resolution: {integrity: sha512-OPknOmn82HIJg32UGg9iEjEVFdC+xOZBqrmQNUgsem6hFwBBrqXnTwIpro7leq/uFRdupkN42hc0JJKH20j22w==}
 
   '@fontsource/source-sans-pro@5.2.5':
     resolution: {integrity: sha512-ypendqc4pYUc+EgF7qqPY9iVYEz1t/Qr03VojKxG/2g3dnpHa1B6DOlDxWQjQXDj5QrG6inEqGT0g+edjALZyg==}
@@ -613,14 +1126,53 @@ packages:
   '@fontsource/spectral@5.2.6':
     resolution: {integrity: sha512-W1+UKOwcWMD3ykoInEi40h8zPIDjJcZOFX2yCUqci2tp0sGKRYlP4N6/Hzpa1SdFAfZnk3srl8paH4sO4qZMJQ==}
 
+  '@fontsource/syne-mono@5.2.6':
+    resolution: {integrity: sha512-Au120QE+70Rz4EfeqXAdpjUf9z5OJgYO4jZ8khS4OtLhbfXaZlcp0aazhloN5gcGervh1ztwxlkS9xpgWqorrQ==}
+
   '@fontsource/syne@5.2.6':
     resolution: {integrity: sha512-5L1c56fbV6jau16fbcPVs+HIx6IHBcG0SfpbX8ccGD5z16r61TMFHmg6TULS/vDI6x4pKKzu7X+B6j0xBVrS/w==}
+
+  '@fontsource/ultra@5.2.6':
+    resolution: {integrity: sha512-Awnydq551IyhdoqLBAQGuy06RZTsm2VBOmfOSBCIdVMVey0xvs5D0B82eNP3EOVZvWUe4IwGQfH2oQhPfR1HGA==}
+
+  '@fontsource/unifrakturmaguntia@5.2.6':
+    resolution: {integrity: sha512-m//Cc3DDarqjHY2Dn9XfdBvWkxG1kwIrh0HNxbM4h/GdkI/ng5GPg5ZVVHvEGHskKpXEVScpmxBdqQ6Nwd3dWg==}
+
+  '@fontsource/urbanist@5.2.6':
+    resolution: {integrity: sha512-snp1FO9o+ZvK46Kd6YbxOSDnjIKm6I7rtAbiul39swXTQkG7tC+jHqLBFKXk1w0opxNwqNqZQsBfyUltAeJc3A==}
 
   '@fontsource/varela-round@5.2.6':
     resolution: {integrity: sha512-NRjqsH33OuUEoBuGotBcTg4Ba1hebZbui6wylCaZOQ8V8czrfBO0QZ/kwyidCzi0yAUDdejNhg4RESM8Wiqp+Q==}
 
+  '@fontsource/victor-mono@5.2.6':
+    resolution: {integrity: sha512-+R0K61MmVbsFInNmPrRgLKqnZdhkHgrnr5aiLww0rpaNlDReddJTjabKndYuBnLimyyBSQZd6ouPYCGIizsUeA==}
+
+  '@fontsource/vollkorn@5.2.8':
+    resolution: {integrity: sha512-Q4hPx5e8W3dUhurHtROJDDPts5Lsjzh4eNYLjr6yeCqa77ayU+batQBQ1re32iMWFFrLC9FmCfwxLRDpm9r96g==}
+
+  '@fontsource/vt323@5.2.6':
+    resolution: {integrity: sha512-nfIVoDhLsgla6b+vJDyUDo9V470apUmQU+jWTUmfKqLUaRO48b+vFSgiiqFrBpu1GxuIDPHAAE4Gud89vdi/HQ==}
+
   '@fontsource/work-sans@5.2.6':
     resolution: {integrity: sha512-U0FOkIl84q01lIYWhGhiMjrQX0dT/gBthO8ahRzNrXHTBjjPjWmkwGeINNdv19x2IQhxAZT/2bVD9Izg9C+8gw==}
+
+  '@fontsource/yusei-magic@5.2.6':
+    resolution: {integrity: sha512-Gh8cSgBs6EiyPlwGAcMi9i3ZrrQJZ5b5kiuo5Yix0Yp0ozQDdCCXXeyIZjLIvXRT+iZXvgbn+KxBmjgmMLovjg==}
+
+  '@fontsource/zcool-qingke-huangyou@5.2.6':
+    resolution: {integrity: sha512-2Ky9NciTtrWMP+rjWxIcAFD8wViyXGractfdaThBL91kqWdPaAb0SmukBrM8iSLbBmMn3+uE4Qj6Gs7+aLZdYQ==}
+
+  '@fontsource/zcool-xiaowei@5.2.6':
+    resolution: {integrity: sha512-xaT9yVP0z376SBtQjTHNrh1XYZvmB+dA988ipWwtdrLWhkKuOuByip/XhtH+DVdl871urCEuVeRlq3dIlr5R5g==}
+
+  '@fontsource/zen-kaku-gothic-new@5.2.6':
+    resolution: {integrity: sha512-8gh1SbAjzEtK36ZrzlR+U8SO+EdpgykyBviS/QIIgDNwUqERxyF0QSLvlLNtMtnFUC3AEPkOUGH0L+o7KGyMnA==}
+
+  '@fontsource/zen-maru-gothic@5.2.7':
+    resolution: {integrity: sha512-UC4DlBiObj+/FN6oaWlVUuxEuxT+hd6kQ0m6ahD7QMJOhtXA1S5yqmTJKpCBUqdTdKGakE4/CUbe4xjYn+y6aA==}
+
+  '@fontsource/zen-old-mincho@5.2.6':
+    resolution: {integrity: sha512-d3ZDFonjo2IJ22caT8RJWGalXI4k0gFG/T1aPM7aPo7+a1cPjcFFtLTwibM2c6/5R4AhnMJRF8kkQqWQ2SgjpQ==}
 
   '@fontsource/zilla-slab@5.2.6':
     resolution: {integrity: sha512-LBqzh5hMLaQA9piavsBLlSoFSjEpcqO686KJwaolf1tv3X022mOLAPyNo0p4iOpWuCIfNxNOETYtgMIqDDWB1A==}
@@ -1637,25 +2189,61 @@ snapshots:
       '@eslint/core': 0.15.1
       levn: 0.4.1
 
+  '@fontsource/abril-fatface@5.2.6': {}
+
+  '@fontsource/albert-sans@5.2.6': {}
+
   '@fontsource/alegreya-sans@5.2.6': {}
 
   '@fontsource/alegreya@5.2.6': {}
 
+  '@fontsource/alfa-slab-one@5.2.6': {}
+
   '@fontsource/archivo-narrow@5.2.6': {}
 
+  '@fontsource/arimo@5.2.6': {}
+
+  '@fontsource/arvo@5.2.6': {}
+
+  '@fontsource/asap@5.2.7': {}
+
   '@fontsource/azeret-mono@5.2.9': {}
+
+  '@fontsource/bangers@5.2.6': {}
+
+  '@fontsource/barlow@5.2.6': {}
 
   '@fontsource/biorhyme@5.2.8': {}
 
   '@fontsource/bitter@5.2.8': {}
 
+  '@fontsource/black-han-sans@5.2.6': {}
+
+  '@fontsource/black-ops-one@5.2.6': {}
+
   '@fontsource/bricolage-grotesque@5.2.8': {}
+
+  '@fontsource/bungee@5.2.6': {}
+
+  '@fontsource/cabin@5.2.6': {}
+
+  '@fontsource/cairo@5.2.6': {}
 
   '@fontsource/cardo@5.2.6': {}
 
+  '@fontsource/cascadia-code@5.2.2': {}
+
+  '@fontsource/caveat@5.2.6': {}
+
   '@fontsource/chivo@5.2.6': {}
 
+  '@fontsource/comic-mono@5.2.5': {}
+
   '@fontsource/cormorant@5.2.6': {}
+
+  '@fontsource/creepster@5.2.6': {}
+
+  '@fontsource/dancing-script@5.2.6': {}
 
   '@fontsource/dm-sans@5.2.6': {}
 
@@ -1663,15 +2251,45 @@ snapshots:
 
   '@fontsource/dm-serif-text@5.2.6': {}
 
+  '@fontsource/domine@5.2.6': {}
+
+  '@fontsource/dosis@5.2.6': {}
+
+  '@fontsource/eb-garamond@5.2.6': {}
+
   '@fontsource/eczar@5.2.7': {}
 
+  '@fontsource/exo-2@5.2.6': {}
+
   '@fontsource/familjen-grotesk@5.2.6': {}
+
+  '@fontsource/faustina@5.2.6': {}
+
+  '@fontsource/figtree@5.2.8': {}
+
+  '@fontsource/fira-code@5.2.6': {}
 
   '@fontsource/fira-sans@5.2.6': {}
 
   '@fontsource/fraunces@5.2.7': {}
 
+  '@fontsource/gaegu@5.2.6': {}
+
+  '@fontsource/gamja-flower@5.2.6': {}
+
+  '@fontsource/geist-mono@5.2.6': {}
+
   '@fontsource/gentium-basic@4.5.7': {}
+
+  '@fontsource/gothic-a1@5.2.6': {}
+
+  '@fontsource/gowun-batang@5.2.6': {}
+
+  '@fontsource/hina-mincho@5.2.6': {}
+
+  '@fontsource/hind@5.2.6': {}
+
+  '@fontsource/honk@5.2.8': {}
 
   '@fontsource/ibm-plex-sans@5.2.6': {}
 
@@ -1685,13 +2303,25 @@ snapshots:
 
   '@fontsource/inter@5.2.6': {}
 
+  '@fontsource/jetbrains-mono@5.2.6': {}
+
   '@fontsource/josefin-sans@5.2.6': {}
 
   '@fontsource/josefin-slab@5.2.6': {}
 
+  '@fontsource/jost@5.2.6': {}
+
+  '@fontsource/kaisei-decol@5.2.6': {}
+
+  '@fontsource/kanit@5.2.6': {}
+
   '@fontsource/karla@5.2.6': {}
 
+  '@fontsource/klee-one@5.2.6': {}
+
   '@fontsource/lato@5.2.6': {}
+
+  '@fontsource/lexend@5.2.9': {}
 
   '@fontsource/libre-baskerville@5.2.6': {}
 
@@ -1699,17 +2329,61 @@ snapshots:
 
   '@fontsource/literata@5.2.6': {}
 
+  '@fontsource/lobster@5.2.6': {}
+
+  '@fontsource/long-cang@5.2.6': {}
+
   '@fontsource/lora@5.2.6': {}
+
+  '@fontsource/lxgw-wenkai-tc@5.2.7': {}
+
+  '@fontsource/m-plus-1p@5.2.6': {}
+
+  '@fontsource/m-plus-rounded-1c@5.2.8': {}
+
+  '@fontsource/ma-shan-zheng@5.2.6': {}
+
+  '@fontsource/major-mono-display@5.2.6': {}
 
   '@fontsource/manrope@5.2.6': {}
 
+  '@fontsource/merriweather-sans@5.2.6': {}
+
   '@fontsource/merriweather@5.2.9': {}
 
+  '@fontsource/monoton@5.2.6': {}
+
   '@fontsource/montserrat@5.2.6': {}
+
+  '@fontsource/mulish@5.2.6': {}
+
+  '@fontsource/nanum-gothic@5.2.6': {}
+
+  '@fontsource/nanum-myeongjo@5.2.9': {}
+
+  '@fontsource/nanum-pen-script@5.2.6': {}
 
   '@fontsource/neuton@5.2.6': {}
 
   '@fontsource/newsreader@5.2.8': {}
+
+  '@fontsource/noto-sans-jp@5.2.6': {}
+
+  '@fontsource/noto-sans-kr@5.2.6': {}
+
+  '@fontsource/noto-sans-sc@5.2.6': {}
+
+  '@fontsource/noto-sans-tc@5.2.6': {}
+
+  '@fontsource/noto-serif-jp@5.2.6': {}
+
+  '@fontsource/noto-serif-kr@5.2.6': {}
+
+  '@fontsource/noto-serif-sc@5.2.6': {}
+
+  '@fontsource/noto-serif-tc@5.2.6': {}
+
+  '@fontsource/noto-serif@5.2.7': {}
 
   '@fontsource/nunito-sans@5.2.6': {}
 
@@ -1717,9 +2391,19 @@ snapshots:
 
   '@fontsource/open-sans@5.2.6': {}
 
+  '@fontsource/orbitron@5.2.6': {}
+
+  '@fontsource/oswald@5.2.6': {}
+
   '@fontsource/outfit@5.2.6': {}
 
   '@fontsource/overpass@5.2.6': {}
+
+  '@fontsource/pacifico@5.2.6': {}
+
+  '@fontsource/permanent-marker@5.2.6': {}
+
+  '@fontsource/pixelify-sans@5.2.6': {}
 
   '@fontsource/playfair-display@5.2.6': {}
 
@@ -1727,21 +2411,47 @@ snapshots:
 
   '@fontsource/poppins@5.2.6': {}
 
+  '@fontsource/press-start-2p@5.2.6': {}
+
   '@fontsource/proza-libre@5.2.6': {}
 
   '@fontsource/pt-sans@5.2.6': {}
 
   '@fontsource/pt-serif@5.2.6': {}
 
+  '@fontsource/quicksand@5.2.8': {}
+
   '@fontsource/rajdhani@5.2.6': {}
 
   '@fontsource/raleway@5.2.6': {}
+
+  '@fontsource/redacted-script@5.2.6': {}
 
   '@fontsource/roboto-serif@5.2.6': {}
 
   '@fontsource/roboto@5.2.6': {}
 
+  '@fontsource/rubik-doodle-shadow@5.2.6': {}
+
+  '@fontsource/rubik-glitch@5.2.6': {}
+
+  '@fontsource/rubik-pixels@5.2.6': {}
+
   '@fontsource/rubik@5.2.6': {}
+
+  '@fontsource/ruslan-display@5.2.6': {}
+
+  '@fontsource/sawarabi-gothic@5.2.8': {}
+
+  '@fontsource/sawarabi-mincho@5.2.6': {}
+
+  '@fontsource/shadows-into-light@5.2.6': {}
+
+  '@fontsource/signika@5.2.6': {}
+
+  '@fontsource/silkscreen@5.2.6': {}
+
+  '@fontsource/sora@5.2.6': {}
 
   '@fontsource/source-sans-pro@5.2.5': {}
 
@@ -1755,11 +2465,37 @@ snapshots:
 
   '@fontsource/spectral@5.2.6': {}
 
+  '@fontsource/syne-mono@5.2.6': {}
+
   '@fontsource/syne@5.2.6': {}
+
+  '@fontsource/ultra@5.2.6': {}
+
+  '@fontsource/unifrakturmaguntia@5.2.6': {}
+
+  '@fontsource/urbanist@5.2.6': {}
 
   '@fontsource/varela-round@5.2.6': {}
 
+  '@fontsource/victor-mono@5.2.6': {}
+
+  '@fontsource/vollkorn@5.2.8': {}
+
+  '@fontsource/vt323@5.2.6': {}
+
   '@fontsource/work-sans@5.2.6': {}
+
+  '@fontsource/yusei-magic@5.2.6': {}
+
+  '@fontsource/zcool-qingke-huangyou@5.2.6': {}
+
+  '@fontsource/zcool-xiaowei@5.2.6': {}
+
+  '@fontsource/zen-kaku-gothic-new@5.2.6': {}
+
+  '@fontsource/zen-maru-gothic@5.2.7': {}
+
+  '@fontsource/zen-old-mincho@5.2.6': {}
 
   '@fontsource/zilla-slab@5.2.6': {}
 
