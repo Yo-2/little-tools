@@ -180,6 +180,8 @@
 			minutes,
 			seconds,
 			timeupText,
+			showHours,
+			showMinutes,
 			timerOverrideGeneralStyle,
 			timerStyleOptions
 		} = get(configStore);
@@ -195,6 +197,8 @@
 			minutes,
 			seconds,
 			timeupText,
+			showHours,
+			showMinutes,
 			timerOverrideGeneralStyle,
 			timerStyleOptions: JSON.stringify(timerStyleOptions)
 		};
@@ -589,6 +593,14 @@
 					<label>
 						Time's Up Text
 						<input type="text" bind:value={$configStore.timeupText} />
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.showHours} />
+						Always show hours
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.showMinutes} />
+						Always show minutes
 					</label>
 
 					<h4 class="style-header">Style</h4>

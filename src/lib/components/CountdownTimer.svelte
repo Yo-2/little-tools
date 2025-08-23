@@ -8,6 +8,8 @@
 		minutes: initialMinutes = 0,
 		seconds: initialSeconds = 0,
 		timeupText = "Time's up!",
+		showHours = false,
+		showMinutes = false,
 		bgColorHex = '#ffffff',
 		textColor = '#000000',
 		bgColorOpacity = 100,
@@ -44,13 +46,21 @@
 	}
 
 	function formatTime() {
-		if (initialHours) {
+		if (showHours) {
 			return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
 		}
-		if (initialMinutes) {
+		if (showMinutes) {
 			return `${padZero(minutes)}:${padZero(seconds)}`;
 		}
-		if (initialSeconds) {
+
+		// default behavior
+		if (defaultData.hours > 0) {
+			return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+		}
+		if (defaultData.minutes > 0) {
+			return `${padZero(minutes)}:${padZero(seconds)}`;
+		}
+		if (defaultData.seconds > 0) {
 			return `${padZero(seconds)}`;
 		}
 		return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;

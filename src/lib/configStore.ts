@@ -47,6 +47,8 @@ export interface Config {
 	minutes: number;
 	seconds: number;
 	timeupText: string;
+	showHours: boolean;
+	showMinutes: boolean;
 	timerOverrideGeneralStyle: boolean;
 	timerStyleOptions: ToolStyleOptions;
 
@@ -105,6 +107,8 @@ const defaultConfig: Config = {
 	minutes: 5,
 	seconds: 0,
 	timeupText: "Time's up!",
+	showHours: false,
+	showMinutes: false,
 	timerOverrideGeneralStyle: false,
 	timerStyleOptions: {
 		fontFamily: 'sans-serif',

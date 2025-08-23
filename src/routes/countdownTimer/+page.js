@@ -9,6 +9,8 @@ export function load({ url }) {
 		hours: Number(url.searchParams.get('hours')),
 		minutes: Number(url.searchParams.get('minutes')),
 		seconds: Number(url.searchParams.get('seconds')),
-		timeupText: url.searchParams.get('timeupText')
+		timeupText: url.searchParams.get('timeupText'),
+		showHours: url.searchParams.get('showHours') === 'true',
+		showMinutes: url.searchParams.get('showMinutes') === 'true'
 	};
 }
