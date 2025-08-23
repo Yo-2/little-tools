@@ -18,7 +18,15 @@
 	const effectiveStyles = $derived(
 		textOverrideGeneralStyle
 			? textStyleOptions
-			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex, textColorOpacity, bgColorOpacity }
+			: {
+					fontFamily,
+					fontSize,
+					fontWeight,
+					textColor,
+					bgColorHex,
+					textColorOpacity,
+					bgColorOpacity
+				}
 	);
 
 	let style = $derived(`
