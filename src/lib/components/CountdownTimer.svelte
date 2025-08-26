@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
 	import { hexToRgba } from '$lib/colorUtils';
 	import type { Config } from '$lib/configStore';
 
@@ -33,26 +32,7 @@
 	let seconds = $state(0);
 	let timeup = $state(false);
 	let isPaused = $state(true);
-
 	let remainingTime = $state(0); // Time in milliseconds
-	let endTime = $state(0);
-	let frameId: number;
-
-	function setInitialTime() {
-		remainingTime =
-			(defaultData.hours * 3600 + defaultData.minutes * 60 + defaultData.seconds) * 1000;
-		updateDisplay();
-	}
-
-	$effect(() => {
-		setInitialTime();
-		isPaused = true;
-		timeup = false;
-		if (frameId) {
-			cancelAnimationFrame(frameId);
-		}
-		updateDisplay();
-	});
 
 	function updateDisplay() {
 		if (remainingTime < 0) remainingTime = 0;
@@ -62,44 +42,60 @@
 		seconds = totalSeconds % 60;
 	}
 
-	function countdown() {
-		remainingTime = endTime - Date.now();
-
-		if (remainingTime <= 0) {
-			remainingTime = 0;
-			timeup = true;
-			isPaused = true;
-		}
-
+	function setInitialTime() {
+		remainingTime =
+			(defaultData.hours * 3600 + defaultData.minutes * 60 + defaultData.seconds) * 1000;
 		updateDisplay();
-
-		// Only request a new frame if the timer is still running
-		if (!isPaused && !timeup) {
-			frameId = requestAnimationFrame(countdown);
-		} else {
-			if (frameId) {
-				cancelAnimationFrame(frameId);
-			}
-		}
 	}
 
-	function playOrPause() {
-		isPaused = !isPaused;
+	// This effect resets the timer when props change
+	$effect(() => {
+		setInitialTime();
+		isPaused = true;
+		timeup = false;
+	});
 
-		if (!isPaused && !timeup) {
-			// Resuming
-			endTime = Date.now() + remainingTime;
-			frameId = requestAnimationFrame(countdown);
+	// This effect handles the countdown logic
+	$effect(() => {
+		if (isPaused || timeup) {
+			return; // Do nothing if paused or finished
 		}
+
+		const endTime = Date.now() + remainingTime;
+		let frameId: number;
+
+		function frame() {
+			remainingTime = endTime - Date.now();
+
+			if (remainingTime <= 0) {
+				remainingTime = 0;
+				timeup = true;
+				isPaused = true; // This will cause this effect to cleanup and stop
+			}
+			updateDisplay();
+
+			// The loop continues as long as this effect is active.
+			// The effect will be re-run (and this loop cleaned up) when isPaused becomes true.
+			frameId = requestAnimationFrame(frame);
+		}
+
+		frameId = requestAnimationFrame(frame);
+
+		// Cleanup function for the effect, runs when isPaused/timeup changes, or component unmounts
+		return () => {
+			cancelAnimationFrame(frameId);
+		};
+	});
+
+	function playOrPause() {
+		if (timeup) return;
+		isPaused = !isPaused;
 	}
 
 	function reset() {
-		isPaused = true;
 		timeup = false;
+		isPaused = true; // This will trigger the effect cleanup
 		setInitialTime();
-		if (frameId) {
-			cancelAnimationFrame(frameId);
-		}
 	}
 
 	function handleKeyDown(event: KeyboardEvent) {
@@ -107,12 +103,6 @@
 			reset();
 		}
 	}
-
-	onDestroy(() => {
-		if (frameId) {
-			cancelAnimationFrame(frameId);
-		}
-	});
 
 	function padZero(num: number) {
 		return num.toString().padStart(2, '0');
