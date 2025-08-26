@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import AnalogClock from './AnalogClock.svelte';
 	import { hexToRgba } from '$lib/colorUtils';
 
@@ -89,7 +89,9 @@
 		time = new Date();
 		frameId = requestAnimationFrame(update);
 	}
-	update();
+	onMount(() => {
+		update();
+	});
 
 	let timeParts = $derived(() => {
 		const parts = new Intl.DateTimeFormat('en-US', {
