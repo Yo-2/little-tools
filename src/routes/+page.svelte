@@ -144,6 +144,7 @@
 			styleType,
 			showDate,
 			showDay,
+			showSeconds,
 			timezone,
 			analogClockWidth,
 			clockOverrideGeneralStyle,
@@ -160,6 +161,7 @@
 			styleType,
 			showDate,
 			showDay,
+			showSeconds,
 			timezone,
 			analogClockWidth,
 			clockOverrideGeneralStyle,
@@ -470,6 +472,10 @@
 							Show Day of Week
 						</label>
 					{/if}
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.showSeconds} />
+						Show Seconds
+					</label>
 					{#if $configStore.styleType === 'analog'}
 						<label>
 							Analog Clock Width

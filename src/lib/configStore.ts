@@ -37,6 +37,7 @@ export interface Config {
 	styleType: 'digital' | 'analog';
 	showDate: boolean;
 	showDay: boolean;
+	showSeconds: boolean;
 	timezone: string;
 	analogClockWidth: string;
 	clockOverrideGeneralStyle: boolean;
@@ -90,6 +91,7 @@ const defaultConfig: Config = {
 	styleType: 'digital',
 	showDate: false,
 	showDay: false,
+	showSeconds: true,
 	timezone: '',
 	analogClockWidth: '100%',
 	clockOverrideGeneralStyle: false,
