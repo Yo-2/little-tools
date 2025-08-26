@@ -63,25 +63,31 @@
 	}
 
 	function countdown() {
-		if (!isPaused && !timeup) {
-			remainingTime = endTime - Date.now();
+		remainingTime = endTime - Date.now();
 
-			if (remainingTime <= 0) {
-				remainingTime = 0;
-				timeup = true;
-				isPaused = true;
-			}
-
-			updateDisplay();
+		if (remainingTime <= 0) {
+			remainingTime = 0;
+			timeup = true;
+			isPaused = true;
 		}
-		if (!timeup) {
+
+		updateDisplay();
+
+		// Only request a new frame if the timer is still running
+		if (!isPaused && !timeup) {
 			frameId = requestAnimationFrame(countdown);
+		} else {
+			if (frameId) {
+				cancelAnimationFrame(frameId);
+			}
 		}
 	}
 
 	function playOrPause() {
 		isPaused = !isPaused;
-		if (!isPaused) {
+
+		if (!isPaused && !timeup) {
+			// Resuming
 			endTime = Date.now() + remainingTime;
 			frameId = requestAnimationFrame(countdown);
 		}
