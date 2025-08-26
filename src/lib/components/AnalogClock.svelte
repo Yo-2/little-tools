@@ -3,11 +3,13 @@
 		hours = 0,
 		minutes = 0,
 		seconds = 0,
+		showSeconds = true,
 		textColor = '#000000'
 	} = $props<{
 		hours: number;
 		minutes: number;
 		seconds: number;
+		showSeconds?: boolean;
 		textColor: string;
 	}>();
 
@@ -75,16 +77,18 @@
 				transform="rotate({minuteDeg})"
 			/>
 			<!-- Second Hand -->
-			<line
-				x1="0"
-				y1="0"
-				x2="0"
-				y2="-90"
-				stroke="red"
-				stroke-width="2"
-				stroke-linecap="round"
-				transform="rotate({secondDeg})"
-			/>
+			{#if showSeconds}
+				<line
+					x1="0"
+					y1="0"
+					x2="0"
+					y2="-90"
+					stroke="red"
+					stroke-width="2"
+					stroke-linecap="round"
+					transform="rotate({secondDeg})"
+				/>
+			{/if}
 			<!-- Center Dot -->
 			<circle cx="0" cy="0" r="5" fill={textColor} />
 		</g>

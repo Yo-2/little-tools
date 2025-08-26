@@ -9,6 +9,7 @@
 		styleType = 'digital', // 'digital' | 'analog'
 		showDate = false,
 		showDay = false,
+		showSeconds = true,
 		timezone, // undefined means user's local time
 		analogClockWidth = '100%',
 		// General styles
@@ -26,6 +27,7 @@
 		styleType?: 'digital' | 'analog';
 		showDate?: boolean;
 		showDay?: boolean;
+		showSeconds?: boolean;
 		timezone?: string;
 		analogClockWidth?: string;
 		bgColorHex?: string;
@@ -42,13 +44,18 @@
 	let time = $state(new Date());
 
 	const timeFormatter = $derived(() => {
-		return new Intl.DateTimeFormat('en-US', {
+		const options: Intl.DateTimeFormatOptions = {
 			hour: '2-digit',
 			minute: '2-digit',
-			second: '2-digit',
 			hour12: false,
 			timeZone: timezone || undefined
-		});
+		};
+
+		if (showSeconds) {
+			options.second = '2-digit';
+		}
+
+		return new Intl.DateTimeFormat('en-US', options);
 	});
 
 	const dateFormatter = $derived(() => {
@@ -131,7 +138,7 @@
 <div class="clock-container" {style}>
 	{#if styleType === 'analog'}
 		<div class="analog-clock-wrapper" style="width: {analogClockWidth};">
-			<AnalogClock {...timeParts()} textColor={finalStyles().textColor} />
+			<AnalogClock {...timeParts()} {showSeconds} textColor={finalStyles().textColor} />
 		</div>
 	{:else}
 		<div class="digital-clock-wrapper">
