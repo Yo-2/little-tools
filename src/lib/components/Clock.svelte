@@ -84,9 +84,12 @@
 		return dayFormatter().format(time);
 	}
 
-	const timerId = setInterval(() => {
+	let frameId: number;
+	function update() {
 		time = new Date();
-	}, 1000);
+		frameId = requestAnimationFrame(update);
+	}
+	update();
 
 	let timeParts = $derived(() => {
 		const parts = new Intl.DateTimeFormat('en-US', {
@@ -104,7 +107,9 @@
 	});
 
 	onDestroy(() => {
-		clearInterval(timerId);
+		if (frameId) {
+			cancelAnimationFrame(frameId);
+		}
 	});
 
 	const finalStyles = $derived(() => {

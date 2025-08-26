@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { hexToRgba } from '$lib/colorUtils';
 	import type { Config } from '$lib/configStore';
 
@@ -31,15 +31,82 @@
 	let hours = $state(0);
 	let minutes = $state(0);
 	let seconds = $state(0);
+	let timeup = $state(false);
+	let isPaused = $state(true);
+
+	let remainingTime = $state(0); // Time in milliseconds
+	let endTime = $state(0);
+	let frameId: number;
+
+	function setInitialTime() {
+		remainingTime =
+			(defaultData.hours * 3600 + defaultData.minutes * 60 + defaultData.seconds) * 1000;
+		updateDisplay();
+	}
 
 	$effect(() => {
-		hours = defaultData.hours;
-		minutes = defaultData.minutes;
-		seconds = defaultData.seconds;
+		setInitialTime();
+		isPaused = true;
+		timeup = false;
+		if (frameId) {
+			cancelAnimationFrame(frameId);
+		}
+		updateDisplay();
 	});
 
-	let timeup = $state(false);
-	let isPaused = false;
+	function updateDisplay() {
+		if (remainingTime < 0) remainingTime = 0;
+		const totalSeconds = Math.ceil(remainingTime / 1000);
+		hours = Math.floor(totalSeconds / 3600);
+		minutes = Math.floor((totalSeconds % 3600) / 60);
+		seconds = totalSeconds % 60;
+	}
+
+	function countdown() {
+		if (!isPaused && !timeup) {
+			remainingTime = endTime - Date.now();
+
+			if (remainingTime <= 0) {
+				remainingTime = 0;
+				timeup = true;
+				isPaused = true;
+			}
+
+			updateDisplay();
+		}
+		if (!timeup) {
+			frameId = requestAnimationFrame(countdown);
+		}
+	}
+
+	function playOrPause() {
+		isPaused = !isPaused;
+		if (!isPaused) {
+			endTime = Date.now() + remainingTime;
+			frameId = requestAnimationFrame(countdown);
+		}
+	}
+
+	function reset() {
+		isPaused = true;
+		timeup = false;
+		setInitialTime();
+		if (frameId) {
+			cancelAnimationFrame(frameId);
+		}
+	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key.toLowerCase() === 'r') {
+			reset();
+		}
+	}
+
+	onDestroy(() => {
+		if (frameId) {
+			cancelAnimationFrame(frameId);
+		}
+	});
 
 	function padZero(num: number) {
 		return num.toString().padStart(2, '0');
@@ -65,51 +132,6 @@
 		}
 		return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
 	}
-
-	function countdown() {
-		const countSeconds = hours * 3600 + minutes * 60 + seconds;
-		if (countSeconds <= 1) {
-			timeup = true;
-			return;
-		}
-		if (isPaused) {
-			return;
-		}
-		seconds--;
-		if (seconds < 0) {
-			seconds = 59;
-			minutes--;
-			if (minutes < 0) {
-				minutes = 59;
-				hours--;
-			}
-		}
-	}
-
-	function reset() {
-		hours = defaultData.hours;
-		minutes = defaultData.minutes;
-		seconds = defaultData.seconds;
-		timeup = false;
-	}
-
-	function playOrPause() {
-		isPaused = !isPaused;
-	}
-
-	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key.toLowerCase() === 'r') {
-			reset();
-		}
-	}
-
-	const timerId = setInterval(() => {
-		countdown();
-	}, 1000);
-
-	onDestroy(() => {
-		clearInterval(timerId);
-	});
 
 	const effectiveStyles = $derived(
 		timerOverrideGeneralStyle
