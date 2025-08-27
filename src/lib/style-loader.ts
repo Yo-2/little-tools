@@ -1,13 +1,16 @@
 import type { ToolStyleOptions } from './configStore';
 
 export function loadStyles(url: URL, componentName: string) {
-	const fontFamily = url.searchParams.get('fontFamily');
-	const fontSize = url.searchParams.get('fontSize');
-	const fontWeight = url.searchParams.get('fontWeight');
-	const textColor = url.searchParams.get('textColor');
-	const bgColorHex = url.searchParams.get('bgColorHex');
-	const bgColorOpacity = url.searchParams.get('bgColorOpacity');
-	const textColorOpacity = url.searchParams.get('textColorOpacity');
+	const fontFamily = url.searchParams.get('fontFamily') ?? undefined;
+	const fontSize = url.searchParams.get('fontSize') ?? undefined;
+	const fontWeight = url.searchParams.get('fontWeight') ?? undefined;
+	const textColor = url.searchParams.get('textColor') ?? undefined;
+	const bgColorHex = url.searchParams.get('bgColorHex') ?? undefined;
+	const bgColorOpacityStr = url.searchParams.get('bgColorOpacity');
+	const textColorOpacityStr = url.searchParams.get('textColorOpacity');
+
+	const bgColorOpacity = bgColorOpacityStr ? parseInt(bgColorOpacityStr, 10) : undefined;
+	const textColorOpacity = textColorOpacityStr ? parseInt(textColorOpacityStr, 10) : undefined;
 
 	const overrideFlag = url.searchParams.get(`${componentName}OverrideGeneralStyle`);
 	const styleOptionsStr = url.searchParams.get(`${componentName}StyleOptions`);

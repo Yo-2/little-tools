@@ -4,7 +4,7 @@
 </script>
 
 <div class="container">
-	<SpinningWheel items={data.items} />
+	<SpinningWheel {...data} />
 </div>
 
 <style>
