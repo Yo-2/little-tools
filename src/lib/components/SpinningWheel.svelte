@@ -29,6 +29,13 @@
 		return [x, y];
 	}
 
+	function onSpinEnd() {
+		spinning = false;
+		const finalAngle = rotation % 360;
+		const winningIndex = Math.floor((360 - finalAngle) / anglePerSegment) % numSegments;
+		result = items[winningIndex];
+	}
+
 	function spin() {
 		if (spinning) return;
 
@@ -39,15 +46,7 @@
 		const fullSpins = 10; // Spin at least 10 times
 		const spinAmount = fullSpins * 360 + spinAngle;
 
-		const newRotation = rotation + spinAmount;
-		rotation = newRotation;
-
-		setTimeout(() => {
-			spinning = false;
-			const finalAngle = newRotation % 360;
-			const winningIndex = Math.floor((360 - finalAngle) / anglePerSegment) % numSegments;
-			result = items[winningIndex];
-		}, 4000); // Corresponds to the CSS transition duration
+		rotation += spinAmount;
 	}
 
 	const effectiveStyles = $derived(
@@ -63,7 +62,7 @@
 	style:color={effectiveStyles.textColor}
 >
 	<div class="wheel-wrapper">
-		<div class="wheel" style:transform="rotate({rotation}deg)">
+		<div class="wheel" style:transform="rotate({rotation}deg)" ontransitionend={onSpinEnd}>
 			<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
 				{#each items as item, i}
 					{@const [x, y] = getCoordinatesForPercent(i / numSegments)}
