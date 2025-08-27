@@ -177,5 +177,6 @@
 		word-break: keep-all;
 		width: 100%;
 		text-align: center;
+		font-variant-numeric: tabular-nums;
 	}
 </style>

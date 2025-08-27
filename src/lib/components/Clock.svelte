@@ -180,7 +180,13 @@
 		align-items: center;
 		gap: 0.25em; /* Spacing between time, date, and day */
 	}
-	.clock,
+	.clock {
+		margin: 0;
+		width: 100%;
+		text-align: center;
+		font-variant-numeric: tabular-nums;
+	}
+
 	.date,
 	.day {
 		margin: 0;
