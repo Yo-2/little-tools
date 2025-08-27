@@ -24,6 +24,11 @@ export interface ToolStyleOptions {
 	textColorOpacity: number;
 }
 
+export interface SpinningWheelStyleOptions extends ToolStyleOptions {
+	size: number;
+	segmentColors: string[];
+}
+
 export interface Config {
 	fontFamily: string;
 	fontSize: string;
@@ -61,7 +66,7 @@ export interface Config {
 	// Spinning Wheel specific
 	spinningWheelItems: string;
 	spinningWheelOverrideGeneralStyle: boolean;
-	spinningWheelStyleOptions: ToolStyleOptions;
+	spinningWheelStyleOptions: SpinningWheelStyleOptions;
 
 	// Weather Widget specific
 	weatherLocation: string;
@@ -143,7 +148,9 @@ const defaultConfig: Config = {
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,
-		textColorOpacity: 100
+		textColorOpacity: 100,
+		size: 300,
+		segmentColors: ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
 	},
 
 	weatherLocation: 'London',

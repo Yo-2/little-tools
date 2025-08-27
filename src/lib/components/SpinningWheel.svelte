@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { Config } from '$lib/configStore';
+	import type { Config, SpinningWheelStyleOptions } from '$lib/configStore';
 
 	// Props for the wheel segments and colors
 	let {
 		items = ['Prize 1', 'Prize 2', 'Prize 3', 'Prize 4', 'Prize 5', 'Prize 6'],
-		colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A'],
 		// General styles
 		fontFamily = 'sans-serif',
 		fontSize = '1.5rem',
@@ -13,7 +12,7 @@
 		bgColorHex = 'rgba(0,0,0,0)',
 		// Override logic
 		spinningWheelOverrideGeneralStyle = false,
-		spinningWheelStyleOptions = {} as Config['spinningWheelStyleOptions']
+		spinningWheelStyleOptions = {} as SpinningWheelStyleOptions
 	} = $props();
 
 	let spinning = $state(false);
@@ -52,7 +51,15 @@
 	const effectiveStyles = $derived(
 		spinningWheelOverrideGeneralStyle
 			? spinningWheelStyleOptions
-			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+			: {
+					fontFamily,
+					fontSize,
+					fontWeight,
+					textColor,
+					bgColorHex,
+					size: 300,
+					segmentColors: ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
+				}
 	);
 </script>
 
@@ -61,13 +68,20 @@
 	style:background-color={effectiveStyles.bgColorHex}
 	style:color={effectiveStyles.textColor}
 >
-	<div class="wheel-wrapper">
+	<div
+		class="wheel-wrapper"
+		style:width="{effectiveStyles.size}px"
+		style:height="{effectiveStyles.size}px"
+	>
 		<div class="wheel" style:transform="rotate({rotation}deg)" ontransitionend={onSpinEnd}>
 			<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
 				{#each items as item, i}
 					{@const [x, y] = getCoordinatesForPercent(i / numSegments)}
 					{@const [x2, y2] = getCoordinatesForPercent((i + 1) / numSegments)}
-					<path d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z" fill={colors[i % colors.length]} />
+					<path
+						d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z"
+						fill={effectiveStyles.segmentColors[i % effectiveStyles.segmentColors.length]}
+					/>
 					{@const [textX, textY] = getCoordinatesForPercent((i + 0.5) / numSegments)}
 					<text
 						x={textX * 0.6}
@@ -90,16 +104,15 @@
 	<button class="spin-button" onclick={spin} disabled={spinning}>
 		{#if spinning}Spinning...{:else}Spin{/if}
 	</button>
-	{#if result}
-		<div
-			class="result"
-			style:font-family={effectiveStyles.fontFamily}
-			style:font-size={effectiveStyles.fontSize}
-			style:font-weight={effectiveStyles.fontWeight}
-		>
-			Result: <strong>{result}</strong>
-		</div>
-	{/if}
+	<div
+		class="result"
+		style:visibility={result ? 'visible' : 'hidden'}
+		style:font-family={effectiveStyles.fontFamily}
+		style:font-size={effectiveStyles.fontSize}
+		style:font-weight={effectiveStyles.fontWeight}
+	>
+		Result: <strong>{result}</strong>
+	</div>
 </div>
 
 <style>
@@ -114,8 +127,6 @@
 	}
 	.wheel-wrapper {
 		position: relative;
-		width: 300px;
-		height: 300px;
 	}
 	.wheel {
 		width: 100%;
