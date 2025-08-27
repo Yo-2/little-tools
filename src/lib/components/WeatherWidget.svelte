@@ -6,12 +6,27 @@
 		name: string;
 		main: {
 			temp: number;
+			feels_like: number;
+			temp_min: number;
+			temp_max: number;
+			pressure: number;
+			humidity: number;
 		};
 		weather: {
 			main: string;
 			description: string;
 			icon: string;
 		}[];
+		wind: {
+			speed: number;
+			deg: number;
+			gust?: number;
+		};
+		sys: {
+			sunrise: number;
+			sunset: number;
+		};
+		visibility: number;
 	}
 
 	import type { Config } from '$lib/configStore';
@@ -27,7 +42,11 @@
 		bgColorHex = '#ffffff',
 		// Override logic
 		weatherOverrideGeneralStyle = false,
-		weatherStyleOptions = {} as Config['weatherStyleOptions']
+		weatherStyleOptions = {} as Config['weatherStyleOptions'],
+		// Detail visibility
+		weatherShowWind = false,
+		weatherShowAtmosphere = false,
+		weatherShowSun = false
 	} = $props();
 
 	// --- State ---
@@ -76,6 +95,38 @@
 		}
 	}
 
+	function formatTime(timestamp: number) {
+		const date = new Date(timestamp * 1000);
+		// Adjust for timezone if the API provides a timezone offset
+		// Note: OpenWeatherMap `dt` is UTC. Timezone offset is in `timezone`.
+		// However, toLocaleTimeString without a specific timezone will use the user's local time,
+		// which is generally the desired behavior.
+		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+	}
+
+	function windDirection(deg: number) {
+		const directions = [
+			'N',
+			'NNE',
+			'NE',
+			'ENE',
+			'E',
+			'ESE',
+			'SE',
+			'SSE',
+			'S',
+			'SSW',
+			'SW',
+			'WSW',
+			'W',
+			'WNW',
+			'NW',
+			'NNW'
+		];
+		const index = Math.round(deg / 22.5) % 16;
+		return directions[index];
+	}
+
 	const effectiveStyles = $derived(
 		weatherOverrideGeneralStyle
 			? weatherStyleOptions
@@ -107,6 +158,40 @@
 				<p class="temp">{Math.round(weatherData.main.temp)}°C</p>
 			</div>
 			<p class="description">{weatherData.weather[0].main}</p>
+
+			{#if weatherShowWind || weatherShowAtmosphere || weatherShowSun}
+				<div class="details">
+					{#if weatherShowWind && weatherData.wind}
+						<div class="detail-group">
+							<h4>Wind</h4>
+							<p>
+								{windDirection(weatherData.wind.deg)}
+								{weatherData.wind.speed.toFixed(1)} m/s
+							</p>
+							{#if weatherData.wind.gust}
+								<p>Gusts: {weatherData.wind.gust.toFixed(1)} m/s</p>
+							{/if}
+						</div>
+					{/if}
+
+					{#if weatherShowAtmosphere && weatherData.main}
+						<div class="detail-group">
+							<h4>Atmosphere</h4>
+							<p>Humidity: {weatherData.main.humidity}%</p>
+							<p>Pressure: {weatherData.main.pressure} hPa</p>
+							<p>Visibility: {(weatherData.visibility / 1000).toFixed(1)} km</p>
+						</div>
+					{/if}
+
+					{#if weatherShowSun && weatherData.sys}
+						<div class="detail-group">
+							<h4>Sun</h4>
+							<p>Sunrise: {formatTime(weatherData.sys.sunrise)}</p>
+							<p>Sunset: {formatTime(weatherData.sys.sunset)}</p>
+						</div>
+					{/if}
+				</div>
+			{/if}
 		</div>
 	{:else}
 		<p>Enter a location and API key in the settings page.</p>
@@ -149,5 +234,31 @@
 	.description {
 		text-transform: capitalize;
 		margin: 0.5rem 0 0 0;
+	}
+
+	.details {
+		display: flex;
+		justify-content: space-around;
+		gap: 1rem;
+		margin-top: 1rem;
+		text-align: left;
+		width: 100%;
+		border-top: 1px solid #eee;
+		padding-top: 1rem;
+		flex-wrap: wrap;
+	}
+	.detail-group {
+		min-width: 120px;
+		flex: 1;
+	}
+	.detail-group h4 {
+		margin: 0 0 0.5rem 0;
+		font-size: 0.9rem;
+		color: var(--text-color);
+		opacity: 0.8;
+	}
+	.detail-group p {
+		margin: 0.25rem 0;
+		font-size: 0.85rem;
 	}
 </style>

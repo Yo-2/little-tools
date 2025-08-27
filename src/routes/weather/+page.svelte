@@ -4,7 +4,7 @@
 </script>
 
 <div class="container">
-	<WeatherWidget location={data.weatherLocation ?? undefined} />
+	<WeatherWidget {...data} />
 </div>
 
 <style>
