@@ -1212,7 +1212,7 @@
 
 	.settings-panel {
 		width: 350px;
-		padding: 2rem;
+		padding: 0 2rem;
 		border-right: 1px solid #eaeaea;
 		overflow-y: auto;
 	}
