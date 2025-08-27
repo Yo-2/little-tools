@@ -260,5 +260,6 @@
 	.detail-group p {
 		margin: 0.25rem 0;
 		font-size: 0.85rem;
+		white-space: nowrap;
 	}
 </style>
