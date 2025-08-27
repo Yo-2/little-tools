@@ -139,7 +139,7 @@
 		display: grid;
 		place-items: center;
 		gap: 2rem;
-		padding: 2rem;
+		padding-top: 2rem;
 		position: relative;
 		width: 100%;
 		height: 100%;

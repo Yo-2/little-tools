@@ -811,10 +811,6 @@
 								/>
 							</div>
 							<label>
-								Font Size
-								<input type="text" bind:value={$configStore.spinningWheelStyleOptions.fontSize} />
-							</label>
-							<label>
 								Font Weight
 								<select bind:value={$configStore.spinningWheelStyleOptions.fontWeight}>
 									<option value="100">100</option>
