@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Config, SpinningWheelStyleOptions } from '$lib/configStore';
+	import { hexToRgba } from '$lib/colorUtils';
 
 	// Props for the wheel segments and colors
 	let {
@@ -10,6 +11,8 @@
 		fontWeight = 'normal',
 		textColor = '#000000',
 		bgColorHex = 'rgba(0,0,0,0)',
+		textColorOpacity = 100,
+		bgColorOpacity = 0,
 		// Override logic
 		spinningWheelOverrideGeneralStyle = false,
 		spinningWheelStyleOptions = {} as SpinningWheelStyleOptions
@@ -48,30 +51,44 @@
 		rotation += spinAmount;
 	}
 
-	const effectiveStyles = $derived(
-		spinningWheelOverrideGeneralStyle
-			? spinningWheelStyleOptions
-			: {
-					fontFamily,
-					fontSize,
-					fontWeight,
-					textColor,
-					bgColorHex,
-					size: 300,
-					segmentColors: ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
-				}
-	);
+	const effectiveStyles = $derived(() => {
+		if (spinningWheelOverrideGeneralStyle) {
+			return {
+				...spinningWheelStyleOptions,
+				bgColor: hexToRgba(
+					spinningWheelStyleOptions.bgColorHex,
+					spinningWheelStyleOptions.bgColorOpacity
+				),
+				textColor: hexToRgba(
+					spinningWheelStyleOptions.textColor,
+					spinningWheelStyleOptions.textColorOpacity
+				),
+				segmentColorsArray: spinningWheelStyleOptions.segmentColors
+					.split('\n')
+					.filter((c) => c.trim() !== '')
+			};
+		}
+		return {
+			fontFamily,
+			fontSize,
+			fontWeight,
+			size: 300,
+			bgColor: hexToRgba(bgColorHex, bgColorOpacity),
+			textColor: hexToRgba(textColor, textColorOpacity),
+			segmentColorsArray: ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
+		};
+	});
 </script>
 
 <div
 	class="wheel-container"
-	style:background-color={effectiveStyles.bgColorHex}
-	style:color={effectiveStyles.textColor}
+	style:background-color={effectiveStyles().bgColor}
+	style:color={effectiveStyles().textColor}
 >
 	<div
 		class="wheel-wrapper"
-		style:width="{effectiveStyles.size}px"
-		style:height="{effectiveStyles.size}px"
+		style:width="{effectiveStyles().size}px"
+		style:height="{effectiveStyles().size}px"
 	>
 		<div class="wheel" style:transform="rotate({rotation}deg)" ontransitionend={onSpinEnd}>
 			<svg viewBox="-1 -1 2 2" style="transform: rotate(-90deg)">
@@ -80,16 +97,18 @@
 					{@const [x2, y2] = getCoordinatesForPercent((i + 1) / numSegments)}
 					<path
 						d="M 0,0 L {x},{y} A 1,1 0 0,1 {x2},{y2} Z"
-						fill={effectiveStyles.segmentColors[i % effectiveStyles.segmentColors.length]}
+						fill={effectiveStyles().segmentColorsArray[
+							i % effectiveStyles().segmentColorsArray.length
+						]}
 					/>
 					{@const [textX, textY] = getCoordinatesForPercent((i + 0.5) / numSegments)}
 					<text
 						x={textX * 0.6}
 						y={textY * 0.6}
 						font-size="0.1"
-						fill={effectiveStyles.textColor}
-						font-family={effectiveStyles.fontFamily}
-						font-weight={effectiveStyles.fontWeight}
+						fill={effectiveStyles().textColor}
+						font-family={effectiveStyles().fontFamily}
+						font-weight={effectiveStyles().fontWeight}
 						text-anchor="middle"
 						alignment-baseline="middle"
 						transform="rotate({(i + 0.5) * anglePerSegment + 90}, {textX * 0.6}, {textY * 0.6})"
@@ -107,9 +126,9 @@
 	<div
 		class="result"
 		style:visibility={result ? 'visible' : 'hidden'}
-		style:font-family={effectiveStyles.fontFamily}
-		style:font-size={effectiveStyles.fontSize}
-		style:font-weight={effectiveStyles.fontWeight}
+		style:font-family={effectiveStyles().fontFamily}
+		style:font-size={effectiveStyles().fontSize}
+		style:font-weight={effectiveStyles().fontWeight}
 	>
 		Result: <strong>{result}</strong>
 	</div>

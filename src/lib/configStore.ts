@@ -26,7 +26,7 @@ export interface ToolStyleOptions {
 
 export interface SpinningWheelStyleOptions extends ToolStyleOptions {
 	size: number;
-	segmentColors: string[];
+	segmentColors: string;
 }
 
 export interface Config {
@@ -150,7 +150,7 @@ const defaultConfig: Config = {
 		bgColorOpacity: 100,
 		textColorOpacity: 100,
 		size: 300,
-		segmentColors: ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A']
+		segmentColors: '#FFDDC1\n#FFABAB\n#FFC3A0\n#FF677D\n#D4A5A5\n#392F5A'
 	},
 
 	weatherLocation: 'London',

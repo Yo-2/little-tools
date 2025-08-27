@@ -882,6 +882,19 @@
 								/>
 								<span>{$configStore.spinningWheelStyleOptions.bgColorOpacity}</span>
 							</label>
+							<label>
+								Size (px)
+								<input
+									type="number"
+									bind:value={$configStore.spinningWheelStyleOptions.size}
+									min="50"
+								/>
+							</label>
+							<label>
+								Segment Colors (one per line)
+								<textarea bind:value={$configStore.spinningWheelStyleOptions.segmentColors}
+								></textarea>
+							</label>
 						</div>
 					{/if}
 				</section>
@@ -1158,6 +1171,7 @@
 				<h3>Spinning Wheel</h3>
 				<div class="preview-content">
 					<SpinningWheel
+						{...$configStore}
 						items={$configStore.spinningWheelItems.split('\n').filter((i) => i.trim() !== '')}
 					/>
 				</div>
