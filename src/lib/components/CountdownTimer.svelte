@@ -175,12 +175,6 @@
 	{/if}
 </button>
 
-<pre>
-	isPaused: {isPaused}
-	timeup: {timeup}
-	remainingTime: {remainingTime}
-</pre>
-
 <style>
 	.countdown-timer-container {
 		display: grid;
@@ -201,5 +195,6 @@
 		word-break: keep-all;
 		width: 100%;
 		text-align: center;
+		pointer-events: none;
 	}
 </style>
