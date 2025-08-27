@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import AnalogClock from './AnalogClock.svelte';
 	import { hexToRgba } from '$lib/colorUtils';
 
@@ -84,9 +84,14 @@
 		return dayFormatter().format(time);
 	}
 
-	const timerId = setInterval(() => {
+	let frameId: number;
+	function update() {
 		time = new Date();
-	}, 1000);
+		frameId = requestAnimationFrame(update);
+	}
+	onMount(() => {
+		update();
+	});
 
 	let timeParts = $derived(() => {
 		const parts = new Intl.DateTimeFormat('en-US', {
@@ -104,7 +109,9 @@
 	});
 
 	onDestroy(() => {
-		clearInterval(timerId);
+		if (frameId) {
+			cancelAnimationFrame(frameId);
+		}
 	});
 
 	const finalStyles = $derived(() => {
