@@ -343,12 +343,10 @@
 <div class="config-page">
 	<aside class="settings-panel">
 		<header class="page-header">
-			<h1>Stream Tools & Web Widget Generator</h1>
-			<p>
-				Welcome! This is a free suite of tools for streamers, content creators, and developers. Here
-				you can customize various widgets like clocks, countdown timers, spinning wheels, and more,
-				and easily integrate them into your live stream (OBS, Streamlabs) or any webpage.
-			</p>
+			<h1 class="brand-title">
+				<img src="/favicon.png" alt="Little Tools Logo" class="logo" />
+				little tools
+			</h1>
 		</header>
 		<h2>Settings</h2>
 
@@ -1412,15 +1410,16 @@
 		border-bottom: 1px solid #eaeaea;
 	}
 
-	.page-header h1 {
+	.page-header .brand-title {
+		display: flex;
+		align-items: center;
 		font-size: 1.5rem;
-		margin: 0 0 0.5rem 0;
+		margin: 0;
 	}
 
-	.page-header p {
-		font-size: 0.9rem;
-		color: #555;
-		margin: 0;
-		line-height: 1.5;
+	.page-header .logo {
+		height: 1.5em; /* Match the font size */
+		width: 1.5em;
+		margin-right: 0.5em;
 	}
 </style>
