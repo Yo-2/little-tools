@@ -86,7 +86,7 @@ export interface Config {
 const defaultConfig: Config = {
 	fontFamily: 'sans-serif',
 	fontSize: '2rem',
-	fontWeight: 'normal',
+	fontWeight: '400',
 	textColor: '#000000',
 	bgColorHex: '#ffffff',
 	bgColorOpacity: 100,
@@ -103,7 +103,7 @@ const defaultConfig: Config = {
 	clockStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: '2rem',
-		fontWeight: 'normal',
+		fontWeight: '400',
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,
@@ -120,7 +120,7 @@ const defaultConfig: Config = {
 	timerStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: '2rem',
-		fontWeight: 'normal',
+		fontWeight: '400',
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,
@@ -132,7 +132,7 @@ const defaultConfig: Config = {
 	textStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: '2rem',
-		fontWeight: 'normal',
+		fontWeight: '400',
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,
@@ -159,7 +159,7 @@ const defaultConfig: Config = {
 	weatherStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: '1rem',
-		fontWeight: 'normal',
+		fontWeight: '400',
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,
@@ -174,7 +174,7 @@ const defaultConfig: Config = {
 	ladderStyleOptions: {
 		fontFamily: 'sans-serif',
 		fontSize: 14,
-		fontWeight: 'normal',
+		fontWeight: '400',
 		textColor: '#333333',
 		backgroundColor: '#ffffff',
 		lineColor: '#000000',

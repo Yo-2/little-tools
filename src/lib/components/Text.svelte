@@ -9,7 +9,7 @@
 		bgColorOpacity = 100,
 		textColorOpacity = 100,
 		fontSize = '2rem',
-		fontWeight = 'normal',
+		fontWeight = '400',
 		fontFamily = 'sans-serif',
 		textOverrideGeneralStyle = false,
 		textStyleOptions = {} as Config['textStyleOptions']
@@ -33,7 +33,7 @@
 		--bg-color: ${hexToRgba(effectiveStyles.bgColorHex, effectiveStyles.bgColorOpacity) || 'rgba(0,0,0,0)'};
 		--text-color: ${hexToRgba(effectiveStyles.textColor, effectiveStyles.textColorOpacity) || '#000000'};
 		--font-size: ${effectiveStyles.fontSize || '2rem'};
-		--font-weight: ${effectiveStyles.fontWeight || 'normal'};
+		--font-weight: ${effectiveStyles.fontWeight || '400'};
 		--font-family: ${effectiveStyles.fontFamily || 'sans-serif'};
 	`);
 </script>
