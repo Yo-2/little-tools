@@ -294,8 +294,6 @@
 	function getWeatherParams() {
 		const {
 			fontFamily,
-			fontSize,
-			fontWeight,
 			textColor,
 			bgColorHex,
 			bgColorOpacity,
@@ -310,8 +308,6 @@
 		} = get(configStore);
 		return {
 			fontFamily,
-			fontSize,
-			fontWeight,
 			textColor,
 			bgColorHex,
 			bgColorOpacity,
@@ -1092,24 +1088,6 @@
 								/>
 							</div>
 							<label>
-								Font Size
-								<input type="text" bind:value={$configStore.weatherStyleOptions.fontSize} />
-							</label>
-							<label>
-								Font Weight
-								<select bind:value={$configStore.weatherStyleOptions.fontWeight}>
-									<option value="100">100</option>
-									<option value="200">200</option>
-									<option value="300">300</option>
-									<option value="400">400</option>
-									<option value="500">500</option>
-									<option value="600">600</option>
-									<option value="700">700</option>
-									<option value="800">800</option>
-									<option value="900">900</option>
-								</select>
-							</label>
-							<label>
 								Text Color
 								<div class="color-input-group">
 									<input type="color" bind:value={$configStore.weatherStyleOptions.textColor} />
@@ -1219,6 +1197,11 @@
 						weatherShowWind={$configStore.weatherShowWind}
 						weatherShowAtmosphere={$configStore.weatherShowAtmosphere}
 						weatherShowSun={$configStore.weatherShowSun}
+						fontFamily={$configStore.fontFamily}
+						textColor={$configStore.textColor}
+						bgColorHex={$configStore.bgColorHex}
+						weatherOverrideGeneralStyle={$configStore.weatherOverrideGeneralStyle}
+						weatherStyleOptions={$configStore.weatherStyleOptions}
 					/>
 				</div>
 				<button onclick={() => openInNewTab('/weather', getWeatherParams())}>

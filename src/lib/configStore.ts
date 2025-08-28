@@ -29,6 +29,14 @@ export interface SpinningWheelStyleOptions extends ToolStyleOptions {
 	segmentColors: string;
 }
 
+export interface WeatherStyleOptions {
+	fontFamily: string;
+	textColor: string;
+	bgColorHex: string;
+	bgColorOpacity: number;
+	textColorOpacity: number;
+}
+
 export interface Config {
 	fontFamily: string;
 	fontSize: string;
@@ -72,7 +80,7 @@ export interface Config {
 	weatherLocation: string;
 	weatherApiKey: string;
 	weatherOverrideGeneralStyle: boolean;
-	weatherStyleOptions: ToolStyleOptions;
+	weatherStyleOptions: WeatherStyleOptions;
 	weatherShowWind: boolean;
 	weatherShowAtmosphere: boolean;
 	weatherShowSun: boolean;
@@ -161,8 +169,6 @@ const defaultConfig: Config = {
 	weatherOverrideGeneralStyle: false,
 	weatherStyleOptions: {
 		fontFamily: 'sans-serif',
-		fontSize: '1rem',
-		fontWeight: '400',
 		textColor: '#000000',
 		bgColorHex: '#ffffff',
 		bgColorOpacity: 100,

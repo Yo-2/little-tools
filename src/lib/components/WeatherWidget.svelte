@@ -36,8 +36,6 @@
 		location = 'London',
 		// General styles
 		fontFamily = 'sans-serif',
-		fontSize = '1rem',
-		fontWeight = 'normal',
 		textColor = '#000000',
 		bgColorHex = '#ffffff',
 		// Override logic
@@ -128,16 +126,12 @@
 	}
 
 	const effectiveStyles = $derived(
-		weatherOverrideGeneralStyle
-			? weatherStyleOptions
-			: { fontFamily, fontSize, fontWeight, textColor, bgColorHex }
+		weatherOverrideGeneralStyle ? weatherStyleOptions : { fontFamily, textColor, bgColorHex }
 	);
 
 	let style = $derived(`
 		--bg-color: ${effectiveStyles.bgColorHex || '#ffffff'};
 		--text-color: ${effectiveStyles.textColor || '#000000'};
-		--font-size: ${effectiveStyles.fontSize || '1rem'};
-		--font-weight: ${effectiveStyles.fontWeight || 'normal'};
 		--font-family: ${effectiveStyles.fontFamily || 'sans-serif'};
 	`);
 </script>
@@ -200,8 +194,8 @@
 
 <style>
 	.weather-widget {
-		font-size: var(--font-size);
-		font-weight: var(--font-weight);
+		font-size: 1rem;
+		font-weight: normal;
 		color: var(--text-color);
 		background-color: var(--bg-color);
 		padding: 1rem;
