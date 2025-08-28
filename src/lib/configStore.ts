@@ -73,6 +73,9 @@ export interface Config {
 	weatherApiKey: string;
 	weatherOverrideGeneralStyle: boolean;
 	weatherStyleOptions: ToolStyleOptions;
+	weatherShowWind: boolean;
+	weatherShowAtmosphere: boolean;
+	weatherShowSun: boolean;
 
 	// Ladder Game specific
 	ladderPlayers: string;
@@ -165,6 +168,9 @@ const defaultConfig: Config = {
 		bgColorOpacity: 100,
 		textColorOpacity: 100
 	},
+	weatherShowWind: false,
+	weatherShowAtmosphere: false,
+	weatherShowSun: false,
 
 	ladderPlayers: 'Player 1\nPlayer 2\nPlayer 3\nPlayer 4',
 	ladderResults: 'Prize A\nPrize B\nPrize C\nPrize D',

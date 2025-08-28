@@ -303,7 +303,10 @@
 			weatherLocation,
 			weatherApiKey,
 			weatherOverrideGeneralStyle,
-			weatherStyleOptions
+			weatherStyleOptions,
+			weatherShowWind,
+			weatherShowAtmosphere,
+			weatherShowSun
 		} = get(configStore);
 		return {
 			fontFamily,
@@ -316,7 +319,10 @@
 			weatherLocation,
 			weatherApiKey,
 			weatherOverrideGeneralStyle,
-			weatherStyleOptions: JSON.stringify(weatherStyleOptions)
+			weatherStyleOptions: JSON.stringify(weatherStyleOptions),
+			weatherShowWind,
+			weatherShowAtmosphere,
+			weatherShowSun
 		};
 	}
 
@@ -1055,6 +1061,21 @@
 						OpenWeatherMap API Key
 						<input type="password" bind:value={$configStore.weatherApiKey} />
 					</label>
+
+					<h4 class="style-header">Details</h4>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.weatherShowWind} />
+						Show Wind Info
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.weatherShowAtmosphere} />
+						Show Atmospheric Info
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" bind:checked={$configStore.weatherShowSun} />
+						Show Sunrise/Sunset
+					</label>
+
 					<h4 class="style-header">Style</h4>
 					<label class="checkbox-label">
 						<input type="checkbox" bind:checked={$configStore.weatherOverrideGeneralStyle} />
@@ -1193,7 +1214,12 @@
 			<div class="preview-item">
 				<h3>Weather Widget</h3>
 				<div class="preview-content">
-					<WeatherWidget location={$configStore.weatherLocation} />
+					<WeatherWidget
+						location={$configStore.weatherLocation}
+						weatherShowWind={$configStore.weatherShowWind}
+						weatherShowAtmosphere={$configStore.weatherShowAtmosphere}
+						weatherShowSun={$configStore.weatherShowSun}
+					/>
 				</div>
 				<button onclick={() => openInNewTab('/weather', getWeatherParams())}>
 					Open Weather Widget
