@@ -3,9 +3,7 @@ import { loadStyles } from '$lib/style-loader';
 /** @type {import('./$types').PageLoad} */
 export function load({ url }) {
 	const styles = loadStyles(url, 'weather');
-	// @ts-expect-error - We are intentionally deleting properties that are not used by this page
 	delete styles.fontSize;
-	// @ts-expect-error - We are intentionally deleting properties that are not used by this page
 	delete styles.fontWeight;
 
 	return {

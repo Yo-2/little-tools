@@ -285,6 +285,12 @@
 
 		setTimeout(() => {
 			revealedWinners = { ...winners };
+			const newVisiblePaths: Record<number, string> = {};
+			allCalculatedPaths.forEach((path, i) => {
+				if (path) newVisiblePaths[i] = path;
+			});
+			visiblePaths = newVisiblePaths;
+			paths = []; // Clear animation paths
 			isAnimating = false;
 		}, $configStore.ladderAnimationSpeed * 1000);
 	}
@@ -324,7 +330,13 @@
 			);
 		}
 
-		paths = allCalculatedPaths;
+		revealedWinners = { ...winners };
+		const newVisiblePaths: Record<number, string> = {};
+		allCalculatedPaths.forEach((path, i) => {
+			if (path) newVisiblePaths[i] = path;
+		});
+		visiblePaths = newVisiblePaths;
+		paths = []; // Clear animation paths
 		isAnimating = false;
 	}
 </script>
