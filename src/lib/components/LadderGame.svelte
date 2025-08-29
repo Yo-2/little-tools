@@ -228,6 +228,16 @@
 		rungs = newRungs;
 	}
 
+	function clearResults() {
+		showPaths = false;
+		winners = {};
+		revealedWinners = {};
+		paths = [];
+		visiblePaths = {};
+		isResultsCollapsed = true;
+		hoveredPathIndex = null;
+	}
+
 	function tracePath(startLadder: number) {
 		let x = startLadder * LADDER_WIDTH + LADDER_WIDTH / 2;
 		let y = 0;
@@ -505,6 +515,7 @@
 
 	<div class="controls">
 		<button onclick={generateLadders} disabled={isAnimating || isManualMode}>New Ladder</button>
+		<button onclick={clearResults} disabled={isAnimating || !showPaths}>Clear</button>
 		<button onclick={startAnimation} disabled={isAnimating}>Start All</button>
 		<button onclick={startAnimationSequentially} disabled={isAnimating}>Start Sequentially</button>
 	</div>
