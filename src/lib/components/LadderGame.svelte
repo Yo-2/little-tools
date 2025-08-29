@@ -322,21 +322,27 @@
 		calculateAllPaths();
 
 		for (let i = 0; i < players.length; i++) {
+			if (visiblePaths[i]) {
+				continue; // Skip already visible paths
+			}
+
+			// Animate the current path
 			const newPaths: (string | undefined)[] = [];
 			newPaths[i] = allCalculatedPaths[i];
 			paths = newPaths;
+
 			await new Promise((resolve) =>
 				setTimeout(resolve, $configStore.ladderAnimationSpeed * 1000 + 100)
 			);
+
+			// After animation, move the path to the permanent visiblePaths and reveal the winner
+			if (allCalculatedPaths[i]) {
+				visiblePaths[i] = allCalculatedPaths[i] as string;
+				revealedWinners[players[i]] = winners[players[i]];
+			}
 		}
 
-		revealedWinners = { ...winners };
-		const newVisiblePaths: Record<number, string> = {};
-		allCalculatedPaths.forEach((path, i) => {
-			if (path) newVisiblePaths[i] = path;
-		});
-		visiblePaths = newVisiblePaths;
-		paths = []; // Clear animation paths
+		paths = []; // Clear the temporary animation path
 		isAnimating = false;
 	}
 </script>
